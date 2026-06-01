@@ -17,8 +17,10 @@ export async function sendWhatsApp(order: OrderNotifyPayload): Promise<void> {
   const apiKey = process.env.CALLMEBOT_API_KEY;
   if (!phone || !apiKey) return;
 
+  const fmt = (n: any) => Number(n || 0).toFixed(2);
+
   const itemLines = order.items
-    .map(i => `• ${i.setName} (${i.language.toUpperCase()}) x${i.quantity} — $${i.total.toFixed(2)}`)
+    .map(i => `• ${i.setName} (${i.language.toUpperCase()}) x${i.quantity} — $${fmt(i.total)}`)
     .join('\n');
 
   const message = [
@@ -26,9 +28,11 @@ export async function sendWhatsApp(order: OrderNotifyPayload): Promise<void> {
     `👤 ${order.customer.name} (${order.customer.email})`,
     `📦 ${order.items.length} item${order.items.length !== 1 ? 's' : ''}:`,
     itemLines,
-    `💰 Total: $${order.total_usd.toFixed(2)}`,
+    `💰 Subtotal: $${fmt(order.subtotal_usd)}`,
+    order.discount_usd > 0 ? `🏷️ Discount: -$${fmt(order.discount_usd)}` : '',
+    `✅ Total: $${fmt(order.total_usd)}`,
     `📍 ${order.customer.city}, ${order.customer.country}`,
-  ].join('\n');
+  ].filter(Boolean).join('\n');
 
   const encoded = encodeURIComponent(message);
   const url = `https://api.callmebot.com/whatsapp.php?phone=${phone}&text=${encoded}&apikey=${apiKey}`;

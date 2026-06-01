@@ -67,12 +67,29 @@ export default function CheckoutPage() {
       // Demo mode — no Stripe configured
       if (data.demo) {
         const { saveOrder } = await import('@/lib/orders');
-        saveOrder(data.orderId, cart, {
+        const customer = {
           name: form.name, email: form.email,
           line1: form.line1, line2: form.line2 || undefined,
           city: form.city, state: form.state,
           postal_code: form.postal_code, country: form.country,
-        }, 'demo');
+        };
+        const order = saveOrder(data.orderId, cart, customer, 'demo');
+
+        // Await notification before navigating so fetch isn't cancelled
+        await fetch('/api/orders', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            id:           order.id,
+            status:       order.status,
+            customer:     order.customer,
+            items:        order.items,
+            subtotal_usd: order.subtotal,
+            discount_usd: order.discount,
+            total_usd:    order.total,
+          }),
+        });
+
         clearCart();
         router.push(`/checkout/success?order=${data.orderId}`);
         return;

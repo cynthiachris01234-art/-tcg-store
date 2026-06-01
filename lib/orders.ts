@@ -82,15 +82,12 @@ export function saveOrder(
     total:    cart.total_usd,
   };
 
-  // Always save to localStorage as fallback
+  // Save to localStorage
   try {
     const existing = loadOrders();
     existing.unshift(order);
     localStorage.setItem(ORDERS_KEY, JSON.stringify(existing));
   } catch {}
-
-  // Also save to Supabase database
-  saveToSupabase(order);
 
   return order;
 }
