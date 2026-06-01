@@ -1,5 +1,6 @@
 import { createClient } from '@supabase/supabase-js';
 import { NextResponse } from 'next/server';
+import { notifyNewOrder } from '@/lib/notify';
 
 const supabaseUrl     = process.env.NEXT_PUBLIC_SUPABASE_URL ?? '';
 const serviceRoleKey  = process.env.SUPABASE_SERVICE_ROLE_KEY ?? '';
@@ -26,6 +27,9 @@ export async function POST(req: Request) {
     });
 
     if (error) throw error;
+
+    // Send WhatsApp + Email notifications
+    await notifyNewOrder(body);
 
     return NextResponse.json({ ok: true });
   } catch (err: any) {
