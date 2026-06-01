@@ -48,32 +48,26 @@ export function CurrencyProvider({
   children: ReactNode;
   initialRates?: Record<Currency, number>;
 }) {
-  const [currency, setCurrencyState] = useState<Currency>('USD');
+  const currency: Currency = 'USD';
   const [rates] = useState(initialRates);
 
-  const setCurrency = useCallback((c: Currency) => {
-    setCurrencyState(c);
-    if (typeof window !== 'undefined') {
-      localStorage.setItem('tcg_currency', c);
-    }
-  }, []);
+  const setCurrency = useCallback((_c: Currency) => {}, []); // locked to USD
 
   const convert = useCallback(
-    (usdAmount: number) => +(usdAmount * rates[currency]).toFixed(2),
-    [currency, rates]
+    (usdAmount: number) => +usdAmount.toFixed(2),
+    []
   );
 
   const format = useCallback(
     (usdAmount: number) => {
-      const converted = usdAmount * rates[currency];
       return new Intl.NumberFormat('en-US', {
         style: 'currency',
-        currency,
-        minimumFractionDigits: currency === 'JPY' || currency === 'KRW' ? 0 : 2,
-        maximumFractionDigits: currency === 'JPY' || currency === 'KRW' ? 0 : 2,
-      }).format(converted);
+        currency: 'USD',
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2,
+      }).format(usdAmount);
     },
-    [currency, rates]
+    []
   );
 
   return createElement(CurrencyContext.Provider, { value: { currency, setCurrency, convert, format, rates } }, children);

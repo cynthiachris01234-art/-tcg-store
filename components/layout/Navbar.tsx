@@ -114,18 +114,7 @@ export function Navbar() {
 
           {/* Right side */}
           <div className="flex items-center gap-3">
-            {/* Currency selector */}
-            <select
-              value={currency}
-              onChange={(e) => setCurrency(e.target.value as any)}
-              className="hidden sm:block bg-black border border-gold/30 text-sm text-gray-300 rounded-lg px-2 py-1 focus:outline-none focus:border-gold cursor-pointer"
-            >
-              {CURRENCIES.map((c) => (
-                <option key={c} value={c}>{c}</option>
-              ))}
-            </select>
-
-            {/* Cart */}
+{/* Cart */}
             <Link href="/cart" className="relative p-2 rounded-lg hover:bg-white/5 transition-colors group">
               <ShoppingCart className="w-5 h-5 text-gray-300 group-hover:text-white" />
               {itemCount > 0 && (
@@ -167,12 +156,6 @@ export function Navbar() {
               {link.label}
             </Link>
           ))}
-          <div className="border-t border-gold/20 mt-3 pt-3">
-            <select value={currency} onChange={(e) => setCurrency(e.target.value as any)}
-              className="w-full bg-black border border-gold/30 text-sm text-gray-300 rounded-lg px-3 py-2">
-              {CURRENCIES.map((c) => <option key={c} value={c}>{c}</option>)}
-            </select>
-          </div>
         </div>
       )}
     </nav>
