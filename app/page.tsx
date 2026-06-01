@@ -69,6 +69,9 @@ export default async function HomePage() {
       <BrandSection brand="onepiece" products={onepiece} />
       <BrandSection brand="mtg"      products={mtg}      />
       <BrandSection brand="yugioh"   products={yugioh}   />
+
+      {/* Special Sets — rare & premium Pokémon */}
+      <SpecialSets />
     </div>
   );
 }

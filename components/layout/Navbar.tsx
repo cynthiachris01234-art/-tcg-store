@@ -11,10 +11,11 @@ import { BRAND_META, BRANDS, LANGUAGE_META, LANGUAGES } from '@/lib/brands';
 import { cn } from '@/lib/utils';
 
 const NAV_LINKS = [
-  { href: '/shop',     label: 'All Products' },
-  { href: '/cases',    label: 'Cases' },
-  { href: '/releases', label: 'New Releases' },
-  { href: '/deals',    label: '🔥 Deals' },
+  { href: '/shop',         label: 'All Products' },
+  { href: '/special-sets', label: '⭐ Special Sets' },
+  { href: '/cases',        label: 'Cases' },
+  { href: '/releases',     label: 'New Releases' },
+  { href: '/deals',        label: '🔥 Deals' },
 ];
 
 function ApexLogo({ className }: { className?: string }) {
