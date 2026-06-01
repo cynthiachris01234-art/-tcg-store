@@ -1,6 +1,7 @@
 import { getBestSellers, getNewReleases } from '@/lib/supabase';
 import { HeroBanner } from '@/components/home/HeroBanner';
 import { BoxShelf } from '@/components/home/BoxShelf';
+import { SpecialSets } from '@/components/home/SpecialSets';
 import { NewReleasesStrip } from '@/components/home/NewReleasesStrip';
 import { BrandSection } from '@/components/home/BrandSection';
 import { DealsBanner } from '@/components/home/DealsBanner';
@@ -36,6 +37,9 @@ export default async function HomePage() {
 
       {/* Box display shelf */}
       <BoxShelf />
+
+      {/* Special Pokémon Sets */}
+      <SpecialSets />
 
       {/* New Releases */}
       <NewReleasesStrip releases={releases} />
