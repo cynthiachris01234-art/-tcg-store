@@ -23,14 +23,14 @@ function typeLabel(t: ProductType): string {
 }
 
 interface AddressForm {
-  name: string; email: string;
+  name: string; email: string; phone: string;
   line1: string; line2: string;
   city: string; state: string;
   postal_code: string; country: string;
 }
 
 const EMPTY_FORM: AddressForm = {
-  name: '', email: '',
+  name: '', email: '', phone: '',
   line1: '', line2: '',
   city: '', state: '',
   postal_code: '', country: 'US',
@@ -68,7 +68,7 @@ export default function CheckoutPage() {
       if (data.demo) {
         const { saveOrder } = await import('@/lib/orders');
         const customer = {
-          name: form.name, email: form.email,
+          name: form.name, email: form.email, phone: form.phone,
           line1: form.line1, line2: form.line2 || undefined,
           city: form.city, state: form.state,
           postal_code: form.postal_code, country: form.country,
@@ -137,11 +137,12 @@ export default function CheckoutPage() {
     );
   }
 
-  const fields: { key: keyof AddressForm; label: string; type?: string; col?: string }[] = [
-    { key: 'name',        label: 'Full Name',     col: 'col-span-2' },
-    { key: 'email',       label: 'Email',         type: 'email', col: 'col-span-2' },
-    { key: 'line1',       label: 'Address',       col: 'col-span-2' },
-    { key: 'line2',       label: 'Apt, Suite (optional)', col: 'col-span-2' },
+  const fields: { key: keyof AddressForm; label: string; type?: string; col?: string; required?: boolean }[] = [
+    { key: 'name',        label: 'Full Name',              col: 'col-span-2' },
+    { key: 'email',       label: 'Email',                  type: 'email', col: 'col-span-2' },
+    { key: 'phone',       label: 'Phone Number',           type: 'tel',   col: 'col-span-2' },
+    { key: 'line1',       label: 'Address',                col: 'col-span-2' },
+    { key: 'line2',       label: 'Apt, Suite (optional)',  col: 'col-span-2', required: false },
     { key: 'city',        label: 'City' },
     { key: 'state',       label: 'State / Province' },
     { key: 'postal_code', label: 'Postal Code' },
@@ -161,14 +162,14 @@ export default function CheckoutPage() {
 
           <form onSubmit={handleSubmit} className="space-y-4">
             <div className="grid grid-cols-2 gap-4">
-              {fields.map(({ key, label, type = 'text', col }) => (
+              {fields.map(({ key, label, type = 'text', col, required }) => (
                 <div key={key} className={col ?? ''}>
                   <label className="block text-muted text-xs mb-1.5">{label}</label>
                   <input
                     type={type}
                     value={form[key]}
                     onChange={(e) => update(key, e.target.value)}
-                    required={key !== 'line2'}
+                    required={required !== false && key !== 'line2'}
                     className="w-full bg-bg border border-bg-border rounded-xl px-4 py-3 text-white text-sm focus:outline-none focus:border-accent transition-colors placeholder-muted"
                   />
                 </div>

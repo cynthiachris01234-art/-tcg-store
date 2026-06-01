@@ -3,7 +3,7 @@
 
 interface OrderNotifyPayload {
   id: string;
-  customer: { name: string; email: string; line1: string; city: string; state: string; country: string; };
+  customer: { name: string; email: string; phone?: string; line1: string; city: string; state: string; country: string; };
   items: Array<{ setName: string; brand: string; language: string; quantity: number; total: number; }>;
   subtotal_usd: number;
   discount_usd: number;
@@ -25,7 +25,9 @@ export async function sendWhatsApp(order: OrderNotifyPayload): Promise<void> {
 
   const message = [
     `🛍️ NEW ORDER — #${order.id}`,
-    `👤 ${order.customer.name} (${order.customer.email})`,
+    `👤 ${order.customer.name}`,
+    `📧 ${order.customer.email}`,
+    order.customer.phone ? `📱 ${order.customer.phone}` : '',
     `📦 ${order.items.length} item${order.items.length !== 1 ? 's' : ''}:`,
     itemLines,
     `💰 Subtotal: $${fmt(order.subtotal_usd)}`,
