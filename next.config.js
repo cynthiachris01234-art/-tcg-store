@@ -16,10 +16,15 @@ const nextConfig = {
       { protocol: 'https', hostname: 'www.yugioh-card.com' },
       // TCGPlayer product image CDN
       { protocol: 'https', hostname: 'product-images.tcgplayer.com' },
+      // Other retailer images
+      { protocol: 'https', hostname: 'jumpichiban.com' },
+      { protocol: 'https', hostname: 'images.unsplash.com' },
+      { protocol: 'https', hostname: 'pokemoncenter.com' },
+      { protocol: 'https', hostname: 'assets.pokemon.com' },
     ],
   },
   experimental: {
-    serverActions: { allowedOrigins: ['localhost:3000'] },
+    serverActions: { allowedOrigins: ['*'] },
   },
 };
 
