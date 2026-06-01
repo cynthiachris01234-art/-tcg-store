@@ -3,6 +3,7 @@
 import { createContext, useContext, useReducer, useEffect, ReactNode, createElement } from 'react';
 import type { Product, Cart, CartItem } from '@/types';
 import { CASE_BUNDLE_RATE } from './pricing';
+import { MOCK_PRODUCTS } from './mock-data';
 
 // ─── Actions ─────────────────────────────────────────────────────────────────
 
@@ -70,8 +71,12 @@ function loadCart(): Cart {
     const raw = localStorage.getItem(STORAGE_KEY);
     if (!raw) return EMPTY_CART;
     const parsed = JSON.parse(raw);
-    // Recalculate totals to ensure they're current
-    return calcCart(parsed.items ?? []);
+    // Always refresh product prices from latest mock data so stale prices are corrected
+    const freshItems: CartItem[] = (parsed.items ?? []).map((item: CartItem) => {
+      const fresh = MOCK_PRODUCTS.find(p => p.id === item.product.id);
+      return fresh ? { ...item, product: fresh } : item;
+    });
+    return calcCart(freshItems);
   } catch {
     return EMPTY_CART;
   }
