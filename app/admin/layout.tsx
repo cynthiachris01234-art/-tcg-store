@@ -1,9 +1,9 @@
 'use client';
 
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import {
-  LayoutDashboard, Package, ShoppingBag, BarChart2, Settings, Zap, ChevronRight,
+  LayoutDashboard, Package, ShoppingBag, BarChart2, Settings, Zap, ChevronRight, LogOut,
 } from 'lucide-react';
 
 const NAV = [
@@ -14,7 +14,13 @@ const NAV = [
 ];
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
-  const path = usePathname();
+  const path   = usePathname();
+  const router = useRouter();
+
+  async function logout() {
+    await fetch('/api/admin/login', { method: 'DELETE' });
+    router.push('/admin/login');
+  }
 
   return (
     <div className="flex min-h-screen">
@@ -54,7 +60,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         </nav>
 
         {/* Footer */}
-        <div className="p-3 border-t border-bg-border">
+        <div className="p-3 border-t border-bg-border space-y-0.5">
           <Link
             href="/"
             className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm text-muted hover:text-white hover:bg-white/5 transition-all"
@@ -62,6 +68,13 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
             <Settings className="w-4 h-4" />
             Back to Store
           </Link>
+          <button
+            onClick={logout}
+            className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm text-muted hover:text-red-400 hover:bg-red-500/10 transition-all"
+          >
+            <LogOut className="w-4 h-4" />
+            Sign Out
+          </button>
         </div>
       </aside>
 
