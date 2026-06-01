@@ -5,10 +5,8 @@ import { getMockProducts, MOCK_PRODUCTS } from '@/lib/mock-data';
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL ?? '';
 const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ?? '';
 
-// True only when real (non-placeholder) credentials are present
-const isConfigured =
-  Boolean(supabaseUrl && supabaseAnonKey) &&
-  !supabaseUrl.includes('placeholder');
+// Supabase is configured for ORDERS only — products always use mock data
+const isConfigured = false; // Set to true only when products table is populated
 
 let _client: SupabaseClient | null = null;
 function db(): SupabaseClient {
