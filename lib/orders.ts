@@ -34,6 +34,27 @@ export interface StoredOrder {
 
 const ORDERS_KEY = 'apex-tcg-orders';
 
+// Save order to Supabase via API route
+async function saveToSupabase(order: StoredOrder): Promise<void> {
+  try {
+    await fetch('/api/orders', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        id:           order.id,
+        status:       order.status,
+        customer:     order.customer,
+        items:        order.items,
+        subtotal_usd: order.subtotal,
+        discount_usd: order.discount,
+        total_usd:    order.total,
+      }),
+    });
+  } catch (err) {
+    console.warn('Supabase save failed, using localStorage only', err);
+  }
+}
+
 export function saveOrder(
   orderId: string,
   cart: Cart,
@@ -46,26 +67,30 @@ export function saveOrder(
     status,
     customer,
     items: cart.items.map((i) => ({
-      productId: i.product.id,
-      setName: i.product.set_name,
-      brand: i.product.brand,
-      language: i.product.language,
+      productId:   i.product.id,
+      setName:     i.product.set_name,
+      brand:       i.product.brand,
+      language:    i.product.language,
       productType: i.product.product_type,
-      imageUrl: i.product.image_url,
-      quantity: i.quantity,
-      unitPrice: i.product.our_price_usd,
-      total: +(i.product.our_price_usd * i.quantity).toFixed(2),
+      imageUrl:    i.product.image_url,
+      quantity:    i.quantity,
+      unitPrice:   i.product.our_price_usd,
+      total:       +(i.product.our_price_usd * i.quantity).toFixed(2),
     })),
     subtotal: cart.subtotal_usd,
     discount: cart.bundle_discount,
-    total: cart.total_usd,
+    total:    cart.total_usd,
   };
 
+  // Always save to localStorage as fallback
   try {
     const existing = loadOrders();
-    existing.unshift(order); // newest first
+    existing.unshift(order);
     localStorage.setItem(ORDERS_KEY, JSON.stringify(existing));
   } catch {}
+
+  // Also save to Supabase database
+  saveToSupabase(order);
 
   return order;
 }

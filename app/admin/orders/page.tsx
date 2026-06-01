@@ -157,14 +157,37 @@ function OrderRow({ order }: { order: StoredOrder }) {
 export default function AdminOrdersPage() {
   const [orders, setOrders] = useState<StoredOrder[]>([]);
   const [loaded, setLoaded] = useState(false);
+  const [source, setSource] = useState<'db' | 'local'>('local');
 
-  function refresh() {
+  async function refresh() {
+    // Try Supabase first
+    try {
+      const res = await fetch('/api/orders');
+      const data = await res.json();
+      if (data.orders && data.orders.length > 0) {
+        // Map Supabase shape → StoredOrder shape
+        const mapped: StoredOrder[] = data.orders.map((o: any) => ({
+          id:        o.id,
+          createdAt: o.created_at,
+          status:    o.status,
+          customer:  o.customer,
+          items:     o.items,
+          subtotal:  o.subtotal_usd,
+          discount:  o.discount_usd,
+          total:     o.total_usd,
+        }));
+        setOrders(mapped);
+        setSource('db');
+        return;
+      }
+    } catch {}
+    // Fallback to localStorage
     setOrders(loadOrders());
+    setSource('local');
   }
 
   useEffect(() => {
-    refresh();
-    setLoaded(true);
+    refresh().finally(() => setLoaded(true));
   }, []);
 
   const totalRevenue = orders.reduce((s, o) => s + o.total, 0);
@@ -181,6 +204,9 @@ export default function AdminOrdersPage() {
             <h1 className="text-3xl font-bold text-white">Orders</h1>
             <p className="text-muted text-sm mt-0.5">
               {orders.length} order{orders.length !== 1 ? 's' : ''} · ${totalRevenue.toFixed(2)} total revenue
+              {loaded && <span className={`ml-2 text-xs px-2 py-0.5 rounded-full ${source === 'db' ? 'bg-green-500/20 text-green-400' : 'bg-yellow-500/20 text-yellow-400'}`}>
+                {source === 'db' ? '● Live database' : '● Local only'}
+              </span>}
             </p>
           </div>
         </div>
