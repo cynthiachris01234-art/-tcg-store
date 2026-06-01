@@ -17,23 +17,34 @@ export async function sendWhatsApp(order: OrderNotifyPayload): Promise<void> {
   const apiKey = process.env.CALLMEBOT_API_KEY;
   if (!phone || !apiKey) return;
 
-  const fmt = (n: any) => Number(n || 0).toFixed(2);
+  // Format USD amount with commas e.g. $1,074.00
+  const fmt = (n: any) => {
+    const num = Number(n ?? 0);
+    return num.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  };
 
   const itemLines = order.items
-    .map(i => `• ${i.setName} (${i.language.toUpperCase()}) x${i.quantity} — $${fmt(i.total)}`)
+    .map(i => {
+      const unitPrice = Number(i.total ?? 0) / Math.max(Number(i.quantity) || 1, 1);
+      const lineTotal = Number(i.total ?? 0);
+      return `• ${i.setName} (${i.language.toUpperCase()}) x${i.quantity} @ $${fmt(unitPrice)} = $${fmt(lineTotal)}`;
+    })
     .join('\n');
 
   const message = [
     `🛍️ NEW ORDER — #${order.id}`,
+    `━━━━━━━━━━━━━━━━━`,
     `👤 ${order.customer.name}`,
     `📧 ${order.customer.email}`,
     order.customer.phone ? `📱 ${order.customer.phone}` : '',
+    `━━━━━━━━━━━━━━━━━`,
     `📦 ${order.items.length} item${order.items.length !== 1 ? 's' : ''}:`,
     itemLines,
-    `💰 Subtotal: $${fmt(order.subtotal_usd)}`,
-    order.discount_usd > 0 ? `🏷️ Discount: -$${fmt(order.discount_usd)}` : '',
-    `✅ Total: $${fmt(order.total_usd)}`,
-    `📍 ${order.customer.city}, ${order.customer.country}`,
+    `━━━━━━━━━━━━━━━━━`,
+    `💰 Subtotal: $${fmt(order.subtotal_usd)} USD`,
+    Number(order.discount_usd) > 0 ? `🏷️ Discount: -$${fmt(order.discount_usd)} USD` : '',
+    `✅ TOTAL: $${fmt(order.total_usd)} USD`,
+    `📍 ${order.customer.city}, ${order.customer.state ?? ''} ${order.customer.country}`,
   ].filter(Boolean).join('\n');
 
   const encoded = encodeURIComponent(message);
@@ -52,13 +63,19 @@ export async function sendEmail(order: OrderNotifyPayload): Promise<void> {
   const adminEmail = process.env.ADMIN_EMAIL;
   if (!apiKey || !adminEmail) return;
 
-  const itemRows = order.items.map(i => `
+  const fmtEmail = (n: any) => Number(n ?? 0).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+
+  const itemRows = order.items.map(i => {
+    const unitPrice = Number(i.total ?? 0) / Math.max(Number(i.quantity) || 1, 1);
+    return `
     <tr>
       <td style="padding:8px 12px;border-bottom:1px solid #222;">${i.setName}</td>
       <td style="padding:8px 12px;border-bottom:1px solid #222;text-align:center;">${i.language.toUpperCase()}</td>
       <td style="padding:8px 12px;border-bottom:1px solid #222;text-align:center;">${i.quantity}</td>
-      <td style="padding:8px 12px;border-bottom:1px solid #222;text-align:right;">$${i.total.toFixed(2)}</td>
-    </tr>`).join('');
+      <td style="padding:8px 12px;border-bottom:1px solid #222;text-align:right;">$${fmtEmail(unitPrice)}</td>
+      <td style="padding:8px 12px;border-bottom:1px solid #222;text-align:right;color:#C8962A;">$${fmtEmail(Number(i.total ?? 0))}</td>
+    </tr>`;
+  }).join('');
 
   const html = `
 <!DOCTYPE html>
@@ -96,7 +113,8 @@ export async function sendEmail(order: OrderNotifyPayload): Promise<void> {
             <th style="padding:8px 12px;text-align:left;color:#666;font-weight:500;">Product</th>
             <th style="padding:8px 12px;text-align:center;color:#666;font-weight:500;">Lang</th>
             <th style="padding:8px 12px;text-align:center;color:#666;font-weight:500;">Qty</th>
-            <th style="padding:8px 12px;text-align:right;color:#666;font-weight:500;">Total</th>
+            <th style="padding:8px 12px;text-align:right;color:#666;font-weight:500;">Unit Price</th>
+            <th style="padding:8px 12px;text-align:right;color:#666;font-weight:500;">Line Total</th>
           </tr>
         </thead>
         <tbody>${itemRows}</tbody>
@@ -106,11 +124,11 @@ export async function sendEmail(order: OrderNotifyPayload): Promise<void> {
     <!-- Totals -->
     <div style="background:#111;border:1px solid #222;border-radius:10px;padding:16px;margin-bottom:24px;">
       <div style="display:flex;justify-content:space-between;padding:4px 0;color:#888;font-size:14px;">
-        <span>Subtotal</span><span>$${order.subtotal_usd.toFixed(2)}</span>
+        <span>Subtotal (USD)</span><span>$${fmtEmail(order.subtotal_usd)}</span>
       </div>
-      ${order.discount_usd > 0 ? `<div style="display:flex;justify-content:space-between;padding:4px 0;color:#22c55e;font-size:14px;"><span>Discount</span><span>-$${order.discount_usd.toFixed(2)}</span></div>` : ''}
+      ${Number(order.discount_usd) > 0 ? `<div style="display:flex;justify-content:space-between;padding:4px 0;color:#22c55e;font-size:14px;"><span>Discount</span><span>-$${fmtEmail(order.discount_usd)}</span></div>` : ''}
       <div style="display:flex;justify-content:space-between;padding:8px 0 0;border-top:1px solid #222;margin-top:8px;font-size:18px;font-weight:700;">
-        <span>Total</span><span style="color:#C8962A;">$${order.total_usd.toFixed(2)}</span>
+        <span>Total (USD)</span><span style="color:#C8962A;">$${fmtEmail(order.total_usd)}</span>
       </div>
     </div>
 
