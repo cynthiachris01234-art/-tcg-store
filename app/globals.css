@@ -1,0 +1,105 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --font-inter: 'Inter', sans-serif;
+    --font-display: 'Inter', sans-serif;
+    --gold: #C8962A;
+    --gold-light: #E5B84D;
+    --silver: #C8C8D0;
+  }
+
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+
+  body {
+    @apply text-white antialiased;
+    background-color: #080808;
+  }
+
+  ::-webkit-scrollbar { width: 6px; height: 6px; }
+  ::-webkit-scrollbar-track { background: #0d0d0d; }
+  ::-webkit-scrollbar-thumb { background: #2a2a2a; border-radius: 9999px; }
+  ::-webkit-scrollbar-thumb:hover { background: #C8962A; }
+}
+
+@layer components {
+  .card {
+    @apply bg-bg-card border border-bg-border rounded-2xl shadow-card;
+  }
+
+  .card-gold {
+    @apply bg-bg-card border border-gold/30 rounded-2xl shadow-gold-sm;
+  }
+
+  .btn-primary {
+    @apply text-black font-bold px-6 py-3 rounded-xl
+           transition-all duration-200
+           disabled:opacity-50 disabled:cursor-not-allowed;
+    background: linear-gradient(135deg, #E5B84D 0%, #C8962A 50%, #8B6418 100%);
+    box-shadow: 0 0 20px rgba(200,150,42,0.35);
+  }
+  .btn-primary:hover:not(:disabled) {
+    background: linear-gradient(135deg, #F0CC6A 0%, #D4A520 50%, #9A7520 100%);
+    box-shadow: 0 0 30px rgba(200,150,42,0.55);
+    transform: translateY(-1px);
+  }
+
+  .btn-outline {
+    @apply border font-semibold px-6 py-3 rounded-xl transition-all duration-200 text-white;
+    border-color: rgba(200,150,42,0.4);
+  }
+  .btn-outline:hover {
+    border-color: #C8962A;
+    background: rgba(200,150,42,0.08);
+    box-shadow: 0 0 16px rgba(200,150,42,0.2);
+  }
+
+  .badge {
+    @apply inline-flex items-center gap-1 text-xs font-semibold px-2 py-0.5 rounded-full;
+  }
+
+  .price-market { @apply text-muted line-through text-sm; }
+  .price-ours   { @apply font-bold text-xl; color: #E5B84D; }
+
+  .shimmer-bg {
+    background: linear-gradient(90deg, #0d0d0d 25%, #1e1e1e 50%, #0d0d0d 75%);
+    background-size: 1000px 100%;
+    @apply animate-shimmer;
+  }
+
+  /* Gold border top accent for section headers */
+  .section-header {
+    @apply relative pb-3 mb-6;
+  }
+  .section-header::after {
+    content: '';
+    @apply absolute bottom-0 left-0 h-0.5 w-12 rounded-full;
+    background: linear-gradient(90deg, #C8962A, transparent);
+  }
+}
+
+@layer utilities {
+  .text-gold-gradient {
+    background: linear-gradient(135deg, #E5B84D 0%, #C8962A 60%, #8B6418 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  .text-silver-gradient {
+    background: linear-gradient(135deg, #ffffff 0%, #C8C8D0 50%, #888898 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  .text-gradient-pokemon  { @apply bg-gradient-to-r from-pokemon to-pokemon-blue bg-clip-text text-transparent; }
+  .text-gradient-onepiece { @apply bg-gradient-to-r from-onepiece to-onepiece-gold bg-clip-text text-transparent; }
+  .text-gradient-mtg      { @apply bg-gradient-to-r from-mtg to-mtg-gold bg-clip-text text-transparent; }
+  .text-gradient-yugioh   { @apply bg-gradient-to-r from-yugioh to-yugioh-gold bg-clip-text text-transparent; }
+
+  .border-gold-gradient {
+    border-image: linear-gradient(135deg, #E5B84D, #C8962A, #8B6418) 1;
+  }
+}
