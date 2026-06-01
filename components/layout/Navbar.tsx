@@ -100,31 +100,7 @@ export function Navbar() {
               )}
             </div>
 
-            {/* Shop by Language dropdown */}
-            <div className="relative" onMouseEnter={() => setLangOpen(true)} onMouseLeave={() => setLangOpen(false)}>
-              <button className="flex items-center gap-1 px-3 py-2 text-sm text-gray-300 hover:text-white rounded-lg hover:bg-white/5 transition-colors">
-                Language <ChevronDown className="w-4 h-4" />
-              </button>
-              {langOpen && (
-                <div className="absolute top-full left-0 mt-1 w-40 card p-2 shadow-card-hover">
-                  {LANGUAGES.map((l) => {
-                    const meta = LANGUAGE_META[l];
-                    return (
-                      <Link
-                        key={l}
-                        href={`/shop/language/${l}`}
-                        className="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-white/5 transition-colors text-gray-300 hover:text-white"
-                      >
-                        <span>{meta.flag}</span>
-                        <span className="text-sm">{meta.label}</span>
-                      </Link>
-                    );
-                  })}
-                </div>
-              )}
-            </div>
-
-            {NAV_LINKS.map((link) => (
+{NAV_LINKS.map((link) => (
               <Link
                 key={link.href}
                 href={link.href}
@@ -180,17 +156,6 @@ export function Navbar() {
                 className="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-white/5"
                 style={{ color: meta.primaryColor }}>
                 <span className="font-semibold text-sm">{meta.name}</span>
-              </Link>
-            );
-          })}
-          <div className="border-t border-gold/20 my-3" />
-          <p className="text-xs text-muted uppercase tracking-widest mb-2">Language</p>
-          {LANGUAGES.map((l) => {
-            const meta = LANGUAGE_META[l];
-            return (
-              <Link key={l} href={`/shop/language/${l}`} onClick={() => setMobileOpen(false)}
-                className="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-white/5 text-gray-300">
-                <span>{meta.flag}</span><span className="text-sm">{meta.label}</span>
               </Link>
             );
           })}

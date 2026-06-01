@@ -109,7 +109,7 @@ export function HeroBanner() {
       />
 
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 w-full">
-        <div className="flex flex-col lg:flex-row items-center gap-12 lg:gap-20">
+        <div className="flex flex-col lg:flex-row items-center gap-8 lg:gap-20">
 
           {/* ── Left: Text Content ─────────────────────────────────────── */}
           <div className="flex-1 max-w-xl">
@@ -161,9 +161,9 @@ export function HeroBanner() {
             </div>
           </div>
 
-          {/* ── Right: Booster Box Collage ─────────────────────────────── */}
-          <div className="hidden lg:flex flex-1 items-center justify-center">
-            <div className="relative w-[380px] h-[460px]">
+          {/* ── Booster Box Collage — shown on ALL screen sizes ─────── */}
+          <div className="flex flex-1 items-center justify-center mt-6 lg:mt-0">
+            <div className="relative w-[300px] h-[360px] lg:w-[380px] lg:h-[460px]">
 
               {/* Radial glow */}
               <div
@@ -172,22 +172,22 @@ export function HeroBanner() {
               />
 
               {/* Pokémon — top left */}
-              <div className="absolute top-0 left-4">
+              <div className="absolute top-0 left-2 lg:left-4">
                 <HeroBox box={HERO_BOXES[0]} priority />
               </div>
 
               {/* One Piece — top right */}
-              <div className="absolute top-8 right-4">
+              <div className="absolute top-6 right-2 lg:top-8 lg:right-4">
                 <HeroBox box={HERO_BOXES[1]} priority />
               </div>
 
               {/* MTG — bottom left */}
-              <div className="absolute bottom-0 left-16">
+              <div className="absolute bottom-0 left-10 lg:left-16">
                 <HeroBox box={HERO_BOXES[2]} />
               </div>
 
               {/* Yu-Gi-Oh — bottom right */}
-              <div className="absolute bottom-6 right-8">
+              <div className="absolute bottom-4 right-4 lg:bottom-6 lg:right-8">
                 <HeroBox box={HERO_BOXES[3]} />
               </div>
 

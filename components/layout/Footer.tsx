@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import { Zap, Mail, Twitter, Instagram } from 'lucide-react';
 import { BRAND_META, BRANDS, LANGUAGE_META, LANGUAGES } from '@/lib/brands';
+import { Globe } from 'lucide-react';
 
 export function Footer() {
   return (
@@ -91,6 +92,27 @@ export function Footer() {
 
         <div className="border-t border-bg-border mt-10 pt-6 flex flex-col sm:flex-row items-center justify-between gap-4">
           <p className="text-muted text-sm">© {new Date().getFullYear()} TCG Vault. All rights reserved.</p>
+
+          {/* Language selector — small */}
+          <div className="flex items-center gap-2">
+            <Globe className="w-3 h-3 text-muted" />
+            <div className="flex items-center gap-1.5">
+              {LANGUAGES.map((l) => {
+                const meta = LANGUAGE_META[l];
+                return (
+                  <Link
+                    key={l}
+                    href={`/shop/language/${l}`}
+                    className="text-muted hover:text-white transition-colors text-xs flex items-center gap-0.5"
+                  >
+                    <span>{meta.flag}</span>
+                    <span>{l.toUpperCase()}</span>
+                  </Link>
+                );
+              })}
+            </div>
+          </div>
+
           <p className="text-muted text-xs">
             Prices updated weekly. All products are 100% sealed & authentic.
           </p>

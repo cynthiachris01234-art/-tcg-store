@@ -121,9 +121,9 @@ export async function sendEmail(order: OrderNotifyPayload): Promise<void> {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        from:    'TCG Vault Orders <onboarding@resend.dev>',
+        from:    'onboarding@resend.dev',
         to:      [adminEmail],
-        subject: `🛍️ New Order #${order.id} — $${order.total_usd.toFixed(2)}`,
+        subject: `New Order #${order.id} — $${order.total_usd.toFixed(2)}`,
         html,
       }),
     });
