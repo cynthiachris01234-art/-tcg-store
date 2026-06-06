@@ -46,7 +46,7 @@ const LINKS = [
 
 export function FloatingContacts() {
   return (
-    <div className="fixed right-0 top-1/2 -translate-y-1/2 z-50 flex flex-col gap-2 pr-0">
+    <div className="fixed bottom-0 left-0 right-0 z-50 flex items-center justify-center gap-0 shadow-2xl">
       {LINKS.map(({ href, label, bg, border, icon }) => (
         <a
           key={label}
@@ -54,20 +54,15 @@ export function FloatingContacts() {
           target={href.startsWith('http') ? '_blank' : undefined}
           rel={href.startsWith('http') ? 'noopener noreferrer' : undefined}
           title={label}
-          className="group flex items-center justify-end overflow-hidden rounded-l-2xl transition-all duration-300 hover:pr-3 shadow-lg"
+          className="group flex items-center justify-center gap-2 flex-1 transition-all duration-200 hover:brightness-110 active:scale-95"
           style={{
             background: bg,
             border: border ?? 'none',
-            width: '52px',
-            height: '52px',
+            height: '54px',
           }}
         >
-          {/* Label — slides in on hover */}
-          <span className="text-white text-xs font-bold whitespace-nowrap mr-2 opacity-0 max-w-0 group-hover:opacity-100 group-hover:max-w-[80px] transition-all duration-300 overflow-hidden">
-            {label}
-          </span>
-          {/* Icon */}
-          <span className="flex-shrink-0 mr-3">{icon}</span>
+          <span className="flex-shrink-0">{icon}</span>
+          <span className="text-white text-sm font-semibold hidden sm:block">{label}</span>
         </a>
       ))}
     </div>

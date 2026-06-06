@@ -58,7 +58,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             <div className="flex flex-col min-h-screen">
               <TopBar />
               <Navbar />
-              <main className="flex-1">{children}</main>
+              <main className="flex-1 pb-14">{children}</main>
               <Footer />
               <FloatingContacts />
             </div>
