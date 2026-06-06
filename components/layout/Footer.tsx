@@ -135,7 +135,6 @@ export function Footer() {
                 { href: '/faq',        label: 'FAQ' },
                 { href: '/contact',    label: 'Contact Us' },
                 { href: '/privacy',    label: 'Privacy Policy' },
-                { href: '/admin',      label: '⚙ Admin Panel' },
               ].map((link) => (
                 <li key={link.href}>
                   <Link href={link.href} className="text-sm text-muted hover:text-white transition-colors">
