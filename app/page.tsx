@@ -5,6 +5,7 @@ import { SpecialSets } from '@/components/home/SpecialSets';
 import { NewReleasesStrip } from '@/components/home/NewReleasesStrip';
 import { BrandSection } from '@/components/home/BrandSection';
 import { DealsBanner } from '@/components/home/DealsBanner';
+import { ReviewsSection } from '@/components/home/ReviewsSection';
 import { BRANDS } from '@/lib/brands';
 import { ShieldCheck, RefreshCw, Truck, Headphones } from 'lucide-react';
 
@@ -72,6 +73,9 @@ export default async function HomePage() {
 
       {/* Special Sets — rare & premium Pokémon */}
       <SpecialSets />
+
+      {/* Customer Reviews */}
+      <ReviewsSection />
     </div>
   );
 }
