@@ -8,6 +8,19 @@ export const MOCK_PRODUCTS: Product[] = [
 
   // ─── POKÉMON ───────────────────────────────────────────────────────────────
 
+  // ── 30th Anniversary Celebration ──────────────────────────────────────────
+  {
+    id: 'poke-30th-en-box',
+    brand: 'pokemon', language: 'en', product_type: 'booster_box',
+    set_name: 'Pokémon 30th Celebration', set_code: '30th',
+    image_url: 'https://www.pokemon.com/static-assets/content-assets/cms2/img/trading-card-game/_tiles/30th/announce/30th-announce-169-en.png',
+    release_date: '2026-09-16', stock_quantity: 0, condition: 'sealed',
+    market_price_usd: 220, our_price_usd: d(220),
+    last_price_sync: now, is_pre_order: true, pack_count: 20,
+    slug: 'pokemon-30th-en-box',
+    created_at: now, updated_at: now,
+  },
+
   {
     id: 'poke-me04-jp-box',
     brand: 'pokemon', language: 'jp', product_type: 'booster_box',
