@@ -3,9 +3,9 @@ import { Zap, Mail, Phone, Globe } from 'lucide-react';
 import { BRAND_META, BRANDS, LANGUAGE_META, LANGUAGES } from '@/lib/brands';
 
 const INSTAGRAM_HANDLE = 'apextcg_warehouse';
+const TIKTOK_HANDLE    = 'apextcg_warehouse'; // update with your TikTok handle
 const WHATSAPP_NUMBER  = '13322728148';
 const DISPLAY_PHONE    = '+1 (332) 272-8148';
-const FACEBOOK_PAGE    = 'apextcg'; // update when you have the handle
 
 function InstagramIcon({ className }: { className?: string }) {
   return (
@@ -15,10 +15,10 @@ function InstagramIcon({ className }: { className?: string }) {
   );
 }
 
-function FacebookIcon({ className }: { className?: string }) {
+function TikTokIcon({ className }: { className?: string }) {
   return (
     <svg className={className} viewBox="0 0 24 24" fill="currentColor">
-      <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
+      <path d="M19.59 6.69a4.83 4.83 0 01-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 01-2.88 2.5 2.89 2.89 0 01-2.89-2.89 2.89 2.89 0 012.89-2.89c.28 0 .54.04.79.1V9.01a6.33 6.33 0 00-.79-.05 6.34 6.34 0 00-6.34 6.34 6.34 6.34 0 006.34 6.34 6.34 6.34 0 006.33-6.34V8.69a8.17 8.17 0 004.79 1.54V6.78a4.85 4.85 0 01-1.02-.09z"/>
     </svg>
   );
 }
@@ -60,12 +60,12 @@ export function Footer() {
                 <InstagramIcon className="w-4 h-4" />
               </a>
               <a
-                href={`https://facebook.com/${FACEBOOK_PAGE}`}
+                href={`https://tiktok.com/@${TIKTOK_HANDLE}`}
                 target="_blank" rel="noopener noreferrer"
-                className="p-2 rounded-lg bg-bg-border hover:bg-blue-500/20 transition-colors text-muted hover:text-blue-400"
-                title="Facebook"
+                className="p-2 rounded-lg bg-bg-border hover:bg-white/20 transition-colors text-muted hover:text-white"
+                title="TikTok"
               >
-                <FacebookIcon className="w-4 h-4" />
+                <TikTokIcon className="w-4 h-4" />
               </a>
               <a
                 href={`https://wa.me/${WHATSAPP_NUMBER}`}
