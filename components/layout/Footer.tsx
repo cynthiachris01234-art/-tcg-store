@@ -3,7 +3,7 @@ import { Zap, Mail, Phone, Globe } from 'lucide-react';
 import { BRAND_META, BRANDS, LANGUAGE_META, LANGUAGES } from '@/lib/brands';
 
 const INSTAGRAM_HANDLE = 'apextcg_warehouse';
-const TIKTOK_HANDLE    = 'apextcg_warehouse'; // update with your TikTok handle
+const TIKTOK_HANDLE    = 'apextcg_distro';
 const WHATSAPP_NUMBER  = '13322728148';
 const DISPLAY_PHONE    = '+1 (332) 272-8148';
 

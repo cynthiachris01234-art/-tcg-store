@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
 import './globals.css';
+import { TopBar } from '@/components/layout/TopBar';
 import { Navbar } from '@/components/layout/Navbar';
 import { Footer } from '@/components/layout/Footer';
 import { CartProvider } from '@/lib/cart';
@@ -54,6 +55,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <CurrencyProvider>
           <CartProvider>
             <div className="flex flex-col min-h-screen">
+              <TopBar />
               <Navbar />
               <main className="flex-1">{children}</main>
               <Footer />
