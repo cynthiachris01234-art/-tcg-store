@@ -5,10 +5,12 @@ import type { Cart } from '@/types';
 export interface StoredOrder {
   id: string;
   createdAt: string;
-  status: 'demo' | 'paid' | 'pending';
+  status: 'pending' | 'paid' | 'awaiting_payment';
+  paymentMethod?: string;
   customer: {
     name: string;
     email: string;
+    phone?: string;
     line1: string;
     line2?: string;
     city: string;
@@ -59,12 +61,14 @@ export function saveOrder(
   orderId: string,
   cart: Cart,
   customer: StoredOrder['customer'],
-  status: StoredOrder['status'] = 'demo'
+  status: StoredOrder['status'] = 'awaiting_payment',
+  paymentMethod?: string,
 ): StoredOrder {
   const order: StoredOrder = {
     id: orderId,
     createdAt: new Date().toISOString(),
     status,
+    ...(paymentMethod ? { paymentMethod } : {}),
     customer,
     items: cart.items.map((i) => ({
       productId:   i.product.id,

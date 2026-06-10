@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useCart } from '@/lib/cart';
 import { useCurrency } from '@/lib/currency';
-import { Lock, CreditCard, ArrowLeft } from 'lucide-react';
+import { Lock, ArrowLeft, CheckCircle2 } from 'lucide-react';
 import Link from 'next/link';
 import type { ProductType } from '@/types';
 
@@ -21,6 +21,44 @@ function typeLabel(t: ProductType): string {
     default:                   return 'Booster Box';
   }
 }
+
+const PAYMENT_METHODS = [
+  {
+    id: 'zelle',
+    label: 'Zelle',
+    icon: '💚',
+    note: 'Send payment to our Zelle — details sent after order',
+    color: '#6B21A8',
+  },
+  {
+    id: 'cashapp',
+    label: 'CashApp',
+    icon: '💵',
+    note: 'Send to our $CashTag — details sent after order',
+    color: '#00D632',
+  },
+  {
+    id: 'venmo',
+    label: 'Venmo',
+    icon: '🔵',
+    note: 'Send to our Venmo — details sent after order',
+    color: '#008CFF',
+  },
+  {
+    id: 'paypal',
+    label: 'PayPal',
+    icon: '💙',
+    note: 'Send via PayPal — link sent after order',
+    color: '#003087',
+  },
+  {
+    id: 'wire',
+    label: 'Bank Wire / ACH',
+    icon: '🏦',
+    note: 'For large orders — bank details sent after order',
+    color: '#C8962A',
+  },
+];
 
 interface AddressForm {
   name: string; email: string; phone: string;
@@ -41,6 +79,7 @@ export default function CheckoutPage() {
   const { cart, clearCart } = useCart();
   const { format } = useCurrency();
   const [form, setForm] = useState<AddressForm>(EMPTY_FORM);
+  const [payMethod, setPayMethod] = useState('zelle');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
@@ -54,75 +93,47 @@ export default function CheckoutPage() {
     setError('');
 
     try {
-      // Create payment intent on server
-      const res = await fetch('/api/checkout', {
+      // 1. Generate order ID
+      const checkRes = await fetch('/api/checkout', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ cart, shippingAddress: form }),
+        body: JSON.stringify({ cart }),
+      });
+      if (!checkRes.ok) throw new Error('Could not create order');
+      const { orderId } = await checkRes.json();
+
+      // 2. Build customer object
+      const customer = {
+        name: form.name, email: form.email, phone: form.phone,
+        line1: form.line1, line2: form.line2 || undefined,
+        city: form.city, state: form.state,
+        postal_code: form.postal_code, country: form.country,
+      };
+
+      // 3. Save order locally
+      const { saveOrder } = await import('@/lib/orders');
+      const order = saveOrder(orderId, cart, customer, 'awaiting_payment', payMethod);
+
+      // 4. Save to DB + fire WhatsApp & email notifications (await before navigating)
+      await fetch('/api/orders', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          id:            order.id,
+          status:        order.status,
+          paymentMethod: payMethod,
+          customer:      order.customer,
+          items:         order.items,
+          subtotal_usd:  order.subtotal,
+          discount_usd:  order.discount,
+          total_usd:     order.total,
+        }),
       });
 
-      if (!res.ok) throw new Error('Failed to create payment intent');
-      const data = await res.json();
-
-      // Demo mode — no Stripe configured
-      if (data.demo) {
-        const { saveOrder } = await import('@/lib/orders');
-        const customer = {
-          name: form.name, email: form.email, phone: form.phone,
-          line1: form.line1, line2: form.line2 || undefined,
-          city: form.city, state: form.state,
-          postal_code: form.postal_code, country: form.country,
-        };
-        const order = saveOrder(data.orderId, cart, customer, 'demo');
-
-        // Await notification before navigating so fetch isn't cancelled
-        await fetch('/api/orders', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            id:           order.id,
-            status:       order.status,
-            customer:     order.customer,
-            items:        order.items,
-            subtotal_usd: order.subtotal,
-            discount_usd: order.discount,
-            total_usd:    order.total,
-          }),
-        });
-
-        clearCart();
-        router.push(`/checkout/success?order=${data.orderId}`);
-        return;
-      }
-
-      const { clientSecret, orderId } = data;
-
-      // Live mode — confirm with Stripe
-      const { getStripe } = await import('@/lib/stripe');
-      const stripe = await getStripe();
-      if (!stripe) throw new Error('Stripe not loaded');
-
-      const { error: stripeError } = await stripe.confirmPayment({
-        clientSecret,
-        confirmParams: {
-          return_url: `${window.location.origin}/checkout/success?order=${orderId}`,
-          payment_method_data: {
-            billing_details: {
-              name: form.name,
-              email: form.email,
-              address: {
-                line1: form.line1, line2: form.line2,
-                city: form.city, state: form.state,
-                postal_code: form.postal_code, country: form.country,
-              },
-            },
-          },
-        },
-      });
-
-      if (stripeError) throw new Error(stripeError.message);
+      clearCart();
+      router.push(`/checkout/success?order=${orderId}&method=${payMethod}`);
     } catch (err: any) {
-      setError(err.message || 'Payment failed. Please try again.');
+      setError(err.message || 'Something went wrong. Please try again.');
     } finally {
       setLoading(false);
     }
@@ -139,15 +150,17 @@ export default function CheckoutPage() {
 
   const fields: { key: keyof AddressForm; label: string; type?: string; col?: string; required?: boolean }[] = [
     { key: 'name',        label: 'Full Name',              col: 'col-span-2' },
-    { key: 'email',       label: 'Email',                  type: 'email', col: 'col-span-2' },
-    { key: 'phone',       label: 'Phone Number',           type: 'tel',   col: 'col-span-2' },
-    { key: 'line1',       label: 'Address',                col: 'col-span-2' },
+    { key: 'email',       label: 'Email Address',          type: 'email', col: 'col-span-2' },
+    { key: 'phone',       label: 'Phone / WhatsApp',       type: 'tel',   col: 'col-span-2' },
+    { key: 'line1',       label: 'Street Address',         col: 'col-span-2' },
     { key: 'line2',       label: 'Apt, Suite (optional)',  col: 'col-span-2', required: false },
     { key: 'city',        label: 'City' },
     { key: 'state',       label: 'State / Province' },
     { key: 'postal_code', label: 'Postal Code' },
     { key: 'country',     label: 'Country' },
   ];
+
+  const selectedMethod = PAYMENT_METHODS.find(m => m.id === payMethod)!;
 
   return (
     <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
@@ -156,11 +169,13 @@ export default function CheckoutPage() {
       </Link>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-10">
-        {/* Form */}
-        <div>
-          <h1 className="text-2xl font-bold text-white mb-6">Shipping & Payment</h1>
 
-          <form onSubmit={handleSubmit} className="space-y-4">
+        {/* Left — Shipping + Payment */}
+        <div className="space-y-6">
+          <h1 className="text-2xl font-bold text-white">Shipping Details</h1>
+
+          <form onSubmit={handleSubmit} className="space-y-6">
+            {/* Shipping fields */}
             <div className="grid grid-cols-2 gap-4">
               {fields.map(({ key, label, type = 'text', col, required }) => (
                 <div key={key} className={col ?? ''}>
@@ -176,28 +191,62 @@ export default function CheckoutPage() {
               ))}
             </div>
 
+            {/* Payment method selector */}
+            <div>
+              <h2 className="text-white font-bold text-base mb-3">Choose Payment Method</h2>
+              <div className="space-y-2">
+                {PAYMENT_METHODS.map((m) => (
+                  <label
+                    key={m.id}
+                    className={`flex items-center gap-4 card p-4 cursor-pointer transition-all ${
+                      payMethod === m.id
+                        ? 'border-accent bg-accent/5'
+                        : 'hover:border-white/30'
+                    }`}
+                  >
+                    <input
+                      type="radio"
+                      name="payMethod"
+                      value={m.id}
+                      checked={payMethod === m.id}
+                      onChange={() => setPayMethod(m.id)}
+                      className="sr-only"
+                    />
+                    <span className="text-2xl">{m.icon}</span>
+                    <div className="flex-1">
+                      <p className="text-white font-semibold text-sm">{m.label}</p>
+                      <p className="text-muted text-xs">{m.note}</p>
+                    </div>
+                    {payMethod === m.id && (
+                      <CheckCircle2 className="w-5 h-5 text-accent flex-shrink-0" />
+                    )}
+                  </label>
+                ))}
+              </div>
+            </div>
+
+            {/* How it works */}
+            <div className="card p-4 flex items-start gap-3 bg-accent/5 border-accent/30">
+              <Lock className="w-4 h-4 text-accent flex-shrink-0 mt-0.5" />
+              <p className="text-muted text-xs leading-relaxed">
+                Place your order below. We will contact you via <strong className="text-white">WhatsApp or email within 2 hours</strong> with your {selectedMethod.label} payment link. Your order is reserved while you wait.
+              </p>
+            </div>
+
             {error && (
-              <div className="bg-danger/10 border border-danger/30 rounded-xl p-4 text-danger text-sm">
+              <div className="bg-red-500/10 border border-red-500/30 rounded-xl p-4 text-red-400 text-sm">
                 {error}
               </div>
             )}
 
-            <div className="card p-4 flex items-center gap-3">
-              <Lock className="w-4 h-4 text-success flex-shrink-0" />
-              <p className="text-muted text-xs">
-                Payments are secured by Stripe. We never store your card details.
-              </p>
-            </div>
-
             <button type="submit" disabled={loading}
-              className="w-full btn-primary flex items-center justify-center gap-2 py-4 text-base">
-              <CreditCard className="w-5 h-5" />
-              {loading ? 'Processing...' : `Pay ${format(cart.total_usd)}`}
+              className="w-full btn-primary flex items-center justify-center gap-2 py-4 text-base font-bold">
+              {loading ? 'Placing Order…' : `Place Order — ${format(cart.total_usd)}`}
             </button>
           </form>
         </div>
 
-        {/* Order summary */}
+        {/* Right — Order summary */}
         <div>
           <h2 className="text-lg font-bold text-white mb-4">Order Summary</h2>
           <div className="space-y-3">
@@ -219,13 +268,29 @@ export default function CheckoutPage() {
               <span>Subtotal</span><span>{format(cart.subtotal_usd)}</span>
             </div>
             {cart.bundle_discount > 0 && (
-              <div className="flex justify-between text-success">
-                <span>Case bundle discount</span><span>−{format(cart.bundle_discount)}</span>
+              <div className="flex justify-between text-green-400">
+                <span>Bundle discount</span><span>−{format(cart.bundle_discount)}</span>
               </div>
             )}
-            <div className="flex justify-between text-white font-bold border-t border-bg-border pt-2">
-              <span>Total</span><span>{format(cart.total_usd)}</span>
+            <div className="flex justify-between text-white font-bold border-t border-bg-border pt-2 text-base">
+              <span>Total</span><span className="text-accent">{format(cart.total_usd)}</span>
             </div>
+          </div>
+
+          {/* Payment method summary */}
+          <div className="card p-4 mt-4 flex items-center gap-3">
+            <span className="text-2xl">{selectedMethod.icon}</span>
+            <div>
+              <p className="text-white text-sm font-semibold">{selectedMethod.label} selected</p>
+              <p className="text-muted text-xs">Payment instructions sent after order is placed</p>
+            </div>
+          </div>
+
+          {/* Contact reassurance */}
+          <div className="mt-4 p-4 rounded-xl border border-green-500/20 bg-green-500/5 text-xs text-green-400 space-y-1">
+            <p className="font-semibold">📱 We'll reach you within 2 hours</p>
+            <p className="text-green-400/70">WhatsApp: +1 (332) 272-8148</p>
+            <p className="text-green-400/70">Email: support@apextcg.shop</p>
           </div>
         </div>
       </div>

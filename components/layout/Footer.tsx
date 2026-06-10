@@ -3,7 +3,7 @@ import { Zap, Mail, Phone, Globe } from 'lucide-react';
 import { FaInstagram, FaTiktok, FaWhatsapp } from 'react-icons/fa6';
 import { BRAND_META, BRANDS, LANGUAGE_META, LANGUAGES } from '@/lib/brands';
 
-const INSTAGRAM_HANDLE = 'apextcg_warehouse';
+const INSTAGRAM_HANDLE = 'apextcgshop';
 const TIKTOK_HANDLE    = 'apextcg_distro';
 const WHATSAPP_NUMBER  = '13322728148';
 const DISPLAY_PHONE    = '+1 (332) 272-8148';

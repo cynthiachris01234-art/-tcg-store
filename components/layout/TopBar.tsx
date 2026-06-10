@@ -40,12 +40,12 @@ export function TopBar() {
             <span className="text-gray-700 hidden sm:inline">|</span>
 
             <a
-              href="https://instagram.com/apextcg_warehouse"
+              href="https://instagram.com/apextcgshop"
               target="_blank" rel="noopener noreferrer"
               className="hidden sm:flex items-center gap-2 text-muted hover:text-pink-400 transition-colors"
             >
               <FaInstagram className="w-5 h-5" />
-              <span className="text-sm font-medium">@apextcg_warehouse</span>
+              <span className="text-sm font-medium">@apextcgshop</span>
             </a>
           </div>
         </div>

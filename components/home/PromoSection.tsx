@@ -8,12 +8,12 @@ import { useCart } from '@/lib/cart';
 import { MOCK_PRODUCTS } from '@/lib/mock-data';
 
 const PROMO_IDS = [
-  'poke-30th-en-box',
-  'poke-30th-etb-en',
-  'poke-30th-premium-deck-en',
-  'poke-30th-special-deck-en',
-  'poke-30th-starter-sets-en',
   'poke-svah-etb-en',
+  'poke-me05-en-etb',
+  'poke-sv10-en-box',
+  'poke-me04-en-box',
+  'poke-prismatic-evo-etb-en',
+  'poke-paldean-fates-etb-en',
 ];
 
 export function PromoSection() {
@@ -47,25 +47,19 @@ function PromoCard({ product, onAdd }: { product: any; onAdd: () => void }) {
   const [imgSrc, setImgSrc] = useState(product.image_url);
   const savings = Math.round((1 - product.our_price_usd / product.market_price_usd) * 100);
 
-  const is30th = product.id === 'poke-30th-en-box';
-
   return (
     <div
       className="card overflow-hidden group relative"
       style={{
-        background: is30th
-          ? 'linear-gradient(135deg, #1a0a2e 0%, #0d0d0d 60%)'
-          : 'linear-gradient(135deg, #0a1a2e 0%, #0d0d0d 60%)',
-        border: is30th ? '1px solid rgba(200,150,42,0.4)' : '1px solid rgba(59,130,246,0.3)',
+        background: 'linear-gradient(135deg, #0a1a2e 0%, #0d0d0d 60%)',
+        border: '1px solid rgba(59,130,246,0.3)',
       }}
     >
       {/* Glow */}
       <div
         className="absolute inset-0 opacity-20 pointer-events-none"
         style={{
-          background: is30th
-            ? 'radial-gradient(ellipse at 30% 20%, rgba(200,150,42,0.3) 0%, transparent 60%)'
-            : 'radial-gradient(ellipse at 70% 20%, rgba(59,130,246,0.25) 0%, transparent 60%)',
+          background: 'radial-gradient(ellipse at 70% 20%, rgba(59,130,246,0.25) 0%, transparent 60%)',
         }}
       />
 
@@ -91,27 +85,18 @@ function PromoCard({ product, onAdd }: { product: any; onAdd: () => void }) {
         {/* Info */}
         <div className="flex flex-col justify-between flex-1 min-w-0">
           <div>
-            {is30th ? (
-              <p className="text-[10px] font-bold uppercase tracking-widest text-accent mb-1">🎉 Limited Edition</p>
-            ) : (
-              <p className="text-[10px] font-bold uppercase tracking-widest text-blue-400 mb-1">⭐ Featured Product</p>
-            )}
+            <p className="text-[10px] font-bold uppercase tracking-widest text-blue-400 mb-1">⭐ Featured Product</p>
 
             <h3 className="text-white font-black text-lg leading-tight">{product.set_name}</h3>
             <p className="text-muted text-xs mt-1">
-              {product.language.toUpperCase()} · {product.pack_count ? `${product.pack_count} packs` : 'Elite Trainer Box'}
+              {product.language.toUpperCase()} · {product.pack_count ? `${product.pack_count} packs` : product.product_type === 'etb' ? 'Elite Trainer Box' : 'Special Product'}
             </p>
 
-            {is30th && (
-              <p className="text-muted text-xs mt-2 leading-relaxed">
-                Worldwide simultaneous release. Every card foil. 30 Pikachu variants. Releasing <span className="text-white font-semibold">Sep 16, 2026</span>.
-              </p>
-            )}
-            {!is30th && (
-              <p className="text-muted text-xs mt-2 leading-relaxed">
-                Featuring fan-favourite hero Pokémon. Exclusive ETB with premium accessories.
-              </p>
-            )}
+            <p className="text-muted text-xs mt-2 leading-relaxed">
+              {product.is_pre_order
+                ? `Pre-order now — releasing ${new Date(product.release_date).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}`
+                : 'In stock — ships within 1–2 business days.'}
+            </p>
           </div>
 
           <div>
