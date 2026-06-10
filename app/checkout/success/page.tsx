@@ -4,11 +4,13 @@ import { CheckCircle2, MessageCircle, Mail, ArrowRight, Clock } from 'lucide-rea
 export const metadata = { title: 'Order Confirmed — Apex TCG' };
 
 const METHOD_LABELS: Record<string, { icon: string; label: string; detail: string }> = {
-  zelle:   { icon: '💚', label: 'Zelle',            detail: 'We\'ll text you our Zelle number/email' },
-  cashapp: { icon: '💵', label: 'CashApp',          detail: 'We\'ll send you our $CashTag' },
-  venmo:   { icon: '🔵', label: 'Venmo',            detail: 'We\'ll send you our Venmo handle' },
-  paypal:  { icon: '💙', label: 'PayPal',           detail: 'We\'ll send you a PayPal payment request' },
-  wire:    { icon: '🏦', label: 'Bank Wire / ACH',  detail: 'We\'ll send our bank account details' },
+  zelle:    { icon: '💚', label: 'Zelle',            detail: 'We\'ll text you our Zelle number/email' },
+  cashapp:  { icon: '💵', label: 'CashApp',          detail: 'We\'ll send you our $CashTag' },
+  venmo:    { icon: '🔵', label: 'Venmo',            detail: 'We\'ll send you our Venmo handle' },
+  paypal:   { icon: '💙', label: 'PayPal',           detail: 'We\'ll send you a PayPal payment request' },
+  applepay: { icon: '🍎', label: 'Apple Pay',        detail: 'We\'ll send you an Apple Pay request' },
+  wise:     { icon: '🌍', label: 'Wise Transfer',    detail: 'We\'ll send our Wise account details' },
+  wire:     { icon: '🏦', label: 'Bank Wire / ACH',  detail: 'We\'ll send our bank account details' },
 };
 
 export default function OrderSuccessPage({

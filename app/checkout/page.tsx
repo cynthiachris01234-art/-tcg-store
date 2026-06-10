@@ -28,35 +28,42 @@ const PAYMENT_METHODS = [
     label: 'Zelle',
     icon: '💚',
     note: 'Send payment to our Zelle — details sent after order',
-    color: '#6B21A8',
   },
   {
     id: 'cashapp',
     label: 'CashApp',
     icon: '💵',
     note: 'Send to our $CashTag — details sent after order',
-    color: '#00D632',
   },
   {
     id: 'venmo',
     label: 'Venmo',
     icon: '🔵',
     note: 'Send to our Venmo — details sent after order',
-    color: '#008CFF',
   },
   {
     id: 'paypal',
     label: 'PayPal',
     icon: '💙',
     note: 'Send via PayPal — link sent after order',
-    color: '#003087',
+  },
+  {
+    id: 'applepay',
+    label: 'Apple Pay',
+    icon: '🍎',
+    note: 'Pay via Apple Pay — payment request sent after order',
+  },
+  {
+    id: 'wise',
+    label: 'Wise Transfer',
+    icon: '🌍',
+    note: 'International & domestic — Wise details sent after order',
   },
   {
     id: 'wire',
     label: 'Bank Wire / ACH',
     icon: '🏦',
     note: 'For large orders — bank details sent after order',
-    color: '#C8962A',
   },
 ];
 
