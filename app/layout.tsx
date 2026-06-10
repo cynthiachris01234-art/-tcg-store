@@ -4,7 +4,6 @@ import './globals.css';
 import { TopBar } from '@/components/layout/TopBar';
 import { Navbar } from '@/components/layout/Navbar';
 import { Footer } from '@/components/layout/Footer';
-import { FloatingContacts } from '@/components/layout/FloatingContacts';
 import { CartProvider } from '@/lib/cart';
 import { CurrencyProvider } from '@/lib/currency';
 
@@ -58,9 +57,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             <div className="flex flex-col min-h-screen">
               <TopBar />
               <Navbar />
-              <main className="flex-1 pb-14">{children}</main>
+              <main className="flex-1">{children}</main>
               <Footer />
-              <FloatingContacts />
             </div>
           </CartProvider>
         </CurrencyProvider>

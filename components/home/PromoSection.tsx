@@ -7,7 +7,14 @@ import { ShoppingCart, Star, Clock } from 'lucide-react';
 import { useCart } from '@/lib/cart';
 import { MOCK_PRODUCTS } from '@/lib/mock-data';
 
-const PROMO_IDS = ['poke-30th-en-box', 'poke-svah-etb-en'];
+const PROMO_IDS = [
+  'poke-30th-en-box',
+  'poke-30th-etb-en',
+  'poke-30th-premium-deck-en',
+  'poke-30th-special-deck-en',
+  'poke-30th-starter-sets-en',
+  'poke-svah-etb-en',
+];
 
 export function PromoSection() {
   const { addItem } = useCart();
@@ -27,7 +34,7 @@ export function PromoSection() {
         <div className="h-px flex-1 bg-gradient-to-r from-accent/40 to-transparent" />
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
         {promos.map(product => (
           <PromoCard key={product.id} product={product} onAdd={() => addItem(product, 1)} />
         ))}
