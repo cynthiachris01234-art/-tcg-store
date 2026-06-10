@@ -6,6 +6,7 @@ import { Navbar } from '@/components/layout/Navbar';
 import { Footer } from '@/components/layout/Footer';
 import { CartProvider } from '@/lib/cart';
 import { CurrencyProvider } from '@/lib/currency';
+import { PageTracker } from '@/components/PageTracker';
 
 const inter = Inter({
   subsets: ['latin'],
@@ -22,7 +23,7 @@ export const metadata: Metadata = {
     'Buy sealed Pokémon, One Piece, Magic: The Gathering, and Yu-Gi-Oh! booster boxes and cases in English, Japanese, and Korean — always 30% below market price.',
   keywords: ['pokemon booster box', 'one piece tcg', 'mtg booster box', 'yugioh box', 'japanese tcg', 'sealed tcg'],
   openGraph: {
-    siteName: 'TCG Vault',
+    siteName: 'Apex TCG',
     type: 'website',
     locale: 'en_US',
   },
@@ -57,6 +58,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             <div className="flex flex-col min-h-screen">
               <TopBar />
               <Navbar />
+              <PageTracker />
               <main className="flex-1">{children}</main>
               <Footer />
             </div>

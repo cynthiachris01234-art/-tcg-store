@@ -75,7 +75,7 @@ export default function ReturnsPage() {
             <span className="text-accent font-bold text-lg min-w-[2rem]">1.</span>
             <div>
               <p className="text-white font-semibold">Contact us within 7 days</p>
-              <p className="text-muted mt-0.5">Message us on WhatsApp or email <a href="mailto:support@apextcg.shop" className="text-accent hover:underline">support@apextcg.shop</a> within 7 days of receiving your order.</p>
+              <p className="text-muted mt-0.5">Message us on WhatsApp or email <a href="mailto:apextradingcardshop@gmail.com" className="text-accent hover:underline">apextradingcardshop@gmail.com</a> within 7 days of receiving your order.</p>
             </div>
           </div>
           <div className="flex items-start gap-3 p-3 rounded-xl bg-bg-border/50">
@@ -124,7 +124,7 @@ export default function ReturnsPage() {
             className="btn-primary flex items-center gap-2 px-6 py-2.5 text-sm">
             💬 WhatsApp Us
           </a>
-          <a href="mailto:support@apextcg.shop"
+          <a href="mailto:apextradingcardshop@gmail.com"
             className="btn-outline flex items-center gap-2 px-6 py-2.5 text-sm">
             📧 Email Support
           </a>

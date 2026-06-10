@@ -58,6 +58,22 @@ export async function POST(req: Request) {
   }
 }
 
+// DELETE /api/orders — wipe all orders (admin use only)
+export async function DELETE() {
+  try {
+    if (!supabaseUrl || !serviceRoleKey || serviceRoleKey.includes('placeholder')) {
+      return NextResponse.json({ ok: true });
+    }
+    const supabase = createClient(supabaseUrl, serviceRoleKey);
+    const { error } = await supabase.from('store_orders').delete().neq('id', '');
+    if (error) throw error;
+    return NextResponse.json({ ok: true });
+  } catch (err: any) {
+    console.error('Order delete error:', err);
+    return NextResponse.json({ error: err.message }, { status: 500 });
+  }
+}
+
 // GET /api/orders — fetch all orders for admin panel
 export async function GET() {
   try {

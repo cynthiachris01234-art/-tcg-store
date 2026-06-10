@@ -8,63 +8,6 @@ export const MOCK_PRODUCTS: Product[] = [
 
   // ─── POKÉMON ───────────────────────────────────────────────────────────────
 
-  // ── Pokémon 30th Celebration (Sep 16 2026 — worldwide simultaneous launch) ──
-  // Every card foil. 20 packs/box. 30 unique Pikachu variants. New "Futuristic Rare" rarity.
-  {
-    id: 'poke-30th-en-box',
-    brand: 'pokemon', language: 'en', product_type: 'booster_box',
-    set_name: 'Pokémon 30th Celebration', set_code: '30TH',
-    image_url: 'https://archives.bulbagarden.net/media/upload/4/47/30th_Celebration_Booster.png',
-    release_date: '2026-09-16', stock_quantity: 0, condition: 'sealed',
-    market_price_usd: 220, our_price_usd: d(220),
-    last_price_sync: now, is_pre_order: true, pack_count: 20,
-    slug: 'pokemon-30th-en-box',
-    created_at: now, updated_at: now,
-  },
-  {
-    id: 'poke-30th-etb-en',
-    brand: 'pokemon', language: 'en', product_type: 'etb',
-    set_name: '30th Celebration Elite Trainer Box', set_code: '30TH',
-    image_url: 'https://www.pokemon.com/static-assets/content-assets/cms2/img/trading-card-game/_tiles/30th/announce/inline/web/30th_EN_156.png',
-    release_date: '2026-09-16', stock_quantity: 0, condition: 'sealed',
-    market_price_usd: 90, our_price_usd: d(90),
-    last_price_sync: now, is_pre_order: true,
-    slug: 'pokemon-30th-etb-en',
-    created_at: now, updated_at: now,
-  },
-  {
-    id: 'poke-30th-premium-deck-en',
-    brand: 'pokemon', language: 'en', product_type: 'premium_collection',
-    set_name: '30th Celebration Premium Deck: Espeon & Umbreon', set_code: '30TH',
-    image_url: 'https://www.pokemon.com/static-assets/content-assets/cms2/img/trading-card-game/_tiles/30th/announce/inline/web/30th_EN_158.png',
-    release_date: '2026-09-16', stock_quantity: 0, condition: 'sealed',
-    market_price_usd: 180, our_price_usd: d(180),
-    last_price_sync: now, is_pre_order: true,
-    slug: 'pokemon-30th-premium-deck-en',
-    created_at: now, updated_at: now,
-  },
-  {
-    id: 'poke-30th-special-deck-en',
-    brand: 'pokemon', language: 'en', product_type: 'premium_collection',
-    set_name: '30th Special Deck: Mega Feraligatr ex, Mega Dragonite ex & Mega Gengar ex', set_code: '30TH',
-    image_url: 'https://www.pokemon.com/static-assets/content-assets/cms2/img/trading-card-game/_tiles/30th/announce/inline/web/30th_EN_157.png',
-    release_date: '2026-11-13', stock_quantity: 0, condition: 'sealed',
-    market_price_usd: 200, our_price_usd: d(200),
-    last_price_sync: now, is_pre_order: true,
-    slug: 'pokemon-30th-special-deck-en',
-    created_at: now, updated_at: now,
-  },
-  {
-    id: 'poke-30th-first-partner-en',
-    brand: 'pokemon', language: 'en', product_type: 'premium_collection',
-    set_name: '30th First Partner Collection Box', set_code: '30TH',
-    image_url: 'https://www.pokemon.com/static-assets/content-assets/cms2/img/trading-card-game/_tiles/30th/announce/inline/web/30th_Classic_EN_33.png',
-    release_date: '2026-06-19', stock_quantity: 5, condition: 'sealed',
-    market_price_usd: 80, our_price_usd: d(80),
-    last_price_sync: now, is_pre_order: false,
-    slug: 'pokemon-30th-first-partner-en',
-    created_at: now, updated_at: now,
-  },
   {
     id: 'poke-pokemon-day-2026-en',
     brand: 'pokemon', language: 'en', product_type: 'premium_collection',
@@ -464,18 +407,6 @@ export const MOCK_PRODUCTS: Product[] = [
     slug: 'pokemon-paldean-fates-etb-en',
     created_at: now, updated_at: now,
   },
-  {
-    id: 'poke-evs-en-box',
-    brand: 'pokemon', language: 'en', product_type: 'booster_box',
-    set_name: 'SWSH Evolving Skies', set_code: 'EVS',
-    image_url: 'https://product-images.tcgplayer.com/fit-in/400x558/242436.jpg',
-    release_date: '2021-08-27', stock_quantity: 2, condition: 'sealed',
-    market_price_usd: 2000, our_price_usd: d(2000),
-    last_price_sync: now, is_pre_order: false, pack_count: 36,
-    slug: 'pokemon-evs-en-box',
-    created_at: now, updated_at: now,
-  },
-
   // ─── ONE PIECE (sorted by market price ↓) ────────────────────────────────
 
   // Cases
@@ -563,17 +494,6 @@ export const MOCK_PRODUCTS: Product[] = [
     created_at: now, updated_at: now,
   },
   {
-    id: 'poke-sv11w-bundle-en',
-    brand: 'pokemon', language: 'en', product_type: 'bundle',
-    set_name: 'SV White Flare', set_code: 'SV11W',
-    image_url: 'https://product-images.tcgplayer.com/fit-in/400x558/630696.jpg',
-    release_date: '2025-06-06', stock_quantity: 12, condition: 'sealed',
-    market_price_usd: 53, our_price_usd: d(53),
-    last_price_sync: now, is_pre_order: false, pack_count: 5,
-    slug: 'pokemon-sv11w-bundle-en',
-    created_at: now, updated_at: now,
-  },
-  {
     id: 'poke-sv11b-jp-box',
     brand: 'pokemon', language: 'jp', product_type: 'booster_box',
     set_name: 'SV Black Bolt', set_code: 'SV11B',
@@ -593,17 +513,6 @@ export const MOCK_PRODUCTS: Product[] = [
     market_price_usd: 116, our_price_usd: d(116),
     last_price_sync: now, is_pre_order: false,
     slug: 'pokemon-sv11b-etb-en',
-    created_at: now, updated_at: now,
-  },
-  {
-    id: 'poke-sv11b-bundle-en',
-    brand: 'pokemon', language: 'en', product_type: 'bundle',
-    set_name: 'SV Black Bolt', set_code: 'SV11B',
-    image_url: 'https://product-images.tcgplayer.com/fit-in/400x558/630431.jpg',
-    release_date: '2025-06-06', stock_quantity: 9, condition: 'sealed',
-    market_price_usd: 65, our_price_usd: d(65),
-    last_price_sync: now, is_pre_order: false, pack_count: 5,
-    slug: 'pokemon-sv11b-bundle-en',
     created_at: now, updated_at: now,
   },
 
@@ -640,17 +549,6 @@ export const MOCK_PRODUCTS: Product[] = [
     market_price_usd: 520, our_price_usd: d(520),
     last_price_sync: now, is_pre_order: false,
     slug: 'pokemon-svah-pc-etb-en',
-    created_at: now, updated_at: now,
-  },
-  {
-    id: 'poke-svah-bundle-en',
-    brand: 'pokemon', language: 'en', product_type: 'bundle',
-    set_name: 'SV Ascended Heroes', set_code: 'SV-AH',
-    image_url: 'https://product-images.tcgplayer.com/fit-in/400x558/668541.jpg',
-    release_date: '2025-10-17', stock_quantity: 10, condition: 'sealed',
-    market_price_usd: 87, our_price_usd: d(87),
-    last_price_sync: now, is_pre_order: false, pack_count: 5,
-    slug: 'pokemon-svah-bundle-en',
     created_at: now, updated_at: now,
   },
 
@@ -714,17 +612,6 @@ export const MOCK_PRODUCTS: Product[] = [
     slug: 'pokemon-me01-etb-lucario-en',
     created_at: now, updated_at: now,
   },
-  {
-    id: 'poke-me01-bundle-en',
-    brand: 'pokemon', language: 'en', product_type: 'bundle',
-    set_name: 'ME Base Set', set_code: 'ME01',
-    image_url: 'https://product-images.tcgplayer.com/fit-in/400x558/644362.jpg',
-    release_date: '2024-11-01', stock_quantity: 11, condition: 'sealed',
-    market_price_usd: 47, our_price_usd: d(47),
-    last_price_sync: now, is_pre_order: false, pack_count: 6,
-    slug: 'pokemon-me01-bundle-en',
-    created_at: now, updated_at: now,
-  },
 
   // ── Pokémon: Perfect Order (ME03) extras ───────────────────────────────────
 
@@ -750,17 +637,6 @@ export const MOCK_PRODUCTS: Product[] = [
     slug: 'pokemon-me03-pc-etb-en',
     created_at: now, updated_at: now,
   },
-  {
-    id: 'poke-me03-bundle-en',
-    brand: 'pokemon', language: 'en', product_type: 'bundle',
-    set_name: 'ME Perfect Order', set_code: 'ME-PO',
-    image_url: 'https://product-images.tcgplayer.com/fit-in/400x558/672396.jpg',
-    release_date: '2025-03-14', stock_quantity: 13, condition: 'sealed',
-    market_price_usd: 45, our_price_usd: d(45),
-    last_price_sync: now, is_pre_order: false, pack_count: 5,
-    slug: 'pokemon-me03-bundle-en',
-    created_at: now, updated_at: now,
-  },
 
   // ── Pokémon: Destined Rivals (SV10) extras ─────────────────────────────────
 
@@ -775,17 +651,6 @@ export const MOCK_PRODUCTS: Product[] = [
     slug: 'pokemon-sv10-etb-en',
     created_at: now, updated_at: now,
   },
-  {
-    id: 'poke-sv10-bundle-en',
-    brand: 'pokemon', language: 'en', product_type: 'bundle',
-    set_name: 'SV Destined Rivals', set_code: 'SV10',
-    image_url: 'https://product-images.tcgplayer.com/fit-in/400x558/625670.jpg',
-    release_date: '2025-05-30', stock_quantity: 14, condition: 'sealed',
-    market_price_usd: 45, our_price_usd: d(45),
-    last_price_sync: now, is_pre_order: false, pack_count: 5,
-    slug: 'pokemon-sv10-bundle-en',
-    created_at: now, updated_at: now,
-  },
 
   // ── Pokémon: Journey Together (SV9) extras ─────────────────────────────────
 
@@ -798,17 +663,6 @@ export const MOCK_PRODUCTS: Product[] = [
     market_price_usd: 117, our_price_usd: d(117),
     last_price_sync: now, is_pre_order: false,
     slug: 'pokemon-sv9-etb-en',
-    created_at: now, updated_at: now,
-  },
-  {
-    id: 'poke-sv9-bundle-en',
-    brand: 'pokemon', language: 'en', product_type: 'bundle',
-    set_name: 'SV Journey Together', set_code: 'SV9',
-    image_url: 'https://product-images.tcgplayer.com/fit-in/400x558/610953.jpg',
-    release_date: '2025-03-28', stock_quantity: 16, condition: 'sealed',
-    market_price_usd: 47, our_price_usd: d(47),
-    last_price_sync: now, is_pre_order: false, pack_count: 5,
-    slug: 'pokemon-sv9-bundle-en',
     created_at: now, updated_at: now,
   },
 
@@ -886,17 +740,6 @@ export const MOCK_PRODUCTS: Product[] = [
 
   // ── Pokémon: Surging Sparks (SV8) extras ───────────────────────────────────
 
-  {
-    id: 'poke-sv8-bundle-en',
-    brand: 'pokemon', language: 'en', product_type: 'bundle',
-    set_name: 'SV Surging Sparks', set_code: 'SV8',
-    image_url: 'https://product-images.tcgplayer.com/fit-in/400x558/565629.jpg',
-    release_date: '2024-11-08', stock_quantity: 8, condition: 'sealed',
-    market_price_usd: 45, our_price_usd: d(45),
-    last_price_sync: now, is_pre_order: false, pack_count: 5,
-    slug: 'pokemon-sv8-bundle-en',
-    created_at: now, updated_at: now,
-  },
 
   // ── Pokémon: Scarlet & Violet 151 (SV3.5) ─────────────────────────────────
 
@@ -931,17 +774,6 @@ export const MOCK_PRODUCTS: Product[] = [
     market_price_usd: 437, our_price_usd: d(437),
     last_price_sync: now, is_pre_order: false,
     slug: 'pokemon-sv3pt5-etb-en',
-    created_at: now, updated_at: now,
-  },
-  {
-    id: 'poke-sv3pt5-bundle-en',
-    brand: 'pokemon', language: 'en', product_type: 'bundle',
-    set_name: 'SV Pokémon 151', set_code: 'SV3.5',
-    image_url: 'https://product-images.tcgplayer.com/fit-in/400x558/502000.jpg',
-    release_date: '2023-09-22', stock_quantity: 5, condition: 'sealed',
-    market_price_usd: 174, our_price_usd: d(174),
-    last_price_sync: now, is_pre_order: false, pack_count: 5,
-    slug: 'pokemon-sv3pt5-bundle-en',
     created_at: now, updated_at: now,
   },
 

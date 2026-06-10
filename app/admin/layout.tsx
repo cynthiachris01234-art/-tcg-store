@@ -3,14 +3,15 @@
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import {
-  LayoutDashboard, Package, ShoppingBag, BarChart2, Settings, Zap, ChevronRight, LogOut,
+  LayoutDashboard, Package, ShoppingBag, BarChart2, Settings, Zap, ChevronRight, LogOut, CreditCard,
 } from 'lucide-react';
 
 const NAV = [
-  { href: '/admin',          label: 'Dashboard',  icon: LayoutDashboard },
-  { href: '/admin/products', label: 'Products',   icon: Package         },
-  { href: '/admin/orders',   label: 'Orders',     icon: ShoppingBag     },
-  { href: '/admin/analytics',label: 'Analytics',  icon: BarChart2       },
+  { href: '/admin',           label: 'Dashboard',  icon: LayoutDashboard },
+  { href: '/admin/products',  label: 'Products',   icon: Package         },
+  { href: '/admin/orders',    label: 'Orders',     icon: ShoppingBag     },
+  { href: '/admin/payments',  label: 'Payments',   icon: CreditCard      },
+  { href: '/admin/analytics', label: 'Analytics',  icon: BarChart2       },
 ];
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
@@ -32,7 +33,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
             <Zap className="w-4 h-4 text-black" />
           </div>
           <div>
-            <p className="text-white font-bold text-sm leading-tight">TCG Vault</p>
+            <p className="text-white font-bold text-sm leading-tight">Apex TCG</p>
             <p className="text-muted text-[10px] uppercase tracking-widest">Admin</p>
           </div>
         </div>

@@ -15,7 +15,7 @@ export async function GET() {
     const phone  = process.env.WHATSAPP_NUMBER;
     const apiKey = process.env.CALLMEBOT_API_KEY;
     if (phone && apiKey) {
-      const msg = encodeURIComponent('✅ TCG Vault test — notifications are working!');
+      const msg = encodeURIComponent('✅ Apex TCG test — notifications are working!');
       const url = `https://api.callmebot.com/whatsapp.php?phone=${phone}&text=${msg}&apikey=${apiKey}`;
       const res = await fetch(url);
       const text = await res.text();
@@ -36,10 +36,11 @@ export async function GET() {
         method: 'POST',
         headers: { 'Authorization': `Bearer ${apiKey}`, 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          from:    'onboarding@resend.dev',
-          to:      [adminEmail],
-          subject: '✅ TCG Vault — test notification',
-          html:    '<h2>Test successful!</h2><p>Your TCG Vault order notifications are working.</p>',
+          from:     'Apex TCG <onboarding@resend.dev>',
+          reply_to: 'apextradingcardshop@gmail.com',
+          to:       [adminEmail],
+          subject:  '✅ Apex TCG — test notification',
+          html:     '<h2>Test successful!</h2><p>Your Apex TCG order notifications are working correctly.</p>',
         }),
       });
       const data = await res.json();

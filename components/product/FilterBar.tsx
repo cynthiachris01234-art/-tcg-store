@@ -78,7 +78,6 @@ export function FilterBar() {
             ['etb',                'ETB'],
             ['upc',                'UPC'],
             ['spc',                'SPC'],
-            ['bundle',             'Bundle'],
             ['premium_collection', 'PC / PC-ETB'],
             ['display_case',       'Display Case'],
             ['poster_collection',  'Poster Coll.'],

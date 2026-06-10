@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import { Zap, Mail, Phone, Globe } from 'lucide-react';
-import { FaInstagram, FaTiktok, FaWhatsapp } from 'react-icons/fa6';
+import { FaInstagram, FaWhatsapp } from 'react-icons/fa6';
+import { SiTiktok } from 'react-icons/si';
 import { BRAND_META, BRANDS, LANGUAGE_META, LANGUAGES } from '@/lib/brands';
 
 const INSTAGRAM_HANDLE = 'apextcgshop';
@@ -42,7 +43,7 @@ export function Footer() {
                 className="p-2 rounded-lg bg-bg-border hover:bg-white/20 transition-colors text-muted hover:text-white"
                 title="TikTok"
               >
-                <FaTiktok className="w-4 h-4" />
+                <SiTiktok className="w-4 h-4" />
               </a>
               <a
                 href={`https://wa.me/${WHATSAPP_NUMBER}`}
@@ -53,7 +54,7 @@ export function Footer() {
                 <FaWhatsapp className="w-4 h-4" />
               </a>
               <a
-                href="mailto:support@apextcg.shop"
+                href="mailto:apextradingcardshop@gmail.com"
                 className="p-2 rounded-lg bg-bg-border hover:bg-white/10 transition-colors text-muted hover:text-white"
                 title="Email"
               >
@@ -133,7 +134,7 @@ export function Footer() {
               </a>
               <a href={`https://tiktok.com/@${TIKTOK_HANDLE}`} target="_blank" rel="noopener noreferrer"
                 className="flex items-center gap-2 text-xs text-white/60 hover:text-white transition-colors">
-                <FaTiktok className="w-3.5 h-3.5" /> @{TIKTOK_HANDLE}
+                <SiTiktok className="w-3.5 h-3.5" /> @{TIKTOK_HANDLE}
               </a>
             </div>
           </div>

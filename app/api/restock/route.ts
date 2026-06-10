@@ -48,7 +48,7 @@ export async function POST(req: NextRequest) {
           subject: `🎉 ${product.set_name} is back in stock!`,
           html: `
             <div style="font-family:sans-serif;max-width:500px;margin:0 auto">
-              <h1 style="color:#6366f1">TCG Vault</h1>
+              <h1 style="color:#C8962A">Apex TCG</h1>
               <p>Great news! <strong>${product.set_name}</strong> is back in stock.</p>
               <p>Don't miss out — grab it at 30% below market price before it sells out again.</p>
               <a href="${process.env.NEXT_PUBLIC_SITE_URL}/product/${product.slug}"

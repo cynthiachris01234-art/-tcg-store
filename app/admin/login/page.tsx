@@ -44,7 +44,7 @@ function LoginForm() {
           <div className="w-12 h-12 bg-accent rounded-2xl flex items-center justify-center shadow-glow-accent mb-4">
             <Zap className="w-6 h-6 text-black" />
           </div>
-          <h1 className="text-2xl font-bold text-white">TCG Vault</h1>
+          <h1 className="text-2xl font-bold text-white">Apex TCG</h1>
           <p className="text-muted text-sm mt-1">Admin access only</p>
         </div>
 

@@ -100,7 +100,9 @@ function OrderRow({ order }: { order: StoredOrder }) {
                 {order.paymentMethod && (
                   <div className="mt-2 pt-2 border-t border-bg-border flex items-center gap-2">
                     <span className="text-accent text-xs font-bold uppercase tracking-widest">Payment:</span>
-                    <span className="text-white text-xs font-semibold">{order.paymentMethod.toUpperCase()}</span>
+                    <span className="text-white text-xs font-semibold">
+                      {({ card: 'Credit / Debit Card', wise: 'Wise Transfer', applepay: 'Apple Pay', cashapp: 'Cash App' } as Record<string,string>)[order.paymentMethod] ?? order.paymentMethod}
+                    </span>
                   </div>
                 )}
               </div>
@@ -230,7 +232,12 @@ export default function AdminOrdersPage() {
           </button>
           {orders.length > 0 && (
             <button
-              onClick={() => { if (confirm('Delete all orders?')) { clearOrders(); refresh(); } }}
+              onClick={async () => {
+                if (!confirm('Delete all orders? This cannot be undone.')) return;
+                await fetch('/api/orders', { method: 'DELETE' });
+                clearOrders();
+                refresh();
+              }}
               className="flex items-center gap-1.5 text-sm text-muted hover:text-danger transition-colors px-3 py-2 rounded-lg hover:bg-danger/10"
             >
               <Trash2 className="w-4 h-4" /> Clear all
@@ -276,12 +283,13 @@ export default function AdminOrdersPage() {
       )}
 
       {/* Info banner */}
-      <div className="mt-8 card p-4 border border-yellow-500/20 bg-yellow-500/5">
-        <p className="text-yellow-300 text-xs font-semibold mb-1">💡 Demo Mode</p>
+      <div className="mt-8 card p-4 border border-blue-500/20 bg-blue-500/5">
+        <p className="text-blue-300 text-xs font-semibold mb-1">💡 How orders work</p>
         <p className="text-muted text-xs">
-          Orders are stored in this browser's local storage. To receive real payments and store orders in a database,
-          add your <span className="text-white font-mono">STRIPE_SECRET_KEY</span> and Supabase credentials to{' '}
-          <span className="text-white font-mono">.env.local</span>.
+          New orders arrive here and on your WhatsApp. Card orders (Stripe) are paid instantly — check the{' '}
+          <span className="text-white font-semibold">Payments</span> tab for card transactions. For manual orders,
+          send the customer their payment details via{' '}
+          <span className="text-white font-semibold">Wise, Apple Pay, or Cash App</span>, then mark them as paid once received.
         </p>
       </div>
     </div>
