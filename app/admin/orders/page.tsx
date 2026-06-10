@@ -20,13 +20,18 @@ function typeLabel(t: ProductType | string): string {
 
 function statusPill(status: StoredOrder['status']) {
   const styles: Record<string, string> = {
-    demo:    'bg-yellow-500/20 text-yellow-300 border-yellow-500/30',
-    paid:    'bg-success/20 text-success border-success/30',
-    pending: 'bg-blue-500/20 text-blue-300 border-blue-500/30',
+    awaiting_payment: 'bg-yellow-500/20 text-yellow-300 border-yellow-500/30',
+    pending:          'bg-blue-500/20 text-blue-300 border-blue-500/30',
+    paid:             'bg-green-500/20 text-green-400 border-green-500/30',
+  };
+  const labels: Record<string, string> = {
+    awaiting_payment: 'AWAITING PAYMENT',
+    pending:          'PENDING',
+    paid:             'PAID',
   };
   return (
-    <span className={`badge border text-xs px-2 py-0.5 ${styles[status] ?? styles.demo}`}>
-      {status.toUpperCase()}
+    <span className={`badge border text-xs px-2 py-0.5 ${styles[status] ?? 'bg-gray-500/20 text-gray-400 border-gray-500/30'}`}>
+      {labels[status] ?? status.toUpperCase()}
     </span>
   );
 }
@@ -87,10 +92,17 @@ function OrderRow({ order }: { order: StoredOrder }) {
               <p className="text-xs text-muted uppercase tracking-widest mb-2">Customer</p>
               <div className="card p-3 space-y-1 text-sm">
                 <p className="text-white font-semibold">{order.customer.name}</p>
-                <p className="text-muted">{order.customer.email}</p>
+                <p className="text-muted">📧 {order.customer.email}</p>
+                {order.customer.phone && <p className="text-muted">📱 {order.customer.phone}</p>}
                 <p className="text-muted">{order.customer.line1}{order.customer.line2 ? `, ${order.customer.line2}` : ''}</p>
                 <p className="text-muted">{order.customer.city}, {order.customer.state} {order.customer.postal_code}</p>
                 <p className="text-muted">{order.customer.country}</p>
+                {order.paymentMethod && (
+                  <div className="mt-2 pt-2 border-t border-bg-border flex items-center gap-2">
+                    <span className="text-accent text-xs font-bold uppercase tracking-widest">Payment:</span>
+                    <span className="text-white text-xs font-semibold">{order.paymentMethod.toUpperCase()}</span>
+                  </div>
+                )}
               </div>
             </div>
 
@@ -167,14 +179,15 @@ export default function AdminOrdersPage() {
       if (data.orders && data.orders.length > 0) {
         // Map Supabase shape → StoredOrder shape
         const mapped: StoredOrder[] = data.orders.map((o: any) => ({
-          id:        o.id,
-          createdAt: o.created_at,
-          status:    o.status,
-          customer:  o.customer,
-          items:     o.items,
-          subtotal:  o.subtotal_usd,
-          discount:  o.discount_usd,
-          total:     o.total_usd,
+          id:            o.id,
+          createdAt:     o.created_at,
+          status:        o.status ?? 'awaiting_payment',
+          paymentMethod: o.payment_method ?? o.paymentMethod,
+          customer:      o.customer,
+          items:         o.items,
+          subtotal:      o.subtotal_usd,
+          discount:      o.discount_usd,
+          total:         o.total_usd,
         }));
         setOrders(mapped);
         setSource('db');
