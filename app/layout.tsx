@@ -7,6 +7,7 @@ import { Footer } from '@/components/layout/Footer';
 import { CartProvider } from '@/lib/cart';
 import { CurrencyProvider } from '@/lib/currency';
 import { PageTracker } from '@/components/PageTracker';
+import { LiveChat } from '@/components/LiveChat';
 
 const inter = Inter({
   subsets: ['latin'],
@@ -61,6 +62,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
               <PageTracker />
               <main className="flex-1">{children}</main>
               <Footer />
+              <LiveChat />
             </div>
           </CartProvider>
         </CurrencyProvider>

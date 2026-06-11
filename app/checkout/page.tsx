@@ -6,7 +6,7 @@ import { useCart } from '@/lib/cart';
 import { useCurrency } from '@/lib/currency';
 import { Lock, ArrowLeft, CheckCircle2, CreditCard } from 'lucide-react';
 import { SiWise, SiCashapp } from 'react-icons/si';
-import { FaApplePay } from 'react-icons/fa6';
+import { FaApplePay, FaPaypal } from 'react-icons/fa6';
 import { Elements, CardElement, useStripe, useElements } from '@stripe/react-stripe-js';
 import { getStripe } from '@/lib/stripe';
 import Link from 'next/link';
@@ -58,6 +58,13 @@ const PAYMENT_METHODS: PaymentMethod[] = [
     note: 'Fast US payments — we send you our $Cashtag',
     logo: <SiCashapp className="w-7 h-7" style={{ color: '#00D632' }} />,
     bg: '#003d0f',
+  },
+  {
+    id: 'paypal',
+    label: 'PayPal',
+    note: 'We send you a PayPal payment request — fast & secure',
+    logo: <FaPaypal className="w-7 h-7" style={{ color: '#003087' }} />,
+    bg: '#001a47',
   },
 ];
 

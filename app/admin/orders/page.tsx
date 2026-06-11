@@ -101,7 +101,7 @@ function OrderRow({ order }: { order: StoredOrder }) {
                   <div className="mt-2 pt-2 border-t border-bg-border flex items-center gap-2">
                     <span className="text-accent text-xs font-bold uppercase tracking-widest">Payment:</span>
                     <span className="text-white text-xs font-semibold">
-                      {({ card: 'Credit / Debit Card', wise: 'Wise Transfer', applepay: 'Apple Pay', cashapp: 'Cash App' } as Record<string,string>)[order.paymentMethod] ?? order.paymentMethod}
+                      {({ card: 'Credit / Debit Card', wise: 'Wise Transfer', applepay: 'Apple Pay', cashapp: 'Cash App', paypal: 'PayPal' } as Record<string,string>)[order.paymentMethod] ?? order.paymentMethod}
                     </span>
                   </div>
                 )}

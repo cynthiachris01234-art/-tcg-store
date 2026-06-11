@@ -8,6 +8,7 @@ const METHOD_LABELS: Record<string, { icon: string; label: string; detail: strin
   wise:     { icon: '🌍', label: 'Wise Transfer',        detail: 'We\'ll send our Wise account details' },
   applepay: { icon: '🍎', label: 'Apple Pay',            detail: 'We\'ll send you an Apple Pay payment request' },
   cashapp:  { icon: '💵', label: 'Cash App',             detail: 'We\'ll send you our $Cashtag' },
+  paypal:   { icon: '🅿️', label: 'PayPal',              detail: 'We\'ll send you a PayPal payment request' },
 };
 
 export default function OrderSuccessPage({

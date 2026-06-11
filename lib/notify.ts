@@ -45,6 +45,7 @@ const PAY_LABELS: Record<string, string> = {
   wise:     'Wise Transfer',
   applepay: 'Apple Pay',
   cashapp:  'Cash App',
+  paypal:   'PayPal',
 };
 function payLabel(id?: string): string {
   return PAY_LABELS[id ?? ''] ?? id ?? 'Not specified';
