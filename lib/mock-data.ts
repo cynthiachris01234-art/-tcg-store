@@ -767,7 +767,7 @@ export const MOCK_PRODUCTS: Product[] = [
     set_name: 'SV Ascended Heroes', set_code: 'SV-AH',
     image_url: 'https://product-images.tcgplayer.com/fit-in/400x558/668496.jpg',
     release_date: '2025-10-17', stock_quantity: 3, condition: 'sealed',
-    market_price_usd: 1100, our_price_usd: d(1100),
+    market_price_usd: 1100, our_price_usd: 1100,
     last_price_sync: now, is_pre_order: false, pack_count: 36, box_count: 6,
     slug: 'pokemon-svah-en-case',
     created_at: now, updated_at: now,
