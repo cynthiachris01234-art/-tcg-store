@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { Zap, Mail, Phone, Globe } from 'lucide-react';
+import { Zap, Mail, Phone, Globe, MapPin } from 'lucide-react';
 import { FaInstagram, FaWhatsapp } from 'react-icons/fa6';
 import { SiTiktok } from 'react-icons/si';
 import { BRAND_META, BRANDS, LANGUAGE_META, LANGUAGES } from '@/lib/brands';
@@ -67,6 +67,12 @@ export function Footer() {
               <Phone className="w-4 h-4 text-accent" />
               {DISPLAY_PHONE}
             </a>
+
+            {/* Address */}
+            <div className="flex items-start gap-2 text-muted text-sm">
+              <MapPin className="w-4 h-4 text-accent flex-shrink-0 mt-0.5" />
+              <span>447 Broadway<br />New York, NY 10013</span>
+            </div>
           </div>
 
           {/* Shop by Brand */}
