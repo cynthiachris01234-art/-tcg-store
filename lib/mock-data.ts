@@ -772,6 +772,17 @@ export const MOCK_PRODUCTS: Product[] = [
     slug: 'pokemon-svah-en-case',
     created_at: now, updated_at: now,
   },
+  {
+    id: 'poke-svah-bundle-case-en',
+    brand: 'pokemon', language: 'en', product_type: 'case',
+    set_name: 'SV Ascended Heroes Booster Bundle Case (25)', set_code: 'SV-AH',
+    image_url: 'https://product-images.tcgplayer.com/fit-in/400x558/668496.jpg',
+    release_date: '2025-10-17', stock_quantity: 5, condition: 'sealed',
+    market_price_usd: 1100, our_price_usd: 1100,
+    last_price_sync: now, is_pre_order: false, box_count: 25,
+    slug: 'pokemon-svah-bundle-case-en',
+    created_at: now, updated_at: now,
+  },
 
   // ── Pokémon: ME Phantasmal Flames (ME02) extras ────────────────────────────
 
