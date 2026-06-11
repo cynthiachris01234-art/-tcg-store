@@ -750,6 +750,29 @@ export const MOCK_PRODUCTS: Product[] = [
     created_at: now, updated_at: now,
   },
 
+  {
+    id: 'poke-svah-en-box',
+    brand: 'pokemon', language: 'en', product_type: 'booster_box',
+    set_name: 'SV Ascended Heroes', set_code: 'SV-AH',
+    image_url: 'https://product-images.tcgplayer.com/fit-in/400x558/668496.jpg',
+    release_date: '2025-10-17', stock_quantity: 8, condition: 'sealed',
+    market_price_usd: 220, our_price_usd: d(220),
+    last_price_sync: now, is_pre_order: false, pack_count: 36,
+    slug: 'pokemon-svah-en-box',
+    created_at: now, updated_at: now,
+  },
+  {
+    id: 'poke-svah-en-case',
+    brand: 'pokemon', language: 'en', product_type: 'case',
+    set_name: 'SV Ascended Heroes', set_code: 'SV-AH',
+    image_url: 'https://product-images.tcgplayer.com/fit-in/400x558/668496.jpg',
+    release_date: '2025-10-17', stock_quantity: 3, condition: 'sealed',
+    market_price_usd: 1320, our_price_usd: d(1320),
+    last_price_sync: now, is_pre_order: false, pack_count: 36, box_count: 6,
+    slug: 'pokemon-svah-en-case',
+    created_at: now, updated_at: now,
+  },
+
   // ── Pokémon: ME Phantasmal Flames (ME02) extras ────────────────────────────
 
   {
