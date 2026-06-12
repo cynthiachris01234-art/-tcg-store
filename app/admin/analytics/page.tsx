@@ -1,12 +1,13 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { RefreshCw, Eye, Users, Globe, TrendingUp } from 'lucide-react';
+import { RefreshCw, Eye, Users, Globe, TrendingUp, Radio } from 'lucide-react';
 
 interface TrafficData {
   days: number;
   totalViews: number;
   uniqueIps: number;
+  currentBrowsers: number;
   topCountries: { country: string; views: number }[];
   topPages: { page: string; views: number }[];
   dailyViews: { date: string; views: number }[];
@@ -45,7 +46,12 @@ export default function AnalyticsPage() {
     }
   }
 
-  useEffect(() => { load(); }, []);
+  useEffect(() => {
+    load();
+    // Refresh current browsers every 30 seconds
+    const interval = setInterval(() => load(), 30_000);
+    return () => clearInterval(interval);
+  }, []);
 
   const maxDaily   = data ? Math.max(...data.dailyViews.map(d => d.views), 1) : 1;
   const maxCountry = data ? Math.max(...data.topCountries.map(c => c.views), 1) : 1;
@@ -103,6 +109,24 @@ CREATE INDEX IF NOT EXISTS idx_pv_page    ON page_views (page);`}</pre>
 
       {data && (
         <div className="space-y-6">
+
+          {/* Live now banner */}
+          <div className="card p-4 border border-green-500/30 bg-green-500/5 flex items-center gap-4">
+            <div className="flex items-center gap-2">
+              <span className="relative flex h-3 w-3">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75" />
+                <span className="relative inline-flex rounded-full h-3 w-3 bg-green-500" />
+              </span>
+              <Radio className="w-4 h-4 text-green-400" />
+            </div>
+            <div>
+              <p className="text-white font-bold text-lg leading-none">
+                {data.currentBrowsers ?? 0}
+                <span className="text-green-400 text-sm font-normal ml-2">on site right now</span>
+              </p>
+              <p className="text-muted text-xs mt-0.5">Active browsers in the last 5 minutes · refreshes every 30s</p>
+            </div>
+          </div>
 
           {/* Top 4 numbers */}
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">

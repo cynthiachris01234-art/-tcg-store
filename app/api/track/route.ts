@@ -52,24 +52,43 @@ export async function GET(req: NextRequest) {
     const supabase = getSupabase();
     if (!supabase) return NextResponse.json({ error: 'Supabase not configured', rows: [] });
 
-    // days param (default 30)
     const { searchParams } = new URL(req.url);
-    const days = Math.min(Number(searchParams.get('days') ?? 30), 365);
+    const days  = Math.min(Number(searchParams.get('days') ?? 30), 365);
     const since = new Date(Date.now() - days * 86_400_000).toISOString();
+    const fiveMinAgo = new Date(Date.now() - 5 * 60_000).toISOString();
 
-    const { data, error } = await supabase
-      .from('page_views')
-      .select('ts, page, country, city, ip')
-      .gte('ts', since)
-      .order('ts', { ascending: false })
-      .limit(10_000);
+    // Run queries in parallel
+    const [countResult, rowsResult, currentResult] = await Promise.all([
+      // 1. Exact total count — no row limit
+      supabase
+        .from('page_views')
+        .select('*', { count: 'exact', head: true })
+        .gte('ts', since),
 
-    if (error) throw error;
-    const rows = data ?? [];
+      // 2. Sample rows for aggregations (countries, pages, chart, unique IPs)
+      supabase
+        .from('page_views')
+        .select('ts, page, country, city, ip')
+        .gte('ts', since)
+        .order('ts', { ascending: false })
+        .limit(50_000),
 
-    // ── Aggregations ──
-    const totalViews = rows.length;
-    const uniqueIps  = new Set(rows.map(r => r.ip).filter(Boolean)).size;
+      // 3. Current browsers — distinct IPs in last 5 minutes
+      supabase
+        .from('page_views')
+        .select('ip')
+        .gte('ts', fiveMinAgo),
+    ]);
+
+    if (rowsResult.error) throw rowsResult.error;
+
+    const totalViews     = countResult.count ?? 0;
+    const rows           = rowsResult.data ?? [];
+    const currentBrowsers = new Set(
+      (currentResult.data ?? []).map((r: any) => r.ip).filter(Boolean)
+    ).size;
+
+    const uniqueIps = new Set(rows.map(r => r.ip).filter(Boolean)).size;
 
     // Country counts
     const countryMap: Record<string, number> = {};
@@ -91,10 +110,10 @@ export async function GET(req: NextRequest) {
       .slice(0, 20)
       .map(([page, views]) => ({ page, views }));
 
-    // Daily views (last N days)
+    // Daily views
     const dailyMap: Record<string, number> = {};
     for (const r of rows) {
-      const day = r.ts.slice(0, 10); // "YYYY-MM-DD"
+      const day = r.ts.slice(0, 10);
       dailyMap[day] = (dailyMap[day] ?? 0) + 1;
     }
     const dailyViews = Object.entries(dailyMap)
@@ -107,13 +126,14 @@ export async function GET(req: NextRequest) {
       page:    r.page,
       country: r.country,
       city:    r.city,
-      ip:      r.ip ? r.ip.replace(/\.\d+$/, '.***') : null, // mask last octet
+      ip:      r.ip ? r.ip.replace(/\.\d+$/, '.***') : null,
     }));
 
     return NextResponse.json({
       days,
       totalViews,
       uniqueIps,
+      currentBrowsers,
       topCountries,
       topPages,
       dailyViews,
