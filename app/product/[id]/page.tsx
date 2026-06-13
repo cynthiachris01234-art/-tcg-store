@@ -2,6 +2,7 @@ import { notFound } from 'next/navigation';
 import Image from 'next/image';
 import { getProductBySlug } from '@/lib/supabase';
 import { BRAND_META } from '@/lib/brands';
+import { JsonLd } from '@/components/JsonLd';
 import { LanguageBadge } from '@/components/ui/LanguageBadge';
 import { StockBadge } from '@/components/ui/StockBadge';
 import { ProductActions } from './ProductActions';
@@ -14,8 +15,16 @@ export async function generateMetadata({ params }: Props) {
   try {
     const p = await getProductBySlug(params.id);
     if (!p) return {};
-    const labels: Record<string, string> = { case: 'Case', etb: 'ETB', upc: 'UPC', spc: 'SPC', bundle: 'Bundle', premium_collection: 'PC', display_case: 'Display', poster_collection: 'Poster' };
-    return { title: `${p.set_name} ${labels[p.product_type] ?? 'Booster Box'}` };
+    const labels: Record<string, string> = { case: 'Case', etb: 'Elite Trainer Box', upc: 'Ultra Premium Collection', spc: 'Super Premium Collection', bundle: 'Booster Bundle', premium_collection: 'Premium Collection', display_case: 'Display Case', poster_collection: 'Poster Collection', booster_box: 'Booster Box' };
+    const typeLabel = labels[p.product_type] ?? 'Booster Box';
+    const title = `${p.set_name} ${typeLabel} — ${p.language.toUpperCase()}`;
+    const description = `Buy the ${p.set_name} ${typeLabel} (${p.language.toUpperCase()}) sealed and authentic at $${p.our_price_usd.toFixed(2)} — 40% below market price. Fast shipping from Apex TCG, New York.`;
+    return {
+      title,
+      description,
+      alternates: { canonical: `https://apextcg.shop/product/${p.slug}` },
+      openGraph: { title, description, url: `https://apextcg.shop/product/${p.slug}`, images: p.image_url ? [{ url: p.image_url }] : [] },
+    };
   } catch { return {}; }
 }
 
@@ -49,6 +58,24 @@ export default async function ProductPage({ params }: Props) {
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+      <JsonLd data={{
+        '@context': 'https://schema.org',
+        '@type': 'Product',
+        name: `${product.set_name} ${product.product_type === 'booster_box' ? 'Booster Box' : product.product_type.toUpperCase()} (${product.language.toUpperCase()})`,
+        description: `${product.set_name} — 100% factory sealed. ${product.language.toUpperCase()} edition. Sold by Apex TCG at 40% below market price.`,
+        image: product.image_url,
+        brand: { '@type': 'Brand', name: BRAND_META[product.brand]?.name ?? product.brand },
+        sku: product.set_code,
+        offers: {
+          '@type': 'Offer',
+          url: `https://apextcg.shop/product/${product.slug}`,
+          priceCurrency: 'USD',
+          price: product.our_price_usd.toFixed(2),
+          availability: product.stock_quantity > 0 ? 'https://schema.org/InStock' : 'https://schema.org/OutOfStock',
+          seller: { '@type': 'Organization', name: 'Apex TCG' },
+          itemCondition: 'https://schema.org/NewCondition',
+        },
+      }} />
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
 
         {/* Image */}

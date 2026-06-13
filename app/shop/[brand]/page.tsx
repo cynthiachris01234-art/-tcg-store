@@ -18,7 +18,22 @@ export async function generateStaticParams() {
 export async function generateMetadata({ params }: Props) {
   const meta = BRAND_META[params.brand as Brand];
   if (!meta) return {};
-  return { title: `${meta.name} Booster Boxes & Cases` };
+  const descriptions: Record<string, string> = {
+    pokemon:  'Shop sealed Pokémon TCG booster boxes and cases in English, Japanese, and Korean. Scarlet & Violet, Mega Evolution, Evolving Skies and more — always 40% below market price.',
+    onepiece: 'Shop sealed One Piece TCG booster boxes in English and Japanese. From Romance Dawn to the latest sets — always 40% below market price.',
+    mtg:      'Shop sealed Magic: The Gathering booster boxes including Final Fantasy, Tarkir Dragonstorm, TMNT, and more — always 40% below market price.',
+    yugioh:   'Shop sealed Yu-Gi-Oh! booster boxes in English and Japanese — always 40% below market price.',
+  };
+  return {
+    title: `${meta.name} Booster Boxes & Cases — 40% Off Market Price`,
+    description: descriptions[params.brand] ?? `Shop sealed ${meta.name} products at 40% below market price.`,
+    alternates: { canonical: `https://apextcg.shop/shop/${params.brand}` },
+    openGraph: {
+      title: `${meta.name} Booster Boxes & Cases — Apex TCG`,
+      description: descriptions[params.brand] ?? `Shop sealed ${meta.name} products at 40% below market price.`,
+      url: `https://apextcg.shop/shop/${params.brand}`,
+    },
+  };
 }
 
 export default async function BrandPage({ params, searchParams }: Props) {

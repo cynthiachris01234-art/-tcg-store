@@ -1,4 +1,5 @@
 import { getBestSellers, getNewReleases } from '@/lib/supabase';
+import { JsonLd } from '@/components/JsonLd';
 import { HeroBanner } from '@/components/home/HeroBanner';
 import { BoxShelf } from '@/components/home/BoxShelf';
 import { SpecialSets } from '@/components/home/SpecialSets';
@@ -35,6 +36,29 @@ export default async function HomePage() {
 
   return (
     <div>
+      <JsonLd data={{
+        '@context': 'https://schema.org',
+        '@type': 'FAQPage',
+        mainEntity: [
+          { '@type': 'Question', name: 'Where can I buy cheap sealed Pokémon booster boxes?', acceptedAnswer: { '@type': 'Answer', text: 'Apex TCG sells 100% sealed Pokémon booster boxes at 40% below market price. We stock English, Japanese, and Korean sets including Scarlet & Violet, Evolving Skies, and Mega Evolution sets.' } },
+          { '@type': 'Question', name: 'Does Apex TCG sell One Piece TCG booster boxes?', acceptedAnswer: { '@type': 'Answer', text: 'Yes. Apex TCG carries a full selection of One Piece TCG booster boxes in English and Japanese, from Romance Dawn (OP01) through the latest sets, all at 40% below retail market price.' } },
+          { '@type': 'Question', name: 'Are the cards and boxes sold by Apex TCG authentic?', acceptedAnswer: { '@type': 'Answer', text: 'All products at Apex TCG are 100% factory sealed and authenticated. We source directly and guarantee authenticity on every order.' } },
+          { '@type': 'Question', name: 'Does Apex TCG ship internationally?', acceptedAnswer: { '@type': 'Answer', text: 'Yes, Apex TCG ships worldwide with tracked delivery. We accept international payment methods including Wise Transfer for low-fee cross-border payments.' } },
+          { '@type': 'Question', name: 'What payment methods does Apex TCG accept?', acceptedAnswer: { '@type': 'Answer', text: 'Apex TCG accepts Credit/Debit Cards (via Stripe), PayPal, Apple Pay, Cash App, and Wise Transfer.' } },
+          { '@type': 'Question', name: 'How much is an MTG Final Fantasy booster box?', acceptedAnswer: { '@type': 'Answer', text: 'Apex TCG sells the MTG Final Fantasy Play booster box at 40% below market price. Check the MTG section of our shop for the current price.' } },
+        ],
+      }} />
+      <JsonLd data={{
+        '@context': 'https://schema.org',
+        '@type': 'WebSite',
+        name: 'Apex TCG',
+        url: 'https://apextcg.shop',
+        potentialAction: {
+          '@type': 'SearchAction',
+          target: { '@type': 'EntryPoint', urlTemplate: 'https://apextcg.shop/shop?q={search_term_string}' },
+          'query-input': 'required name=search_term_string',
+        },
+      }} />
       <HeroBanner />
 
       {/* Featured Promos */}
