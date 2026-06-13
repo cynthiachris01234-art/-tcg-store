@@ -49,6 +49,9 @@ export const metadata: Metadata = {
     description: 'Buy sealed Pokémon, One Piece, MTG, and Yu-Gi-Oh! booster boxes at 40% below market price.',
     images: ['/og-image.png'],
   },
+  verification: {
+    google: 'SDnAq82m2LRX8Nk3ak0jligOp3NjgoJUhtT1BoI2KV4',
+  },
   robots: {
     index: true,
     follow: true,
