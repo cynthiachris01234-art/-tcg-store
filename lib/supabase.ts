@@ -22,7 +22,7 @@ export function createAdminClient() {
 
 // ─── Product queries ──────────────────────────────────────────────────────────
 
-export async function getProducts(filters: FilterState = {}): Promise<Product[]> {
+export async function getProducts(filters: FilterState & { search?: string } = {}): Promise<Product[]> {
   if (!isConfigured) return getMockProducts(filters);
   try {
     let query = db().from('products').select('*');

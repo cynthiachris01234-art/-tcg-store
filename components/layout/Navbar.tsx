@@ -1,9 +1,9 @@
 'use client';
 
 import Link from 'next/link';
-import Image from 'next/image';
-import { useState } from 'react';
-import { ShoppingCart, Menu, X, ChevronDown } from 'lucide-react';
+import { useState, useRef } from 'react';
+import { useRouter } from 'next/navigation';
+import { ShoppingCart, Menu, X, ChevronDown, Search } from 'lucide-react';
 import { useCart } from '@/lib/cart';
 import { useCurrency } from '@/lib/currency';
 import { CURRENCIES } from '@/lib/currency';
@@ -63,6 +63,25 @@ export function Navbar() {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [brandOpen, setBrandOpen] = useState(false);
   const [langOpen, setLangOpen] = useState(false);
+  const [searchOpen, setSearchOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
+  const searchInputRef = useRef<HTMLInputElement>(null);
+  const router = useRouter();
+
+  function openSearch() {
+    setSearchOpen(true);
+    setTimeout(() => searchInputRef.current?.focus(), 50);
+  }
+
+  function submitSearch(e?: React.FormEvent) {
+    e?.preventDefault();
+    const q = searchQuery.trim();
+    if (q) {
+      router.push(`/shop?q=${encodeURIComponent(q)}`);
+      setSearchOpen(false);
+      setSearchQuery('');
+    }
+  }
 
   return (
     <nav className="sticky top-0 z-50 bg-black/95 backdrop-blur-xl border-b border-gold/20" style={{ boxShadow: '0 1px 0 rgba(200,150,42,0.15)' }}>
@@ -113,8 +132,35 @@ export function Navbar() {
           </div>
 
           {/* Right side */}
-          <div className="flex items-center gap-3">
-{/* Cart */}
+          <div className="flex items-center gap-2">
+            {/* Desktop search — expands inline */}
+            <div className="hidden md:flex items-center">
+              {searchOpen ? (
+                <form onSubmit={submitSearch} className="flex items-center gap-2">
+                  <input
+                    ref={searchInputRef}
+                    type="text"
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    onKeyDown={(e) => e.key === 'Escape' && setSearchOpen(false)}
+                    placeholder="Search products…"
+                    className="w-56 bg-white/10 border border-white/20 rounded-lg px-3 py-1.5 text-sm text-white placeholder:text-gray-500 focus:outline-none focus:border-accent transition-all"
+                  />
+                  <button type="submit" className="p-2 rounded-lg bg-accent/20 hover:bg-accent/40 transition-colors">
+                    <Search className="w-4 h-4 text-accent" />
+                  </button>
+                  <button type="button" onClick={() => setSearchOpen(false)} className="p-2 rounded-lg hover:bg-white/5 transition-colors">
+                    <X className="w-4 h-4 text-gray-400" />
+                  </button>
+                </form>
+              ) : (
+                <button onClick={openSearch} className="p-2 rounded-lg hover:bg-white/5 transition-colors group">
+                  <Search className="w-5 h-5 text-gray-300 group-hover:text-white" />
+                </button>
+              )}
+            </div>
+
+            {/* Cart */}
             <Link href="/cart" className="relative p-2 rounded-lg hover:bg-white/5 transition-colors group">
               <ShoppingCart className="w-5 h-5 text-gray-300 group-hover:text-white" />
               {itemCount > 0 && (
@@ -138,6 +184,19 @@ export function Navbar() {
       {/* Mobile menu */}
       {mobileOpen && (
         <div className="md:hidden border-t border-gold/20 bg-black px-4 py-4 space-y-1">
+          {/* Mobile search */}
+          <form onSubmit={(e) => { submitSearch(e); setMobileOpen(false); }} className="flex gap-2 mb-4">
+            <input
+              type="text"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              placeholder="Search products…"
+              className="flex-1 bg-white/10 border border-white/20 rounded-lg px-3 py-2 text-sm text-white placeholder:text-gray-500 focus:outline-none focus:border-accent"
+            />
+            <button type="submit" className="px-3 py-2 rounded-lg bg-accent/20 hover:bg-accent/40 transition-colors">
+              <Search className="w-4 h-4 text-accent" />
+            </button>
+          </form>
           <p className="text-xs text-muted uppercase tracking-widest mb-2">Shop by Brand</p>
           {BRANDS.map((b) => {
             const meta = BRAND_META[b];

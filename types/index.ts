@@ -158,6 +158,7 @@ export interface FilterState {
   in_stock_only?: boolean;
   pre_order?: boolean;
   sort_by?: 'price_asc' | 'price_desc' | 'release_date' | 'name';
+  search?: string;
 }
 
 // ─── Brand Meta ───────────────────────────────────────────────────────────────

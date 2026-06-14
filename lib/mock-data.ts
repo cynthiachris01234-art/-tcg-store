@@ -1746,7 +1746,7 @@ export const MOCK_PRODUCTS: Product[] = [
 
 export function getMockProducts(filters: {
   brand?: string; language?: string; product_type?: string;
-  in_stock_only?: boolean; pre_order?: boolean; sort_by?: string;
+  in_stock_only?: boolean; pre_order?: boolean; sort_by?: string; search?: string;
 } = {}): Product[] {
   let list = [...MOCK_PRODUCTS];
   if (filters.brand)         list = list.filter(p => p.brand         === filters.brand);
@@ -1754,6 +1754,15 @@ export function getMockProducts(filters: {
   if (filters.product_type)  list = list.filter(p => p.product_type  === filters.product_type);
   if (filters.in_stock_only) list = list.filter(p => p.stock_quantity > 0);
   if (filters.pre_order !== undefined) list = list.filter(p => p.is_pre_order === filters.pre_order);
+  if (filters.search) {
+    const q = filters.search.toLowerCase();
+    list = list.filter(p =>
+      p.set_name.toLowerCase().includes(q) ||
+      p.brand.toLowerCase().includes(q) ||
+      p.language.toLowerCase().includes(q) ||
+      p.product_type.toLowerCase().includes(q)
+    );
+  }
   switch (filters.sort_by) {
     case 'price_asc':    list.sort((a, b) => a.our_price_usd  - b.our_price_usd);  break;
     case 'price_desc':   list.sort((a, b) => b.our_price_usd  - a.our_price_usd);  break;
