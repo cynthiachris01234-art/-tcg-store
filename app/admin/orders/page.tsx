@@ -174,13 +174,17 @@ export default function AdminOrdersPage() {
   const [source, setSource] = useState<'db' | 'local'>('local');
 
   async function refresh() {
-    // Try Supabase first
+    // Load localStorage orders
+    const local = loadOrders();
+
+    // Load Supabase orders
+    let dbOrders: StoredOrder[] = [];
+    let fromDb = false;
     try {
       const res = await fetch('/api/orders');
       const data = await res.json();
-      if (data.orders && data.orders.length > 0) {
-        // Map Supabase shape → StoredOrder shape
-        const mapped: StoredOrder[] = data.orders.map((o: any) => ({
+      if (data.orders?.length > 0) {
+        dbOrders = data.orders.map((o: any) => ({
           id:            o.id,
           createdAt:     o.created_at,
           status:        o.status ?? 'awaiting_payment',
@@ -191,14 +195,21 @@ export default function AdminOrdersPage() {
           discount:      o.discount_usd,
           total:         o.total_usd,
         }));
-        setOrders(mapped);
-        setSource('db');
-        return;
+        fromDb = true;
       }
     } catch {}
-    // Fallback to localStorage
-    setOrders(loadOrders());
-    setSource('local');
+
+    // Merge: Supabase wins on duplicates (it has server-verified totals)
+    const seen = new Set<string>();
+    const merged: StoredOrder[] = [];
+    for (const o of [...dbOrders, ...local]) {
+      if (!seen.has(o.id)) { seen.add(o.id); merged.push(o); }
+    }
+    // Sort newest first
+    merged.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+
+    setOrders(merged);
+    setSource(fromDb ? 'db' : 'local');
   }
 
   useEffect(() => {
