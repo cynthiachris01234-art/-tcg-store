@@ -59,12 +59,12 @@ export async function sendWhatsApp(order: OrderNotifyPayload): Promise<void> {
 
   const method = payLabel(order.paymentMethod);
 
-  // Build item lines — unitPrice direct, total direct
+  // Build item lines — use USD prefix to avoid WhatsApp stripping $+digit sequences
   const itemLines = order.items.map(i => {
     const up = Math.round(Number(i.unitPrice) * 100) / 100;
     const ln = Math.round(Number(i.unitPrice) * Number(i.quantity) * 100) / 100;
     const lang = (i.language ?? '').toUpperCase();
-    return `- ${i.setName} (${lang}) x${i.quantity}  $${usd(up)} ea = $${usd(ln)}`;
+    return `- ${i.setName} (${lang}) x${i.quantity}  USD ${usd(up)} ea = USD ${usd(ln)}`;
   }).join('\n');
 
   const addr = [
@@ -96,9 +96,9 @@ export async function sendWhatsApp(order: OrderNotifyPayload): Promise<void> {
     `Items (${order.items.length}):`,
     itemLines,
     `---`,
-    `Subtotal : $${usd(itemsSubtotal)} USD`,
-    discount > 0 ? `Discount : -$${usd(discount)} USD` : null,
-    `TOTAL    : $${usd(total)} USD`,
+    `Subtotal : USD ${usd(itemsSubtotal)}`,
+    discount > 0 ? `Discount : -USD ${usd(discount)}` : null,
+    `TOTAL    : USD ${usd(total)}`,
     `---`,
     `Payment  : ${method}`,
     `ACTION   : Send ${method} details to customer now`,
