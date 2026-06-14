@@ -34,22 +34,26 @@ export async function POST(req: Request) {
     await notifyNewOrder(notifyPayload);
 
     // Save to Supabase if configured
+    let dbError: string | null = null;
     if (supabaseUrl && serviceRoleKey && !serviceRoleKey.includes('placeholder')) {
       const supabase = createClient(supabaseUrl, serviceRoleKey);
       const { error } = await supabase.from('store_orders').insert({
-        id:            body.id,
-        status:        body.status,
+        id:             body.id,
+        status:         body.status,
         payment_method: body.paymentMethod,
-        customer:      body.customer,
-        items:         body.items,
-        subtotal_usd:  body.subtotal_usd,
-        discount_usd:  body.discount_usd,
-        total_usd:     body.total_usd,
+        customer:       body.customer,
+        items:          body.items,
+        subtotal_usd:   body.subtotal_usd,
+        discount_usd:   body.discount_usd,
+        total_usd:      body.total_usd,
       });
-      if (error) console.error('Supabase insert error:', error);
+      if (error) {
+        console.error('Supabase insert error:', error);
+        dbError = error.message;
+      }
     }
 
-    return NextResponse.json({ ok: true });
+    return NextResponse.json({ ok: true, dbError });
   } catch (err: any) {
     // Best-effort fallback notification
     if (body) try { await notifyNewOrder(body); } catch {}

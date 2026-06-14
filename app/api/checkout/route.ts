@@ -68,8 +68,13 @@ export async function POST(req: NextRequest) {
       });
     }
 
-    // Manual payment methods — no Stripe involved
-    return NextResponse.json({ orderId });
+    // Manual payment methods — return server-verified totals so the client uses correct figures
+    return NextResponse.json({
+      orderId,
+      verifiedSubtotalUsd: subtotalCents / 100,
+      verifiedDiscountUsd: discountCents / 100,
+      verifiedTotalUsd:    totalCents    / 100,
+    });
   } catch (err: any) {
     console.error('Checkout error:', err);
     return NextResponse.json({ error: 'Internal error' }, { status: 500 });

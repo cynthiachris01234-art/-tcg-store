@@ -123,7 +123,7 @@ function CheckoutForm() {
         body: JSON.stringify({ cart, paymentMethod: payMethod }),
       });
       if (!checkRes.ok) throw new Error('Could not create order');
-      const { orderId, clientSecret } = await checkRes.json();
+      const { orderId, clientSecret, verifiedSubtotalUsd, verifiedDiscountUsd, verifiedTotalUsd } = await checkRes.json();
 
       const customer = {
         name: form.name, email: form.email, phone: form.phone,
@@ -167,18 +167,20 @@ function CheckoutForm() {
         const { saveOrder } = await import('@/lib/orders');
         const order = saveOrder(orderId, cart, customer, 'paid', 'card');
 
-        await fetch('/api/orders', {
+        const saveRes1 = await fetch('/api/orders', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
             id: order.id, status: order.status,
             paymentMethod: 'card',
             customer: order.customer, items: order.items,
-            subtotal_usd: order.subtotal,
-            discount_usd: order.discount,
-            total_usd: order.total,
+            subtotal_usd: verifiedSubtotalUsd ?? order.subtotal,
+            discount_usd: verifiedDiscountUsd ?? order.discount,
+            total_usd:    verifiedTotalUsd    ?? order.total,
           }),
         });
+        const saveData1 = await saveRes1.json();
+        if (saveData1.dbError) console.error('Order DB save error:', saveData1.dbError);
 
         clearCart();
         router.push(`/checkout/success?order=${orderId}&method=card`);
@@ -189,18 +191,20 @@ function CheckoutForm() {
       const { saveOrder } = await import('@/lib/orders');
       const order = saveOrder(orderId, cart, customer, 'awaiting_payment', payMethod);
 
-      await fetch('/api/orders', {
+      const saveRes2 = await fetch('/api/orders', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           id: order.id, status: order.status,
           paymentMethod: payMethod,
           customer: order.customer, items: order.items,
-          subtotal_usd: order.subtotal,
-          discount_usd: order.discount,
-          total_usd: order.total,
+          subtotal_usd: verifiedSubtotalUsd ?? order.subtotal,
+          discount_usd: verifiedDiscountUsd ?? order.discount,
+          total_usd:    verifiedTotalUsd    ?? order.total,
         }),
       });
+      const saveData2 = await saveRes2.json();
+      if (saveData2.dbError) console.error('Order DB save error:', saveData2.dbError);
 
       clearCart();
       router.push(`/checkout/success?order=${orderId}&method=${payMethod}`);
