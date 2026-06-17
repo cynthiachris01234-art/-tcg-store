@@ -34,6 +34,7 @@ export interface Product {
   our_price_usd: number;          // market_price_usd * (1 - DISCOUNT_RATE)
   last_price_sync: string;        // ISO datetime
   is_pre_order: boolean;
+  is_promo?: boolean;
   pre_order_date?: string;
   pack_count?: number;            // 36 for boxes
   box_count?: number;             // 6 for cases

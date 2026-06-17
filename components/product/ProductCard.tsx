@@ -34,6 +34,9 @@ export function ProductCard({ product, className }: Props) {
 
       {/* Pre-order / Sealed badges */}
       <div className="absolute top-3 left-3 flex flex-col gap-1 z-10">
+        {product.is_promo && (
+          <span className="badge bg-red-500/20 text-red-400 border border-red-500/40 font-bold">🔥 PROMO</span>
+        )}
         {product.is_pre_order && (
           <span className="badge bg-accent/20 text-accent border border-accent/40">PRE-ORDER</span>
         )}
