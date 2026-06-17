@@ -183,7 +183,9 @@ export default function AdminOrdersPage() {
     try {
       const res = await fetch('/api/orders');
       const data = await res.json();
-      if (data.orders?.length > 0) {
+      if (Array.isArray(data.orders)) {
+        // API responded successfully — we're connected to the database
+        fromDb = true;
         dbOrders = data.orders.map((o: any) => ({
           id:            o.id,
           createdAt:     o.created_at,
@@ -195,7 +197,6 @@ export default function AdminOrdersPage() {
           discount:      o.discount_usd,
           total:         o.total_usd,
         }));
-        fromDb = true;
       }
     } catch {}
 
