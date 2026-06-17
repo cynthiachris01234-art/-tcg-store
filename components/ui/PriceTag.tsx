@@ -22,22 +22,31 @@ export function PriceTag({ marketPriceUSD, ourPriceUSD, size = 'md', showSavings
   const { amount, percent } = calcSavings(marketPriceUSD, ourPriceUSD);
   const s = sizes[size];
 
+  const hasDiscount = ourPriceUSD < marketPriceUSD;
+
   return (
     <div className="flex flex-col gap-0.5">
-      <span className={cn('text-muted line-through', s.market)}>
-        Market {format(marketPriceUSD)}
-      </span>
+      {hasDiscount && (
+        <span className={cn('text-muted line-through', s.market)}>
+          Market {format(marketPriceUSD)}
+        </span>
+      )}
+      {!hasDiscount && (
+        <span className={cn('text-muted', s.market)}>
+          Market Price
+        </span>
+      )}
       <div className="flex items-baseline gap-2">
         <span className={cn('text-white font-bold', s.ours)}>
           {format(ourPriceUSD)}
         </span>
-        {showSavings && (
+        {showSavings && hasDiscount && (
           <span className={cn('badge bg-success/20 text-success border border-success/30', s.badge)}>
             -{percent}%
           </span>
         )}
       </div>
-      {showSavings && (
+      {showSavings && hasDiscount && (
         <span className={cn('text-success', s.badge)}>
           You save {format(amount)}
         </span>
