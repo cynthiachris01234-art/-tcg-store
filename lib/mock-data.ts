@@ -1,6 +1,6 @@
 import type { Product } from '@/types';
 
-const d = (market: number): number => market;
+const d = (market: number): number => Math.round(market * 0.70);
 const now = new Date().toISOString();
 
 // All booster boxes sourced from cardboyz.com — prices reduced 30%
@@ -63,8 +63,8 @@ export const MOCK_PRODUCTS: Product[] = [
     set_name: 'ME Pitch Black', set_code: 'ME05',
     image_url: 'https://archives.bulbagarden.net/media/upload/a/ae/ME5_Booster_Mega_Darkrai.png',
     release_date: '2026-07-17', stock_quantity: 0, condition: 'sealed',
-    market_price_usd: 351, our_price_usd: 110,
-    last_price_sync: now, is_pre_order: true, is_promo: true, pack_count: 36,
+    market_price_usd: 351, our_price_usd: d(351),
+    last_price_sync: now, is_pre_order: true, pack_count: 36,
     slug: 'pokemon-me05-en-box',
     created_at: now, updated_at: now,
   },
@@ -74,8 +74,8 @@ export const MOCK_PRODUCTS: Product[] = [
     set_name: 'ME Pitch Black', set_code: 'ME05',
     image_url: 'https://static0.srcdn.com/wordpress/wp-content/uploads/2026/04/pokemon-pitch-black-elite-trainer-box-and-cards.jpg',
     release_date: '2026-07-17', stock_quantity: 0, condition: 'sealed',
-    market_price_usd: 58, our_price_usd: d(58),
-    last_price_sync: now, is_pre_order: true,
+    market_price_usd: 58, our_price_usd: 110,
+    last_price_sync: now, is_pre_order: true, is_promo: true,
     slug: 'pokemon-me05-en-etb',
     created_at: now, updated_at: now,
   },
@@ -767,7 +767,7 @@ export const MOCK_PRODUCTS: Product[] = [
     set_name: 'SV Ascended Heroes', set_code: 'SV-AH',
     image_url: 'https://product-images.tcgplayer.com/fit-in/400x558/668496.jpg',
     release_date: '2025-10-17', stock_quantity: 3, condition: 'sealed',
-    market_price_usd: 1100, our_price_usd: 1100,
+    market_price_usd: 1100, our_price_usd: d(1100),
     last_price_sync: now, is_pre_order: false, pack_count: 36, box_count: 6,
     slug: 'pokemon-svah-en-case',
     created_at: now, updated_at: now,
@@ -778,7 +778,7 @@ export const MOCK_PRODUCTS: Product[] = [
     set_name: 'SV Ascended Heroes ETB Case', set_code: 'SV-AH',
     image_url: 'https://product-images.tcgplayer.com/fit-in/400x558/668496.jpg',
     release_date: '2025-10-17', stock_quantity: 4, condition: 'sealed',
-    market_price_usd: 1000, our_price_usd: 1000,
+    market_price_usd: 1000, our_price_usd: d(1000),
     last_price_sync: now, is_pre_order: false, box_count: 6,
     slug: 'pokemon-svah-etb-case-en',
     created_at: now, updated_at: now,
@@ -789,7 +789,7 @@ export const MOCK_PRODUCTS: Product[] = [
     set_name: 'SV Ascended Heroes Booster Bundle Case (25)', set_code: 'SV-AH',
     image_url: 'https://product-images.tcgplayer.com/fit-in/400x558/681339.jpg',
     release_date: '2025-10-17', stock_quantity: 5, condition: 'sealed',
-    market_price_usd: 1100, our_price_usd: 1100,
+    market_price_usd: 1100, our_price_usd: d(1100),
     last_price_sync: now, is_pre_order: false, box_count: 25,
     slug: 'pokemon-svah-bundle-case-en',
     created_at: now, updated_at: now,

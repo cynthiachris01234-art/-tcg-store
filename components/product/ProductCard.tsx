@@ -130,7 +130,7 @@ export function ProductCard({ product, className }: Props) {
           marketPriceUSD={product.market_price_usd}
           ourPriceUSD={product.our_price_usd}
           size="sm"
-          showSavings={!!product.is_promo}
+          showSavings={false}
         />
 
         {/* Action button */}
