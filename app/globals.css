@@ -6,8 +6,9 @@
   :root {
     --font-inter: 'Inter', sans-serif;
     --font-display: 'Inter', sans-serif;
-    --gold: #C8962A;
-    --gold-light: #E5B84D;
+    --fifa-blue: #1763ff;
+    --gold: #ffc629;
+    --gold-light: #ffd95e;
     --silver: #C8C8D0;
   }
 
@@ -16,13 +17,13 @@
 
   body {
     @apply text-white antialiased;
-    background-color: #080808;
+    background-color: #070d1c;
   }
 
-  ::-webkit-scrollbar { width: 6px; height: 6px; }
-  ::-webkit-scrollbar-track { background: #0d0d0d; }
-  ::-webkit-scrollbar-thumb { background: #2a2a2a; border-radius: 9999px; }
-  ::-webkit-scrollbar-thumb:hover { background: #C8962A; }
+  ::-webkit-scrollbar { width: 8px; height: 8px; }
+  ::-webkit-scrollbar-track { background: #0c1426; }
+  ::-webkit-scrollbar-thumb { background: #1c2942; border-radius: 9999px; }
+  ::-webkit-scrollbar-thumb:hover { background: #1763ff; }
 }
 
 @layer components {
@@ -34,27 +35,48 @@
     @apply bg-bg-card border border-gold/30 rounded-2xl shadow-gold-sm;
   }
 
+  .card-blue {
+    @apply bg-bg-card border border-fifa-blue/30 rounded-2xl shadow-blue-sm;
+  }
+
+  .glass {
+    background: rgba(12,20,38,0.7);
+    backdrop-filter: blur(12px);
+    @apply border border-white/10 rounded-2xl;
+  }
+
   .btn-primary {
-    @apply text-black font-bold px-6 py-3 rounded-xl
+    @apply text-white font-bold px-6 py-3 rounded-xl
            transition-all duration-200
            disabled:opacity-50 disabled:cursor-not-allowed;
-    background: linear-gradient(135deg, #E5B84D 0%, #C8962A 50%, #8B6418 100%);
-    box-shadow: 0 0 20px rgba(200,150,42,0.35);
+    background: linear-gradient(135deg, #3b82f6 0%, #1763ff 50%, #0a2e8c 100%);
+    box-shadow: 0 0 20px rgba(23,99,255,0.4);
   }
   .btn-primary:hover:not(:disabled) {
-    background: linear-gradient(135deg, #F0CC6A 0%, #D4A520 50%, #9A7520 100%);
-    box-shadow: 0 0 30px rgba(200,150,42,0.55);
+    background: linear-gradient(135deg, #5a96ff 0%, #2a72ff 50%, #123aa8 100%);
+    box-shadow: 0 0 32px rgba(23,99,255,0.6);
+    transform: translateY(-1px);
+  }
+
+  .btn-gold {
+    @apply text-fifa-navy font-bold px-6 py-3 rounded-xl transition-all duration-200
+           disabled:opacity-50 disabled:cursor-not-allowed;
+    background: linear-gradient(135deg, #ffd95e 0%, #ffc629 50%, #d4a017 100%);
+    box-shadow: 0 0 20px rgba(255,198,41,0.35);
+  }
+  .btn-gold:hover:not(:disabled) {
+    box-shadow: 0 0 32px rgba(255,198,41,0.6);
     transform: translateY(-1px);
   }
 
   .btn-outline {
     @apply border font-semibold px-6 py-3 rounded-xl transition-all duration-200 text-white;
-    border-color: rgba(200,150,42,0.4);
+    border-color: rgba(23,99,255,0.5);
   }
   .btn-outline:hover {
-    border-color: #C8962A;
-    background: rgba(200,150,42,0.08);
-    box-shadow: 0 0 16px rgba(200,150,42,0.2);
+    border-color: #1763ff;
+    background: rgba(23,99,255,0.1);
+    box-shadow: 0 0 16px rgba(23,99,255,0.25);
   }
 
   .badge {
@@ -62,7 +84,7 @@
   }
 
   .price-market { @apply text-muted line-through text-sm; }
-  .price-ours   { @apply font-bold text-xl; color: #E5B84D; }
+  .price-ours   { @apply font-bold text-xl; color: #ffd95e; }
 
   .shimmer-bg {
     background: linear-gradient(90deg, #0d0d0d 25%, #1e1e1e 50%, #0d0d0d 75%);
@@ -77,16 +99,33 @@
   .section-header::after {
     content: '';
     @apply absolute bottom-0 left-0 h-0.5 w-12 rounded-full;
-    background: linear-gradient(90deg, #C8962A, transparent);
+    background: linear-gradient(90deg, #1763ff, transparent);
+  }
+
+  .pill {
+    @apply inline-flex items-center gap-1.5 text-xs font-semibold px-3 py-1 rounded-full
+           border border-white/10 bg-white/5;
   }
 }
 
 @layer utilities {
   .text-gold-gradient {
-    background: linear-gradient(135deg, #E5B84D 0%, #C8962A 60%, #8B6418 100%);
+    background: linear-gradient(135deg, #ffd95e 0%, #ffc629 60%, #d4a017 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
+  }
+  .text-blue-gradient {
+    background: linear-gradient(135deg, #ffffff 0%, #7aa8ff 50%, #1763ff 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  .bg-grid {
+    background-image:
+      linear-gradient(rgba(23,99,255,0.07) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(23,99,255,0.07) 1px, transparent 1px);
+    background-size: 44px 44px;
   }
   .text-silver-gradient {
     background: linear-gradient(135deg, #ffffff 0%, #C8C8D0 50%, #888898 100%);
