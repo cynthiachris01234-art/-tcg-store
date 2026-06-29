@@ -37,16 +37,17 @@ export default function AccountPage() {
           <h1 className="text-2xl font-extrabold text-white">Welcome back, Alex</h1>
           <p className="text-muted text-sm">Member since 2025 · 🇺🇸 United States</p>
           <div className="mt-2 flex items-center gap-3 text-sm">
-            <span className="inline-flex items-center gap-1 text-fifa-gold"><Star className="w-4 h-4 fill-fifa-gold" /> 4.9 Buyer rating</span>
+            <span className="inline-flex items-center gap-1 text-fifa-gold"><Star className="w-4 h-4 fill-fifa-gold" /> 4.9 Seller rating</span>
             <span className="text-muted">·</span>
-            <span className="text-muted">12 successful purchases</span>
+            <span className="text-fifa-gold font-semibold">Top Seller</span>
+            <span className="text-muted">· 9 tickets sold</span>
           </div>
         </div>
         <div className="grid grid-cols-3 gap-3 text-center">
           {[
-            { icon: Ticket, label: 'Tickets', value: '2' },
-            { icon: Tag, label: 'Listings', value: '3' },
-            { icon: Wallet, label: 'Balance', value: '$1,240' },
+            { icon: Tag, label: 'Active', value: '3' },
+            { icon: Ticket, label: 'Sold', value: '9' },
+            { icon: Wallet, label: 'Earnings', value: '$8,640' },
           ].map((s) => (
             <div key={s.label} className="px-3 py-2 rounded-xl bg-surface border border-bg-border">
               <s.icon className="w-4 h-4 text-fifa-blue-light mx-auto" />
@@ -57,23 +58,22 @@ export default function AccountPage() {
         </div>
       </div>
 
-      {/* My Tickets */}
-      <section className="mb-12">
-        <h2 className="text-xl font-extrabold text-white flex items-center gap-2 mb-4">
-          <Ticket className="w-5 h-5 text-fifa-blue-light" /> My Tickets
-        </h2>
-        <div className="grid md:grid-cols-2 gap-5">
-          {owned.map(({ match, listing }) => (
-            <QRTicket key={match.id} listing={listing} match={match} />
-          ))}
+      {/* Sell more banner */}
+      <div className="rounded-2xl border border-fifa-gold/30 bg-gradient-to-r from-fifa-gold/10 to-transparent p-5 mb-10 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div>
+          <h2 className="text-lg font-extrabold text-white">Got more tickets to sell?</h2>
+          <p className="text-sm text-muted">List them in under two minutes and reach millions of buyers.</p>
         </div>
-      </section>
+        <Link href="/sell" className="btn-gold inline-flex items-center gap-2 shrink-0">
+          <Tag className="w-4 h-4" /> List New Tickets
+        </Link>
+      </div>
 
-      {/* My Listings */}
+      {/* My Listings — primary seller view */}
       <section className="mb-12">
         <div className="flex items-center justify-between mb-4">
           <h2 className="text-xl font-extrabold text-white flex items-center gap-2">
-            <Tag className="w-5 h-5 text-fifa-blue-light" /> My Listings
+            <Tag className="w-5 h-5 text-fifa-gold" /> My Listings
           </h2>
           <Link href="/sell" className="text-sm font-semibold text-fifa-blue-light hover:underline">+ New listing</Link>
         </div>
@@ -103,6 +103,18 @@ export default function AccountPage() {
               </div>
             );
           })}
+        </div>
+      </section>
+
+      {/* Tickets I've bought */}
+      <section className="mb-12">
+        <h2 className="text-xl font-extrabold text-white flex items-center gap-2 mb-4">
+          <Ticket className="w-5 h-5 text-fifa-blue-light" /> Tickets I&apos;ve Bought
+        </h2>
+        <div className="grid md:grid-cols-2 gap-5">
+          {owned.map(({ match, listing }) => (
+            <QRTicket key={match.id} listing={listing} match={match} />
+          ))}
         </div>
       </section>
 

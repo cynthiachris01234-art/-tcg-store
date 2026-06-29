@@ -13,11 +13,11 @@ const inter = Inter({
 export const metadata: Metadata = {
   metadataBase: new URL('https://worldcup-resale.example'),
   title: {
-    default: 'Goal26 — FIFA World Cup 2026 Ticket Resale Marketplace',
+    default: 'Goal26 — Sell Your FIFA World Cup 2026 Tickets',
     template: '%s | Goal26 Tickets',
   },
   description:
-    'Buy and sell verified FIFA World Cup 2026 tickets across all 16 host cities in the USA, Canada & Mexico. Interactive seating maps, instant mobile delivery, and a 100% Buyer Guarantee.',
+    'The safest way to sell and resell FIFA World Cup 2026 tickets. List in minutes, reach millions of verified buyers across all 16 host cities, low 10% fee, and a guaranteed payout. Buyers welcome too.',
   keywords: [
     'world cup 2026 tickets', 'fifa 2026 resale', 'world cup final tickets',
     'metlife stadium tickets', 'world cup hospitality', 'buy world cup tickets',
