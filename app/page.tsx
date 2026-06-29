@@ -1,5 +1,6 @@
 import Link from 'next/link';
-import { Trophy, Flame, Clock, MapPin, ShieldCheck, Zap, ArrowRight, Ticket, TrendingUp } from 'lucide-react';
+import { Trophy, Flame, Clock, MapPin, ShieldCheck, Zap, ArrowRight, Ticket, TrendingUp, Tag } from 'lucide-react';
+import { ResellPromo } from '@/components/fifa/ResellPromo';
 import { HeroSearch } from '@/components/fifa/HeroSearch';
 import { Countdown } from '@/components/fifa/Countdown';
 import { LiveInventory } from '@/components/fifa/LiveInventory';
@@ -27,19 +28,29 @@ export default function HomePage() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-16 pb-14 sm:pt-24 sm:pb-20">
           <div className="flex flex-col items-center text-center">
             <span className="pill text-fifa-gold border-fifa-gold/30 bg-fifa-gold/10 mb-5">
-              <Trophy className="w-3.5 h-3.5" /> FIFA World Cup 2026™ · Official-style Resale
+              <Trophy className="w-3.5 h-3.5" /> FIFA World Cup 2026™ · The Fan-to-Fan Resale Marketplace
             </span>
             <h1 className="text-4xl sm:text-6xl font-extrabold tracking-tight leading-[1.05] max-w-4xl">
-              Your seat at the <span className="text-gold-gradient">greatest World Cup</span> ever.
+              Buy &amp; resell World Cup tickets, <span className="text-gold-gradient">safely.</span>
             </h1>
             <p className="mt-5 text-base sm:text-lg text-blue-100/80 max-w-2xl">
-              Verified resale tickets for all 104 matches across 16 host cities in the USA,
-              Canada &amp; Mexico. Interactive seating maps, instant mobile delivery, and a
-              100% Buyer Guarantee.
+              The trusted resale marketplace for the FIFA World Cup 2026 — list the seats you
+              can&apos;t use and grab the ones you can, across all 104 matches in 16 host cities.
+              Every resale is verified, with instant mobile delivery and a 100% guarantee for
+              both buyers and sellers.
             </p>
 
             <div className="mt-8 flex justify-center w-full">
               <HeroSearch />
+            </div>
+
+            <div className="mt-5 flex flex-col sm:flex-row items-center gap-3">
+              <Link href="/sell" className="btn-gold inline-flex items-center gap-2">
+                <Tag className="w-4 h-4" /> Resell Your Tickets
+              </Link>
+              <Link href="/tickets" className="btn-outline inline-flex items-center gap-2">
+                <Ticket className="w-4 h-4" /> Browse Tickets
+              </Link>
             </div>
 
             <div className="mt-8">
@@ -89,6 +100,9 @@ export default function HomePage() {
           </div>
         </div>
       </section>
+
+      {/* ───────────────── RESELL YOUR TICKETS ───────────────── */}
+      <ResellPromo />
 
       {/* ───────────────── FEATURED MATCHES ───────────────── */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
@@ -194,15 +208,15 @@ export default function HomePage() {
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <div className="rounded-3xl border border-fifa-blue/30 bg-gradient-to-br from-fifa-blue-dark/60 to-fifa-navy p-8 sm:p-12 text-center">
           <ShieldCheck className="w-12 h-12 text-fifa-green mx-auto" />
-          <h2 className="mt-4 text-2xl sm:text-3xl font-extrabold text-white">The 100% Buyer Guarantee</h2>
+          <h2 className="mt-4 text-2xl sm:text-3xl font-extrabold text-white">The 100% Buyer &amp; Seller Guarantee</h2>
           <p className="mt-3 text-blue-100/80 max-w-2xl mx-auto">
-            Every ticket is verified and backed end-to-end. If your tickets don&apos;t arrive
-            as described, we&apos;ll find comparable replacements or refund you in full.
-            Sell with confidence too — get paid fast after the match.
+            Every resale is verified and backed end-to-end. Buyers get the seats they paid for
+            or a full refund — and sellers are guaranteed payment as soon as their tickets are
+            delivered. Reselling your World Cup tickets has never been safer.
           </p>
           <div className="mt-6 flex flex-wrap items-center justify-center gap-3">
-            <Link href="/tickets" className="btn-primary">Browse Tickets</Link>
-            <Link href="/sell" className="btn-outline">Sell Your Tickets</Link>
+            <Link href="/sell" className="btn-gold">Resell Your Tickets</Link>
+            <Link href="/tickets" className="btn-outline">Browse Tickets</Link>
           </div>
         </div>
       </section>

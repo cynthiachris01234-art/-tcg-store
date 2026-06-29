@@ -3,15 +3,14 @@
 import Link from 'next/link';
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { Menu, X, Search, Ticket, User, ShieldCheck } from 'lucide-react';
+import { Menu, X, Search, Ticket, User, ShieldCheck, Tag } from 'lucide-react';
 import { Logo } from './Logo';
 
 const NAV_LINKS = [
   { href: '/', label: 'Home' },
   { href: '/matches', label: 'Matches' },
-  { href: '/tickets', label: 'Tickets' },
+  { href: '/tickets', label: 'Buy Tickets' },
   { href: '/stadiums', label: 'Stadiums' },
-  { href: '/sell', label: 'Sell Tickets' },
 ];
 
 export function SiteNavbar() {
@@ -71,10 +70,16 @@ export function SiteNavbar() {
                 </Link>
               ))}
               <Link
-                href="/account"
-                className="ml-1 flex items-center gap-1.5 px-3 py-2 text-sm font-semibold text-white rounded-lg border border-fifa-blue/40 hover:bg-fifa-blue/10 transition-colors"
+                href="/sell"
+                className="ml-1 flex items-center gap-1.5 btn-gold !px-4 !py-2 text-sm"
               >
-                <User className="w-4 h-4" /> My Account
+                <Tag className="w-4 h-4" /> Sell / Resell
+              </Link>
+              <Link
+                href="/account"
+                className="flex items-center gap-1.5 px-3 py-2 text-sm font-semibold text-white rounded-lg border border-fifa-blue/40 hover:bg-fifa-blue/10 transition-colors"
+              >
+                <User className="w-4 h-4" /> Account
               </Link>
             </div>
 
@@ -122,6 +127,13 @@ export function SiteNavbar() {
               className="flex items-center gap-2 px-3 py-2.5 text-gray-200 hover:text-white rounded-lg hover:bg-white/5"
             >
               <User className="w-4 h-4 text-fifa-blue-light" /> My Account
+            </Link>
+            <Link
+              href="/sell"
+              onClick={() => setMobileOpen(false)}
+              className="btn-gold w-full mt-2 flex items-center justify-center gap-2 text-sm"
+            >
+              <Tag className="w-4 h-4" /> Sell / Resell Tickets
             </Link>
           </div>
         )}
