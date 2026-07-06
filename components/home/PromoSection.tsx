@@ -45,7 +45,6 @@ export function PromoSection() {
 
 function PromoCard({ product, onAdd }: { product: any; onAdd: () => void }) {
   const [imgSrc, setImgSrc] = useState(product.image_url);
-  const savings = Math.round((1 - product.our_price_usd / product.market_price_usd) * 100);
 
   return (
     <div
@@ -102,13 +101,7 @@ function PromoCard({ product, onAdd }: { product: any; onAdd: () => void }) {
           <div>
             {/* Price */}
             <div className="flex items-end gap-3 mt-4">
-              <div>
-                <p className="text-muted text-xs line-through">${product.market_price_usd.toFixed(2)}</p>
-                <p className="text-2xl font-black text-accent">${product.our_price_usd.toFixed(2)}</p>
-              </div>
-              <span className="mb-1 text-xs font-bold bg-green-500/20 text-green-400 px-2 py-0.5 rounded-full">
-                -{savings}% OFF
-              </span>
+              <p className="text-2xl font-black text-accent">${product.our_price_usd.toFixed(2)}</p>
             </div>
 
             {/* Buttons */}

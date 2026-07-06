@@ -1,7 +1,8 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { RefreshCw, Eye, Users, Globe, TrendingUp, Radio } from 'lucide-react';
+import { RefreshCw, Eye, Users, Globe, TrendingUp, Radio, ShoppingBag, DollarSign } from 'lucide-react';
+import type { StoredOrder } from '@/lib/orders';
 
 interface TrafficData {
   days: number;
@@ -25,20 +26,44 @@ function flag(code: string) {
   return String.fromCodePoint(...code.toUpperCase().split('').map(c => 0x1F1E6 + c.charCodeAt(0) - 65));
 }
 
+const PAY_LABELS: Record<string, string> = {
+  wise: 'Wise', applepay: 'Apple Pay',
+  cashapp: 'Cash App', paypal: 'PayPal', bank: 'Bank Transfer',
+  btc: 'Bitcoin (BTC)', usdt: 'USDT (Tether)',
+};
+
 export default function AnalyticsPage() {
   const [days, setDays]       = useState(30);
   const [data, setData]       = useState<TrafficData | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError]     = useState('');
+  const [orders, setOrders]   = useState<StoredOrder[]>([]);
 
   async function load(d = days) {
     setLoading(true);
     setError('');
     try {
-      const res  = await fetch(`/api/track?days=${d}`);
-      const json = await res.json();
+      const [trafficRes, ordersRes] = await Promise.all([
+        fetch(`/api/track?days=${d}`),
+        fetch('/api/orders'),
+      ]);
+      const json = await trafficRes.json();
       if (json.error) throw new Error(json.error);
       setData(json);
+      const ordersJson = await ordersRes.json();
+      if (Array.isArray(ordersJson.orders)) {
+        setOrders(ordersJson.orders.map((o: any) => ({
+          id:            o.id,
+          createdAt:     o.created_at,
+          status:        o.status ?? 'awaiting_payment',
+          paymentMethod: o.payment_method ?? o.paymentMethod ?? '',
+          customer:      o.customer,
+          items:         o.items ?? [],
+          subtotal:      o.subtotal_usd ?? 0,
+          discount:      o.discount_usd ?? 0,
+          total:         o.total_usd ?? 0,
+        })));
+      }
     } catch (e: any) {
       setError(e.message ?? 'Failed to load');
     } finally {
@@ -48,10 +73,20 @@ export default function AnalyticsPage() {
 
   useEffect(() => {
     load();
-    // Refresh current browsers every 30 seconds
     const interval = setInterval(() => load(), 30_000);
     return () => clearInterval(interval);
   }, []);
+
+  // Order stats
+  const totalRevenue = orders.reduce((s, o) => s + o.total, 0);
+  const payBreakdown = orders.reduce<Record<string, { count: number; revenue: number }>>((acc, o) => {
+    const key = o.paymentMethod || 'unknown';
+    if (!acc[key]) acc[key] = { count: 0, revenue: 0 };
+    acc[key].count++;
+    acc[key].revenue += o.total;
+    return acc;
+  }, {});
+  const payEntries = Object.entries(payBreakdown).sort((a, b) => b[1].revenue - a[1].revenue);
 
   const maxDaily   = data ? Math.max(...data.dailyViews.map(d => d.views), 1) : 1;
   const maxCountry = data ? Math.max(...data.topCountries.map(c => c.views), 1) : 1;
@@ -106,6 +141,38 @@ CREATE INDEX IF NOT EXISTS idx_pv_page    ON page_views (page);`}</pre>
       {loading && !data && (
         <div className="text-center py-24 text-muted">Loading…</div>
       )}
+
+      {/* ── Orders Summary ── */}
+      <div className="space-y-4 mb-8">
+        <h2 className="text-white font-semibold text-lg">Orders</h2>
+        <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
+          <div className="card p-5">
+            <ShoppingBag className="w-5 h-5 text-accent mb-3" />
+            <p className="text-2xl font-bold text-white">{orders.length}</p>
+            <p className="text-muted text-xs mt-1">Total Orders</p>
+          </div>
+          <div className="card p-5">
+            <DollarSign className="w-5 h-5 text-accent mb-3" />
+            <p className="text-2xl font-bold text-white">${totalRevenue.toFixed(2)}</p>
+            <p className="text-muted text-xs mt-1">Total Revenue</p>
+          </div>
+          <div className="card p-5 col-span-2 sm:col-span-1">
+            <p className="text-white font-semibold text-sm mb-3">By Payment Method</p>
+            {payEntries.length === 0 ? (
+              <p className="text-muted text-sm">No orders yet</p>
+            ) : (
+              <div className="space-y-2">
+                {payEntries.map(([method, { count, revenue }]) => (
+                  <div key={method} className="flex items-center justify-between text-sm">
+                    <span className="text-white">{PAY_LABELS[method] ?? method}</span>
+                    <span className="text-muted text-xs">{count} order{count !== 1 ? 's' : ''} · <span className="text-accent font-semibold">${revenue.toFixed(2)}</span></span>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
 
       {data && (
         <div className="space-y-6">

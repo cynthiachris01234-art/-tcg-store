@@ -42,15 +42,15 @@ export default async function CasesPage({ searchParams }: Props) {
             <div className="card px-5 py-3 flex items-center gap-3">
               <Tag className="w-5 h-5 text-success" />
               <div>
-                <p className="text-white font-semibold text-sm">30% below market</p>
-                <p className="text-muted text-xs">Base discount on all products</p>
+                <p className="text-white font-semibold text-sm">100% sealed & authentic</p>
+                <p className="text-muted text-xs">Guaranteed on every order</p>
               </div>
             </div>
             <div className="card px-5 py-3 flex items-center gap-3">
               <Package2 className="w-5 h-5 text-mtg-gold" />
               <div>
                 <p className="text-white font-semibold text-sm">Extra 5% on cases</p>
-                <p className="text-muted text-xs">Stacks on top of the 30%</p>
+                <p className="text-muted text-xs">Bundle discount on all cases</p>
               </div>
             </div>
           </div>

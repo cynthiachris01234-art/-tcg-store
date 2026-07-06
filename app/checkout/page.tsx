@@ -1,14 +1,12 @@
 'use client';
 
-import { useState, useMemo } from 'react';
+import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useCart } from '@/lib/cart';
 import { useCurrency } from '@/lib/currency';
-import { Lock, ArrowLeft, CheckCircle2, CreditCard } from 'lucide-react';
-import { SiWise, SiCashapp } from 'react-icons/si';
+import { Lock, ArrowLeft, CheckCircle2, Landmark } from 'lucide-react';
+import { SiWise, SiCashapp, SiBitcoin, SiTether } from 'react-icons/si';
 import { FaApplePay, FaPaypal } from 'react-icons/fa6';
-import { Elements, CardElement, useStripe, useElements } from '@stripe/react-stripe-js';
-import { getStripe } from '@/lib/stripe';
 import Link from 'next/link';
 import type { ProductType } from '@/types';
 
@@ -32,18 +30,18 @@ interface PaymentMethod {
 
 const PAYMENT_METHODS: PaymentMethod[] = [
   {
-    id: 'card',
-    label: 'Credit / Debit Card',
-    note: 'Visa, Mastercard, Amex — charged instantly via Stripe',
-    logo: <CreditCard className="w-7 h-7 text-blue-400" />,
-    bg: '#001233',
-  },
-  {
     id: 'wise',
     label: 'Wise Transfer',
     note: 'Best for international buyers — low fees worldwide',
     logo: <SiWise className="w-7 h-7" style={{ color: '#9FE870' }} />,
     bg: '#163300',
+  },
+  {
+    id: 'paypal',
+    label: 'PayPal',
+    note: 'We send you a PayPal payment request — fast & secure',
+    logo: <FaPaypal className="w-7 h-7" style={{ color: '#003087' }} />,
+    bg: '#001a47',
   },
   {
     id: 'applepay',
@@ -60,11 +58,25 @@ const PAYMENT_METHODS: PaymentMethod[] = [
     bg: '#003d0f',
   },
   {
-    id: 'paypal',
-    label: 'PayPal',
-    note: 'We send you a PayPal payment request — fast & secure',
-    logo: <FaPaypal className="w-7 h-7" style={{ color: '#003087' }} />,
-    bg: '#001a47',
+    id: 'bank',
+    label: 'Bank Transfer / Wire',
+    note: 'ACH or wire — we send routing & account details after order',
+    logo: <Landmark className="w-7 h-7 text-blue-300" />,
+    bg: '#0a1628',
+  },
+  {
+    id: 'btc',
+    label: 'Bitcoin (BTC)',
+    note: 'We send you our BTC wallet address after order',
+    logo: <SiBitcoin className="w-7 h-7" style={{ color: '#F7931A' }} />,
+    bg: '#1a0f00',
+  },
+  {
+    id: 'usdt',
+    label: 'USDT (Tether)',
+    note: 'TRC-20 or ERC-20 — we send wallet address after order',
+    logo: <SiTether className="w-7 h-7" style={{ color: '#26A17B' }} />,
+    bg: '#001a14',
   },
 ];
 
@@ -82,30 +94,15 @@ const EMPTY_FORM: AddressForm = {
   postal_code: '', country: 'US',
 };
 
-const CARD_ELEMENT_OPTIONS = {
-  style: {
-    base: {
-      color: '#ffffff',
-      fontFamily: 'system-ui, sans-serif',
-      fontSize: '15px',
-      '::placeholder': { color: '#6b7280' },
-    },
-    invalid: { color: '#f87171' },
-  },
-};
-
-// ── Inner form — must be inside <Elements> to use useStripe/useElements ────────
-function CheckoutForm() {
+export default function CheckoutPage() {
   const router = useRouter();
   const { cart, clearCart } = useCart();
   const { format } = useCurrency();
-  const stripeHook = useStripe();
-  const elements  = useElements();
 
-  const [form, setForm]         = useState<AddressForm>(EMPTY_FORM);
-  const [payMethod, setPayMethod] = useState('card');
-  const [loading, setLoading]   = useState(false);
-  const [error, setError]       = useState('');
+  const [form, setForm]           = useState<AddressForm>(EMPTY_FORM);
+  const [payMethod, setPayMethod] = useState('wise');
+  const [loading, setLoading]     = useState(false);
+  const [error, setError]         = useState('');
 
   function update(key: keyof AddressForm, value: string) {
     setForm((f) => ({ ...f, [key]: value }));
@@ -123,7 +120,7 @@ function CheckoutForm() {
         body: JSON.stringify({ cart, paymentMethod: payMethod }),
       });
       if (!checkRes.ok) throw new Error('Could not create order');
-      const { orderId, clientSecret, verifiedSubtotalUsd, verifiedDiscountUsd, verifiedTotalUsd } = await checkRes.json();
+      const { orderId, verifiedSubtotalUsd, verifiedDiscountUsd, verifiedTotalUsd } = await checkRes.json();
 
       const customer = {
         name: form.name, email: form.email, phone: form.phone,
@@ -132,66 +129,10 @@ function CheckoutForm() {
         postal_code: form.postal_code, country: form.country,
       };
 
-      // ── Card payment: confirm with Stripe ────────────────────────────────────
-      if (payMethod === 'card') {
-        if (!stripeHook || !elements) throw new Error('Stripe not loaded');
-        const cardEl = elements.getElement(CardElement);
-        if (!cardEl) throw new Error('Card element not found');
-
-        const { error: stripeErr, paymentIntent } = await stripeHook.confirmCardPayment(
-          clientSecret,
-          {
-            payment_method: {
-              card: cardEl,
-              billing_details: {
-                name: form.name,
-                email: form.email,
-                phone: form.phone || undefined,
-                address: {
-                  line1: form.line1,
-                  line2: form.line2 || undefined,
-                  city: form.city,
-                  state: form.state,
-                  postal_code: form.postal_code,
-                  country: form.country,
-                },
-              },
-            },
-          }
-        );
-
-        if (stripeErr) throw new Error(stripeErr.message ?? 'Card payment failed');
-        if (paymentIntent?.status !== 'succeeded') throw new Error('Payment not completed');
-
-        // Save order + notify (status paid for card)
-        const { saveOrder } = await import('@/lib/orders');
-        const order = saveOrder(orderId, cart, customer, 'paid', 'card');
-
-        const saveRes1 = await fetch('/api/orders', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            id: order.id, status: order.status,
-            paymentMethod: 'card',
-            customer: order.customer, items: order.items,
-            subtotal_usd: verifiedSubtotalUsd ?? order.subtotal,
-            discount_usd: verifiedDiscountUsd ?? order.discount,
-            total_usd:    verifiedTotalUsd    ?? order.total,
-          }),
-        });
-        const saveData1 = await saveRes1.json();
-        if (saveData1.dbError) console.error('Order DB save error:', saveData1.dbError);
-
-        clearCart();
-        router.push(`/checkout/success?order=${orderId}&method=card`);
-        return;
-      }
-
-      // ── Manual payment methods ───────────────────────────────────────────────
       const { saveOrder } = await import('@/lib/orders');
       const order = saveOrder(orderId, cart, customer, 'awaiting_payment', payMethod);
 
-      const saveRes2 = await fetch('/api/orders', {
+      const saveRes = await fetch('/api/orders', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -203,8 +144,8 @@ function CheckoutForm() {
           total_usd:    verifiedTotalUsd    ?? order.total,
         }),
       });
-      const saveData2 = await saveRes2.json();
-      if (saveData2.dbError) console.error('Order DB save error:', saveData2.dbError);
+      const saveData = await saveRes.json();
+      if (saveData.dbError) console.error('Order DB save error:', saveData.dbError);
 
       clearCart();
       router.push(`/checkout/success?order=${orderId}&method=${payMethod}`);
@@ -237,7 +178,6 @@ function CheckoutForm() {
   ];
 
   const selected = PAYMENT_METHODS.find(m => m.id === payMethod)!;
-  const isCard = payMethod === 'card';
 
   return (
     <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
@@ -304,28 +244,13 @@ function CheckoutForm() {
               </div>
             </div>
 
-            {/* Stripe card input — shown only when card selected */}
-            {isCard && (
-              <div className="card p-4 border-blue-500/30 bg-blue-500/5">
-                <p className="text-muted text-xs mb-3 uppercase tracking-widest">Card Details</p>
-                <div className="bg-bg border border-bg-border rounded-xl px-4 py-3.5">
-                  <CardElement options={CARD_ELEMENT_OPTIONS} />
-                </div>
-                <p className="text-muted text-[11px] mt-2 flex items-center gap-1">
-                  <Lock className="w-3 h-3" /> Secured by Stripe — we never see your card number
-                </p>
-              </div>
-            )}
-
-            {/* How it works — only for manual methods */}
-            {!isCard && (
-              <div className="card p-4 flex items-start gap-3 border-accent/25 bg-accent/5">
-                <Lock className="w-4 h-4 text-accent flex-shrink-0 mt-0.5" />
-                <p className="text-muted text-xs leading-relaxed">
-                  Place your order and we&apos;ll send your <strong className="text-white">{selected.label}</strong> payment details to your phone or email <strong className="text-white">within 2 hours</strong>. Your order is reserved while you wait.
-                </p>
-              </div>
-            )}
+            {/* How it works */}
+            <div className="card p-4 flex items-start gap-3 border-accent/25 bg-accent/5">
+              <Lock className="w-4 h-4 text-accent flex-shrink-0 mt-0.5" />
+              <p className="text-muted text-xs leading-relaxed">
+                Place your order and we&apos;ll send your <strong className="text-white">{selected.label}</strong> payment details to your phone or email <strong className="text-white">within 2 hours</strong>. Your order is reserved while you wait.
+              </p>
+            </div>
 
             {error && (
               <div className="bg-red-500/10 border border-red-500/30 rounded-xl p-4 text-red-400 text-sm">
@@ -333,13 +258,9 @@ function CheckoutForm() {
               </div>
             )}
 
-            <button type="submit" disabled={loading || (isCard && !stripeHook)}
+            <button type="submit" disabled={loading}
               className="w-full btn-primary flex items-center justify-center gap-2 py-4 text-base font-bold disabled:opacity-60">
-              {loading
-                ? (isCard ? 'Processing Payment…' : 'Placing Order…')
-                : isCard
-                  ? `Pay Now — ${format(cart.total_usd)}`
-                  : `Place Order — ${format(cart.total_usd)}`}
+              {loading ? 'Placing Order…' : `Place Order — ${format(cart.total_usd)}`}
             </button>
           </form>
         </div>
@@ -384,43 +305,29 @@ function CheckoutForm() {
             </div>
             <div>
               <p className="text-white text-sm font-semibold">{selected.label}</p>
-              <p className="text-muted text-xs">
-                {isCard ? 'Charged instantly — secure Stripe payment' : 'Payment link sent after order'}
-              </p>
+              <p className="text-muted text-xs">Payment link sent after order confirmation</p>
             </div>
           </div>
 
-          {/* Contact — only for manual methods */}
-          {!isCard && (
-            <div className="mt-4 p-4 rounded-2xl border border-green-500/20 bg-green-500/5 space-y-2">
-              <p className="text-green-400 text-sm font-bold">📲 We&apos;ll reach you within 2 hours</p>
-              <p className="text-green-400/70 text-xs flex items-center gap-1.5">
-                <span>📱</span>
-                <a href="tel:+13322728148" className="hover:text-green-300 transition-colors">+1 (332) 272-8148</a>
-                <span className="text-green-400/40">·</span>
-                <a href="https://wa.me/13322728148" target="_blank" rel="noopener noreferrer"
-                  className="hover:text-green-300 transition-colors">WhatsApp</a>
-              </p>
-              <p className="text-green-400/70 text-xs flex items-center gap-1.5">
-                <span>📧</span>
-                <a href="mailto:apextradingcardshop@gmail.com" className="hover:text-green-300 transition-colors">
-                  apextradingcardshop@gmail.com
-                </a>
-              </p>
-            </div>
-          )}
+          {/* Contact */}
+          <div className="mt-4 p-4 rounded-2xl border border-green-500/20 bg-green-500/5 space-y-2">
+            <p className="text-green-400 text-sm font-bold">📲 We&apos;ll reach you within 2 hours</p>
+            <p className="text-green-400/70 text-xs flex items-center gap-1.5">
+              <span>📱</span>
+              <a href="tel:+13322728148" className="hover:text-green-300 transition-colors">+1 (332) 272-8148</a>
+              <span className="text-green-400/40">·</span>
+              <a href="https://wa.me/13322728148" target="_blank" rel="noopener noreferrer"
+                className="hover:text-green-300 transition-colors">WhatsApp</a>
+            </p>
+            <p className="text-green-400/70 text-xs flex items-center gap-1.5">
+              <span>📧</span>
+              <a href="mailto:apextradingcardshop@gmail.com" className="hover:text-green-300 transition-colors">
+                apextradingcardshop@gmail.com
+              </a>
+            </p>
+          </div>
         </div>
       </div>
     </div>
-  );
-}
-
-// ── Outer wrapper — provides Stripe Elements context ──────────────────────────
-export default function CheckoutPage() {
-  const stripePromise = useMemo(() => getStripe(), []);
-  return (
-    <Elements stripe={stripePromise}>
-      <CheckoutForm />
-    </Elements>
   );
 }

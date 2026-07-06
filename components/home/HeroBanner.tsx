@@ -121,7 +121,7 @@ export function HeroBanner() {
             >
               <TrendingDown className="w-3.5 h-3.5" style={{ color: '#E5B84D' }} />
               <span className="text-sm font-semibold" style={{ color: '#E5B84D' }}>
-                Always 30% Below Market Price
+                100% Sealed & Authentic
               </span>
             </div>
 

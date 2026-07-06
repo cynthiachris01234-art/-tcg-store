@@ -15,8 +15,8 @@ export async function generateMetadata({ searchParams }: Props): Promise<Metadat
   return {
     title: q ? `Search: "${q}"` : 'All Products',
     description: q
-      ? `Search results for "${q}" — sealed Pokémon, One Piece, MTG, and Yu-Gi-Oh! booster boxes at 40% off.`
-      : 'Browse all sealed TCG booster boxes and cases — Pokémon, One Piece, MTG, and Yu-Gi-Oh! Always 40% below market price.',
+      ? `Search results for "${q}" — sealed Pokémon, One Piece, MTG, and Yu-Gi-Oh! booster boxes.`
+      : 'Browse all sealed TCG booster boxes and cases — Pokémon, One Piece, MTG, and Yu-Gi-Oh!',
     alternates: { canonical: 'https://apextcg.shop/shop' },
   };
 }

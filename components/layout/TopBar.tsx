@@ -9,10 +9,10 @@ export function TopBar() {
 
           {/* Left — promo text */}
           <p className="text-muted hidden sm:block">
-            🔥 <span className="text-accent font-semibold">40% below market</span> on all sealed TCG products — Free US shipping over $500
+            🔥 <span className="text-accent font-semibold">100% sealed & authentic</span> TCG products — Free US shipping over $500
           </p>
           <p className="text-muted sm:hidden text-[11px]">
-            🔥 40% below market · Free US shipping over $500
+            🔥 100% sealed & authentic · Free US shipping over $500
           </p>
 
           {/* Right — contact links */}

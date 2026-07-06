@@ -5,8 +5,10 @@ import { getMockProducts, MOCK_PRODUCTS } from '@/lib/mock-data';
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL ?? '';
 const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ?? '';
 
-// Supabase is configured for ORDERS only — products always use mock data
+// Supabase is configured for ORDERS only — sealed products always use mock data
 const isConfigured = false; // Set to true only when products table is populated
+// single_cards table is queried from Supabase when URL + key are present
+const isCardsConfigured = !!(supabaseUrl && supabaseAnonKey);
 
 let _client: SupabaseClient | null = null;
 function db(): SupabaseClient {
@@ -43,10 +45,75 @@ export async function getProducts(filters: FilterState & { search?: string } = {
 }
 
 export async function getProductBySlug(slug: string): Promise<Product | null> {
-  if (!isConfigured) return MOCK_PRODUCTS.find(p => p.slug === slug) ?? null;
+  // Check sealed products first (mock data)
+  const sealed = MOCK_PRODUCTS.find(p => p.slug === slug);
+  if (sealed) return sealed;
+  // Fall back to single_cards table
+  return getCardBySlug(slug);
+}
+
+// ─── Single-card queries ──────────────────────────────────────────────────────
+
+function rowToProduct(row: Record<string, unknown>): Product {
+  return {
+    id:                   String(row.id),
+    brand:                row.brand as Product['brand'],
+    language:             (row.language ?? 'en') as Product['language'],
+    product_type:         'single_card',
+    set_name:             String(row.set_name),
+    set_code:             String(row.set_code),
+    image_url:            String(row.image_url ?? ''),
+    release_date:         String(row.release_date ?? ''),
+    stock_quantity:       Number(row.stock_quantity ?? 0),
+    condition:            (row.condition ?? 'nm') as Product['condition'],
+    market_price_usd:     Number(row.market_price_usd ?? 0),
+    our_price_usd:        Number(row.our_price_usd ?? 0),
+    last_price_sync:      String(row.last_price_sync ?? new Date().toISOString()),
+    is_pre_order:         Boolean(row.is_pre_order),
+    slug:                 String(row.slug),
+    created_at:           String(row.created_at ?? new Date().toISOString()),
+    updated_at:           String(row.updated_at ?? new Date().toISOString()),
+    card_name:            row.card_name ? String(row.card_name) : undefined,
+    card_number:          row.card_number ? String(row.card_number) : undefined,
+    rarity:               row.rarity ? String(row.rarity) : undefined,
+    printing:             row.printing ? String(row.printing) : undefined,
+    low_price_usd:        row.low_price_usd != null ? Number(row.low_price_usd) : undefined,
+    mid_price_usd:        row.mid_price_usd != null ? Number(row.mid_price_usd) : undefined,
+    high_price_usd:       row.high_price_usd != null ? Number(row.high_price_usd) : undefined,
+    tcgplayer_product_id: row.tcgplayer_product_id ? String(row.tcgplayer_product_id) : undefined,
+    category:             row.category ? String(row.category) : undefined,
+  };
+}
+
+export async function getCards(filters: FilterState & { search?: string; rarity?: string } = {}): Promise<Product[]> {
+  if (!isCardsConfigured) return [];
   try {
-    const { data } = await db().from('products').select('*').eq('slug', slug).single();
-    return (data as Product) ?? null;
+    let q = db().from('single_cards').select('*');
+    if (filters.brand)         q = q.eq('brand',    filters.brand);
+    if (filters.language)      q = q.eq('language', filters.language);
+    if (filters.in_stock_only) q = q.gt('stock_quantity', 0);
+    if (filters.rarity)        q = q.eq('rarity',   filters.rarity);
+    if (filters.search) {
+      q = q.or(
+        `card_name.ilike.%${filters.search}%,set_name.ilike.%${filters.search}%,set_code.ilike.%${filters.search}%,card_number.ilike.%${filters.search}%`
+      );
+    }
+    switch (filters.sort_by) {
+      case 'price_asc':    q = q.order('our_price_usd', { ascending: true });  break;
+      case 'price_desc':   q = q.order('our_price_usd', { ascending: false }); break;
+      case 'release_date': q = q.order('release_date',  { ascending: false }); break;
+      default:             q = q.order('card_name',     { ascending: true });
+    }
+    const { data } = await q;
+    return (data ?? []).map(rowToProduct);
+  } catch { return []; }
+}
+
+export async function getCardBySlug(slug: string): Promise<Product | null> {
+  if (!isCardsConfigured) return null;
+  try {
+    const { data } = await db().from('single_cards').select('*').eq('slug', slug).single();
+    return data ? rowToProduct(data as Record<string, unknown>) : null;
   } catch { return null; }
 }
 

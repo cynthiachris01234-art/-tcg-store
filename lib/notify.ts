@@ -46,6 +46,9 @@ const PAY_LABELS: Record<string, string> = {
   applepay: 'Apple Pay',
   cashapp:  'Cash App',
   paypal:   'PayPal',
+  bank:     'Bank Transfer / Wire',
+  btc:      'Bitcoin (BTC)',
+  usdt:     'USDT (Tether)',
 };
 function payLabel(id?: string): string {
   return PAY_LABELS[id ?? ''] ?? id ?? 'Not specified';

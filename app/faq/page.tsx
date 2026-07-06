@@ -14,8 +14,8 @@ const FAQS = [
     a: 'Yes. Every product we sell is 100% factory sealed, direct from authorized distributors. We guarantee authenticity on every order — no opened, resealed, or counterfeit products ever.',
   },
   {
-    q: 'Why are your prices so much lower than other stores?',
-    a: 'We buy in bulk directly from distributors, which lets us pass the savings on to you. Our prices are always 40% below the TCGPlayer market price. We update prices weekly to stay accurate.',
+    q: 'How do you price your products?',
+    a: 'We price our products at current TCGPlayer market value. We update prices weekly to stay accurate.',
   },
   {
     q: 'Do you ship internationally?',

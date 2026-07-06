@@ -1,0 +1,7 @@
+card_name,set_name,set_code,card_number,rarity,condition,language,printing,image_url,market_price,low_price,mid_price,high_price,tcgplayer_product_id,brand,category,stock_quantity,release_date
+Charizard ex,Scarlet & Violet 151,SV3.5,006/165,Double Rare,nm,en,Standard,,45.99,35.00,45.00,58.00,615023,pokemon,Pokemon Singles,5,2023-09-22
+Pikachu ex,Scarlet & Violet 151,SV3.5,025/165,Double Rare,nm,en,Standard,,22.50,18.00,22.00,28.00,615042,pokemon,Pokemon Singles,3,2023-09-22
+Mew ex,Scarlet & Violet 151,SV3.5,151/165,Ultra Rare,nm,en,Standard,,14.99,11.00,14.00,19.00,614998,pokemon,Pokemon Singles,8,2023-09-22
+"Monkey D. Luffy",Romance Dawn,OP01,OP01-001,Leader,nm,en,Standard,,12.00,8.00,12.00,18.00,450120,onepiece,One Piece Singles,10,2023-07-08
+Black Lotus,Alpha Edition,LEA,232,Rare,lp,en,1st Edition,,4500.00,3800.00,4500.00,6000.00,99999,mtg,MTG Singles,1,1993-08-05
+Dark Magician,Legend of Blue Eyes White Dragon,LOB,EN005,Ultra Rare,nm,en,1st Edition,,85.00,70.00,85.00,110.00,199999,yugioh,Yu-Gi-Oh Singles,2,2002-03-08

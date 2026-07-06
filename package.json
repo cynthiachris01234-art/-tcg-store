@@ -6,7 +6,10 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "import-cards": "npx tsx scripts/import-cards.ts",
+    "sync-prices": "npx tsx scripts/sync-prices.ts",
+    "sync-tcgplayer": "npx tsx scripts/sync-tcgplayer.ts"
   },
   "dependencies": {
     "@stripe/react-stripe-js": "^6.6.0",

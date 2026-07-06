@@ -24,7 +24,7 @@ export function Footer() {
               <span className="font-bold text-xl text-white">Apex <span className="text-accent">TCG</span></span>
             </Link>
             <p className="text-muted text-sm leading-relaxed">
-              The best prices on sealed Pokémon, One Piece, MTG, and Yu-Gi-Oh! booster boxes. Always 40% below market.
+              Sealed and authentic Pokémon, One Piece, MTG, and Yu-Gi-Oh! booster boxes, at market price.
             </p>
 
             {/* Social icons */}

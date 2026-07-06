@@ -19,15 +19,15 @@ const inter = Inter({
 export const metadata: Metadata = {
   metadataBase: new URL('https://apextcg.shop'),
   title: {
-    default: 'Apex TCG — Sealed Pokémon, One Piece & MTG Boxes at 40% Off',
+    default: 'Apex TCG — Sealed Pokémon, One Piece & MTG Boxes',
     template: '%s | Apex TCG',
   },
   description:
-    'Buy 100% sealed Pokémon, One Piece, Magic: The Gathering, and Yu-Gi-Oh! booster boxes and cases in English, Japanese, and Korean. Always 40% below market price. Based in New York.',
+    'Buy 100% sealed Pokémon, One Piece, Magic: The Gathering, and Yu-Gi-Oh! booster boxes and cases in English, Japanese, and Korean. Based in New York.',
   keywords: [
-    'pokemon booster box cheap', 'buy sealed pokemon boxes', 'one piece tcg booster box',
-    'mtg booster box discount', 'yugioh booster box', 'japanese pokemon box',
-    'sealed tcg wholesale', 'pokemon case', 'cheap tcg cards', 'buy tcg boxes online',
+    'pokemon booster box', 'buy sealed pokemon boxes', 'one piece tcg booster box',
+    'mtg booster box', 'yugioh booster box', 'japanese pokemon box',
+    'sealed tcg', 'pokemon case', 'tcg cards', 'buy tcg boxes online',
     'apex tcg', 'pokemon evolving skies box', 'one piece romance dawn',
   ],
   authors: [{ name: 'Apex TCG', url: 'https://apextcg.shop' }],
@@ -39,14 +39,14 @@ export const metadata: Metadata = {
     type: 'website',
     locale: 'en_US',
     url: 'https://apextcg.shop',
-    title: 'Apex TCG — Sealed Pokémon, One Piece & MTG Boxes at 40% Off',
-    description: 'Buy 100% sealed Pokémon, One Piece, MTG, and Yu-Gi-Oh! booster boxes and cases. Always 40% below market price. Free shipping available.',
+    title: 'Apex TCG — Sealed Pokémon, One Piece & MTG Boxes',
+    description: 'Buy 100% sealed Pokémon, One Piece, MTG, and Yu-Gi-Oh! booster boxes and cases. Free shipping available.',
     images: [{ url: '/og-image.png', width: 1200, height: 630, alt: 'Apex TCG — Sealed TCG Store' }],
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Apex TCG — Sealed TCG Boxes at 40% Off',
-    description: 'Buy sealed Pokémon, One Piece, MTG, and Yu-Gi-Oh! booster boxes at 40% below market price.',
+    title: 'Apex TCG — Sealed TCG Boxes',
+    description: 'Buy sealed Pokémon, One Piece, MTG, and Yu-Gi-Oh! booster boxes.',
     images: ['/og-image.png'],
   },
   verification: {
@@ -90,7 +90,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           name: 'Apex TCG',
           url: 'https://apextcg.shop',
           logo: 'https://apextcg.shop/logo.png',
-          description: 'Sealed Pokémon, One Piece, MTG, and Yu-Gi-Oh! booster boxes and cases at 40% below market price.',
+          description: 'Sealed Pokémon, One Piece, MTG, and Yu-Gi-Oh! booster boxes and cases.',
           address: {
             '@type': 'PostalAddress',
             streetAddress: '447 Broadway',

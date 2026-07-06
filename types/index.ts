@@ -1,6 +1,6 @@
 // ─── Enums ───────────────────────────────────────────────────────────────────
 
-export type Brand = 'pokemon' | 'onepiece' | 'mtg' | 'yugioh';
+export type Brand = 'pokemon' | 'onepiece' | 'mtg' | 'yugioh' | 'lorcana';
 export type Language = 'en' | 'jp' | 'kr';
 export type ProductType =
   | 'booster_box'
@@ -11,8 +11,9 @@ export type ProductType =
   | 'bundle'            // Booster Bundle (3–5 packs)
   | 'premium_collection'// Premium Collection / PC ETB
   | 'display_case'      // JP Display Case (set of ETBs/products)
-  | 'poster_collection';// Poster + promo collection
-export type ProductCondition = 'sealed';
+  | 'poster_collection' // Poster + promo collection
+  | 'single_card';      // Individual graded or raw card
+export type ProductCondition = 'sealed' | 'nm' | 'lp' | 'mp' | 'hp' | 'damaged';
 export type Currency = 'USD' | 'CAD' | 'EUR' | 'JPY' | 'KRW';
 export type OrderStatus = 'pending' | 'paid' | 'shipped' | 'delivered' | 'cancelled';
 export type StockStatus = 'in_stock' | 'low_stock' | 'out_of_stock' | 'pre_order';
@@ -38,6 +39,16 @@ export interface Product {
   pre_order_date?: string;
   pack_count?: number;            // 36 for boxes
   box_count?: number;             // 6 for cases
+  // single_card fields (undefined for sealed products)
+  card_name?: string;             // "Charizard ex"
+  card_number?: string;           // "006/165"
+  rarity?: string;                // "Double Rare"
+  printing?: string;              // "1st Edition" | "Unlimited" | "Standard"
+  low_price_usd?: number;         // TCGplayer low
+  mid_price_usd?: number;         // TCGplayer mid
+  high_price_usd?: number;        // TCGplayer high
+  tcgplayer_product_id?: string;  // numeric TCGplayer product ID
+  category?: string;              // "Pokemon Cards"
   created_at: string;
   updated_at: string;
   slug: string;

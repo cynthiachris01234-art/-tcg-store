@@ -20,7 +20,7 @@ export default async function DealsPage() {
         </div>
         <div>
           <h1 className="text-4xl font-bold text-white">Deals & Flash Sales</h1>
-          <p className="text-muted mt-1">Limited time bundles on top of our 30% base discount</p>
+          <p className="text-muted mt-1">Limited time bundles and case discounts</p>
         </div>
       </div>
 
@@ -35,7 +35,7 @@ export default async function DealsPage() {
               <span className="text-mtg-gold font-semibold uppercase tracking-widest text-sm">Permanent Deal</span>
             </div>
             <h2 className="text-2xl font-bold text-white mb-1">Case Bundle — Extra 5% Off</h2>
-            <p className="text-muted">Buy any case and get an extra 5% off on top of our 30% below-market prices.</p>
+            <p className="text-muted">Buy any case and get an extra 5% off.</p>
           </div>
         </div>
         <ProductGrid products={cases.slice(0, 8)} />

@@ -64,7 +64,12 @@ export function ProductCard({ product, className }: Props) {
         {product.product_type === 'poster_collection' && (
           <span className="badge bg-teal-500/20 text-teal-300 border border-teal-500/30">POSTER</span>
         )}
-        <span className="badge bg-success/10 text-success border border-success/20">SEALED</span>
+        {product.product_type === 'single_card' && (
+          <span className="badge bg-indigo-500/20 text-indigo-300 border border-indigo-500/30">SINGLE</span>
+        )}
+        {product.product_type !== 'single_card' && (
+          <span className="badge bg-success/10 text-success border border-success/20">SEALED</span>
+        )}
       </div>
 
       {/* Language badge */}
@@ -100,25 +105,34 @@ export function ProductCard({ product, className }: Props) {
           {meta.name}
         </span>
 
-        {/* Set name */}
+        {/* Card/Set name */}
         <Link href={`/product/${product.slug}`}>
           <h3 className="text-white font-semibold text-sm leading-tight hover:text-accent transition-colors line-clamp-2">
-            {product.set_name}
+            {product.product_type === 'single_card' && product.card_name
+              ? product.card_name
+              : product.set_name}
           </h3>
         </Link>
 
-        {/* Set code + type */}
+        {/* Subtitle */}
         <p className="text-muted text-xs">
-          {product.set_code} · {
-            product.product_type === 'case'               ? 'Case (6 Boxes)' :
-            product.product_type === 'etb'                ? 'Elite Trainer Box' :
-            product.product_type === 'upc'                ? 'Ultra Premium Collection' :
-            product.product_type === 'spc'                ? 'Super Premium Collection' :
-            product.product_type === 'bundle'             ? `Booster Bundle${product.pack_count ? ` (${product.pack_count} Packs)` : ''}` :
-            product.product_type === 'premium_collection' ? 'Premium Collection' :
-            product.product_type === 'display_case'       ? 'Display Case' :
-            product.product_type === 'poster_collection'  ? 'Poster Collection' :
-            `Booster Box${product.pack_count ? ` (${product.pack_count} Packs)` : ''}`
+          {product.product_type === 'single_card'
+            ? [
+                product.set_name,
+                product.card_number ? `#${product.card_number}` : null,
+                product.rarity,
+              ].filter(Boolean).join(' · ')
+            : `${product.set_code} · ${
+                product.product_type === 'case'               ? 'Case (6 Boxes)' :
+                product.product_type === 'etb'                ? 'Elite Trainer Box' :
+                product.product_type === 'upc'                ? 'Ultra Premium Collection' :
+                product.product_type === 'spc'                ? 'Super Premium Collection' :
+                product.product_type === 'bundle'             ? `Booster Bundle${product.pack_count ? ` (${product.pack_count} Packs)` : ''}` :
+                product.product_type === 'premium_collection' ? 'Premium Collection' :
+                product.product_type === 'display_case'       ? 'Display Case' :
+                product.product_type === 'poster_collection'  ? 'Poster Collection' :
+                `Booster Box${product.pack_count ? ` (${product.pack_count} Packs)` : ''}`
+              }`
           }
         </p>
 

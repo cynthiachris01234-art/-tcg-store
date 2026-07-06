@@ -23,6 +23,7 @@ const config: Config = {
         onepiece:{ DEFAULT: '#ef4444', black: '#000000', gold: '#f59e0b' },
         mtg:     { DEFAULT: '#d97706', gold: '#fbbf24', dark: '#100a00' },
         yugioh:  { DEFAULT: '#7c3aed', gold: '#fbbf24', dark: '#060010' },
+        lorcana: { DEFAULT: '#38bdf8', gold: '#d4a017', dark: '#00050f' },
 
         /* Accent = APEX gold */
         accent:  { DEFAULT: '#C8962A', hover: '#B5841E' },
@@ -42,6 +43,7 @@ const config: Config = {
         'onepiece-gradient': 'linear-gradient(135deg, #000000 0%, #2a0000 100%)',
         'mtg-gradient':      'linear-gradient(135deg, #100a00 0%, #2a1800 100%)',
         'yugioh-gradient':   'linear-gradient(135deg, #060010 0%, #180030 100%)',
+        'lorcana-gradient':  'linear-gradient(135deg, #00050f 0%, #001a2e 100%)',
       },
       animation: {
         'shimmer': 'shimmer 2s linear infinite',
@@ -67,6 +69,7 @@ const config: Config = {
         'glow-onepiece': '0 0 20px rgba(239,68,68,0.3)',
         'glow-mtg':      '0 0 20px rgba(217,119,6,0.3)',
         'glow-yugioh':   '0 0 20px rgba(124,58,237,0.3)',
+        'glow-lorcana':  '0 0 20px rgba(56,189,248,0.3)',
         'glow-accent':   '0 0 20px rgba(200,150,42,0.4)',
       },
     },

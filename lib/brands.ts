@@ -49,9 +49,21 @@ export const BRAND_META: Record<Brand, BrandMeta> = {
     textClass: 'text-yugioh',
     bgClass: 'bg-yugioh-gradient',
   },
+  lorcana: {
+    id: 'lorcana',
+    name: 'Disney Lorcana',
+    tagline: 'Into the inklands',
+    gradient: 'bg-lorcana-gradient',
+    primaryColor: '#38bdf8',
+    secondaryColor: '#d4a017',
+    glowClass: 'shadow-glow-lorcana',
+    borderClass: 'border-lorcana',
+    textClass: 'text-lorcana',
+    bgClass: 'bg-lorcana-gradient',
+  },
 };
 
-export const BRANDS: Brand[] = ['pokemon', 'onepiece', 'mtg', 'yugioh'];
+export const BRANDS: Brand[] = ['pokemon', 'onepiece', 'mtg', 'yugioh', 'lorcana'];
 
 export const LANGUAGE_META = {
   en: { code: 'en', label: 'English', flag: '🇺🇸', shortLabel: 'EN' },

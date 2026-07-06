@@ -26,7 +26,7 @@ async function getData() {
 
 const TRUST_BADGES = [
   { icon: ShieldCheck, title: '100% Authentic',    desc: 'Factory sealed, never opened'        },
-  { icon: RefreshCw,   title: 'Weekly Price Sync', desc: 'Always 30% below market'             },
+  { icon: RefreshCw,   title: 'Weekly Price Sync', desc: 'Prices updated to match market'      },
   { icon: Truck,       title: 'Fast Shipping',     desc: 'Tracked worldwide delivery'           },
   { icon: Headphones,  title: '24/7 Support',      desc: 'Real help for real collectors'        },
 ];
@@ -40,12 +40,12 @@ export default async function HomePage() {
         '@context': 'https://schema.org',
         '@type': 'FAQPage',
         mainEntity: [
-          { '@type': 'Question', name: 'Where can I buy cheap sealed Pokémon booster boxes?', acceptedAnswer: { '@type': 'Answer', text: 'Apex TCG sells 100% sealed Pokémon booster boxes at 40% below market price. We stock English, Japanese, and Korean sets including Scarlet & Violet, Evolving Skies, and Mega Evolution sets.' } },
-          { '@type': 'Question', name: 'Does Apex TCG sell One Piece TCG booster boxes?', acceptedAnswer: { '@type': 'Answer', text: 'Yes. Apex TCG carries a full selection of One Piece TCG booster boxes in English and Japanese, from Romance Dawn (OP01) through the latest sets, all at 40% below retail market price.' } },
+          { '@type': 'Question', name: 'Where can I buy sealed Pokémon booster boxes?', acceptedAnswer: { '@type': 'Answer', text: 'Apex TCG sells 100% sealed Pokémon booster boxes. We stock English, Japanese, and Korean sets including Scarlet & Violet, Evolving Skies, and Mega Evolution sets.' } },
+          { '@type': 'Question', name: 'Does Apex TCG sell One Piece TCG booster boxes?', acceptedAnswer: { '@type': 'Answer', text: 'Yes. Apex TCG carries a full selection of One Piece TCG booster boxes in English and Japanese, from Romance Dawn (OP01) through the latest sets.' } },
           { '@type': 'Question', name: 'Are the cards and boxes sold by Apex TCG authentic?', acceptedAnswer: { '@type': 'Answer', text: 'All products at Apex TCG are 100% factory sealed and authenticated. We source directly and guarantee authenticity on every order.' } },
           { '@type': 'Question', name: 'Does Apex TCG ship internationally?', acceptedAnswer: { '@type': 'Answer', text: 'Yes, Apex TCG ships worldwide with tracked delivery. We accept international payment methods including Wise Transfer for low-fee cross-border payments.' } },
-          { '@type': 'Question', name: 'What payment methods does Apex TCG accept?', acceptedAnswer: { '@type': 'Answer', text: 'Apex TCG accepts Credit/Debit Cards (via Stripe), PayPal, Apple Pay, Cash App, and Wise Transfer.' } },
-          { '@type': 'Question', name: 'How much is an MTG Final Fantasy booster box?', acceptedAnswer: { '@type': 'Answer', text: 'Apex TCG sells the MTG Final Fantasy Play booster box at 40% below market price. Check the MTG section of our shop for the current price.' } },
+          { '@type': 'Question', name: 'What payment methods does Apex TCG accept?', acceptedAnswer: { '@type': 'Answer', text: 'Apex TCG accepts Wise Transfer, PayPal, Apple Pay, Cash App, Bank Transfer, Bitcoin (BTC), and USDT.' } },
+          { '@type': 'Question', name: 'How much is an MTG Final Fantasy booster box?', acceptedAnswer: { '@type': 'Answer', text: 'Check the MTG section of our shop for the current price on the MTG Final Fantasy Play booster box.' } },
         ],
       }} />
       <JsonLd data={{

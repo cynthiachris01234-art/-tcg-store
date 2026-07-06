@@ -18,7 +18,7 @@ export function DealsBanner() {
               <h2 className="text-2xl sm:text-3xl font-bold text-white mb-1">
                 Buy a Case, Save <span className="text-mtg-gold">Extra 5%</span>
               </h2>
-              <p className="text-muted">Already 30% below market — cases stack an extra 5% on top.</p>
+              <p className="text-muted">Buy any case and get an extra 5% off.</p>
             </div>
             <Link href="/deals" className="btn-primary whitespace-nowrap flex items-center gap-2 px-8">
               View All Deals <ArrowRight className="w-4 h-4" />
