@@ -134,6 +134,7 @@ Checkout supports several payment methods through a single API route
 | Cash App Pay | Stripe | `STRIPE_SECRET_KEY` |
 | PayPal | PayPal Orders API | `PAYPAL_CLIENT_ID`, `PAYPAL_CLIENT_SECRET` (`PAYPAL_ENV=live` for prod) |
 | Crypto (BTC/ETH/USDC) | Coinbase Commerce | `COINBASE_COMMERCE_API_KEY` |
+| Whop | Whop Checkout | `WHOP_API_KEY`, `WHOP_PLAN_ID` |
 
 `GET /api/payments` returns the gateway list with each one's live/demo status.
 The buyer picks a method in the checkout modal; the route creates the provider

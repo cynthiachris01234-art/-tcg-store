@@ -120,6 +120,33 @@ export async function POST(req: NextRequest) {
         });
       }
 
+      // ── Whop Checkout ──
+      // Whop is plan-based: create a checkout session for a configured plan and
+      // hand off to Whop's hosted checkout. Requires WHOP_API_KEY + WHOP_PLAN_ID.
+      case 'whop': {
+        const planId = process.env.WHOP_PLAN_ID;
+        if (!planId) return demo(gw.id, amount, currency); // no plan → stay in demo
+        const res = await fetch('https://api.whop.com/api/v2/checkout_sessions', {
+          method: 'POST',
+          headers: {
+            Authorization: `Bearer ${process.env.WHOP_API_KEY}`,
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            plan_id: planId,
+            metadata: { event: 'FIFA World Cup 2026', description, amount: amount.toFixed(2) },
+          }),
+        });
+        const session = await res.json();
+        return NextResponse.json({
+          ok: true,
+          mode: 'live',
+          gateway: 'whop',
+          hostedUrl: session.purchase_url ?? session.checkout_url,
+          reference: session.id,
+        });
+      }
+
       // ── Coinbase Commerce (crypto) ──
       case 'crypto': {
         const res = await fetch('https://api.commerce.coinbase.com/charges', {

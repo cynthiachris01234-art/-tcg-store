@@ -5,7 +5,7 @@
 // in safe "demo" mode (no real charge).
 // ─────────────────────────────────────────────────────────────────────────────
 
-export type GatewayId = 'card' | 'paypal' | 'applepay' | 'googlepay' | 'cashapp' | 'crypto';
+export type GatewayId = 'card' | 'paypal' | 'applepay' | 'googlepay' | 'cashapp' | 'crypto' | 'whop';
 
 export interface GatewayMeta {
   id: GatewayId;
@@ -22,6 +22,7 @@ export const GATEWAYS: GatewayMeta[] = [
   { id: 'googlepay', name: 'Google Pay',          blurb: 'One-tap on Android & Chrome', provider: 'Stripe',          envKeys: ['STRIPE_SECRET_KEY'] },
   { id: 'cashapp',   name: 'Cash App Pay',        blurb: 'Pay with Cash App',         provider: 'Stripe',            envKeys: ['STRIPE_SECRET_KEY'] },
   { id: 'crypto',    name: 'Crypto',              blurb: 'BTC · ETH · USDC & more',    provider: 'Coinbase Commerce', envKeys: ['COINBASE_COMMERCE_API_KEY'] },
+  { id: 'whop',      name: 'Whop',                blurb: 'Checkout via Whop',          provider: 'Whop Checkout',     envKeys: ['WHOP_API_KEY'] },
 ];
 
 export function gatewayById(id: string): GatewayMeta | undefined {

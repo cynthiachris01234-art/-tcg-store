@@ -15,6 +15,14 @@ import {
 } from './Badges';
 import { QRTicket } from './QRTicket';
 
+// Whop has no icon in react-icons — small brand-style glyph.
+const WhopGlyph: IconType = ({ className, size }: { className?: string; size?: string | number }) => (
+  <svg className={className} width={size ?? '1em'} height={size ?? '1em'} viewBox="0 0 24 24" fill="none" aria-hidden>
+    <rect x="2" y="2" width="20" height="20" rx="6" fill="currentColor" />
+    <path d="M6 9.5l2 5 2-4 2 4 2-5" stroke="#070d1c" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" fill="none" />
+  </svg>
+);
+
 const GATEWAY_ICON: Record<GatewayId, IconType> = {
   card: CreditCard as unknown as IconType,
   paypal: FaPaypal,
@@ -22,6 +30,7 @@ const GATEWAY_ICON: Record<GatewayId, IconType> = {
   googlepay: FaGooglePay,
   cashapp: SiCashapp,
   crypto: FaBitcoin,
+  whop: WhopGlyph,
 };
 
 export function ListingCard({ listing, match }: { listing: Listing; match: Match }) {
