@@ -117,3 +117,28 @@ output `.next`). You'll get a live `https://<project>.vercel.app` URL.
 
 Other hosts (Netlify, Render, a Node server, Docker) work too — just run
 `npm install && npm run build && npm run start`.
+
+---
+
+## Payment gateways
+
+Checkout supports several payment methods through a single API route
+(`POST /api/payments`). With **no keys configured it runs in safe demo mode**
+(no real charge); adding a gateway's keys switches it to live automatically.
+
+| Method | Provider (live mode) | Required env vars |
+|--------|----------------------|-------------------|
+| Credit / Debit Card | Stripe | `STRIPE_SECRET_KEY` |
+| Apple Pay | Stripe | `STRIPE_SECRET_KEY` |
+| Google Pay | Stripe | `STRIPE_SECRET_KEY` |
+| Cash App Pay | Stripe | `STRIPE_SECRET_KEY` |
+| PayPal | PayPal Orders API | `PAYPAL_CLIENT_ID`, `PAYPAL_CLIENT_SECRET` (`PAYPAL_ENV=live` for prod) |
+| Crypto (BTC/ETH/USDC) | Coinbase Commerce | `COINBASE_COMMERCE_API_KEY` |
+
+`GET /api/payments` returns the gateway list with each one's live/demo status.
+The buyer picks a method in the checkout modal; the route creates the provider
+session (Stripe PaymentIntent, PayPal order, or Coinbase charge) and returns a
+`clientSecret` / `approveUrl` / `hostedUrl` to complete the flow.
+
+> This is a prototype. Wire real order fulfilment and webhook verification
+> before taking live payments.
