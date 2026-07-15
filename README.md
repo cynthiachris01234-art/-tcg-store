@@ -83,3 +83,37 @@ npm run build && npm run start   # production build
 ```
 
 No environment variables are required for the marketplace prototype.
+
+---
+
+## Deploy (get a public URL)
+
+The app is a standard Next.js 14 site with **no required environment variables**,
+so it deploys anywhere that runs Next.js. Fastest path — **Vercel**:
+
+### Option A — Vercel CLI (deploys this branch as-is)
+
+```bash
+# from the project folder, on the marketplace branch
+npm i -g vercel        # or use: npx vercel
+vercel                 # first run: log in + link project (accept the defaults)
+vercel --prod          # promote to a production https:// URL
+```
+
+Vercel auto-detects Next.js — accept the defaults (build `next build`,
+output `.next`). You'll get a live `https://<project>.vercel.app` URL.
+
+### Option B — Vercel dashboard (Git integration)
+
+1. Push this branch to GitHub (already done).
+2. Go to [vercel.com/new](https://vercel.com/new) and **Import** the
+   `-tcg-store` repository.
+3. Under **Settings → Git**, set the Production Branch to
+   `claude/fifa-2026-ticket-marketplace-tel1ro` (or merge it into `main` first).
+4. Click **Deploy** — no env vars needed. Every push then redeploys automatically.
+
+> The legacy store's Stripe/Supabase API routes are unused by the marketplace and
+> build cleanly without keys. Add those env vars later only if you wire up real payments.
+
+Other hosts (Netlify, Render, a Node server, Docker) work too — just run
+`npm install && npm run build && npm run start`.
