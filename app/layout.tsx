@@ -1,14 +1,8 @@
 import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
 import './globals.css';
-import { TopBar } from '@/components/layout/TopBar';
-import { Navbar } from '@/components/layout/Navbar';
-import { Footer } from '@/components/layout/Footer';
-import { CartProvider } from '@/lib/cart';
-import { CurrencyProvider } from '@/lib/currency';
-import { PageTracker } from '@/components/PageTracker';
-import { LiveChat } from '@/components/LiveChat';
-import { JsonLd } from '@/components/JsonLd';
+import { SiteNavbar } from '@/components/fifa/SiteNavbar';
+import { SiteFooter } from '@/components/fifa/SiteFooter';
 
 const inter = Inter({
   subsets: ['latin'],
@@ -17,114 +11,48 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL('https://apextcg.shop'),
+  metadataBase: new URL('https://worldcup-resale.example'),
   title: {
-    default: 'Apex TCG — Sealed Pokémon, One Piece & MTG Boxes at 40% Off',
-    template: '%s | Apex TCG',
+    default: 'Goal26 — Sell Your FIFA World Cup 2026 Tickets',
+    template: '%s | Goal26 Tickets',
   },
   description:
-    'Buy 100% sealed Pokémon, One Piece, Magic: The Gathering, and Yu-Gi-Oh! booster boxes and cases in English, Japanese, and Korean. Always 40% below market price. Based in New York.',
+    'The safest way to sell and resell FIFA World Cup 2026 tickets. List in minutes, reach millions of verified buyers across all 16 host cities, low 10% fee, and a guaranteed payout. Buyers welcome too.',
   keywords: [
-    'pokemon booster box cheap', 'buy sealed pokemon boxes', 'one piece tcg booster box',
-    'mtg booster box discount', 'yugioh booster box', 'japanese pokemon box',
-    'sealed tcg wholesale', 'pokemon case', 'cheap tcg cards', 'buy tcg boxes online',
-    'apex tcg', 'pokemon evolving skies box', 'one piece romance dawn',
+    'world cup 2026 tickets', 'fifa 2026 resale', 'world cup final tickets',
+    'metlife stadium tickets', 'world cup hospitality', 'buy world cup tickets',
+    'sell world cup tickets', 'world cup seating map',
   ],
-  authors: [{ name: 'Apex TCG', url: 'https://apextcg.shop' }],
-  creator: 'Apex TCG',
-  publisher: 'Apex TCG',
-  alternates: { canonical: 'https://apextcg.shop' },
   openGraph: {
-    siteName: 'Apex TCG',
+    siteName: 'Goal26 Tickets',
     type: 'website',
     locale: 'en_US',
-    url: 'https://apextcg.shop',
-    title: 'Apex TCG — Sealed Pokémon, One Piece & MTG Boxes at 40% Off',
-    description: 'Buy 100% sealed Pokémon, One Piece, MTG, and Yu-Gi-Oh! booster boxes and cases. Always 40% below market price. Free shipping available.',
-    images: [{ url: '/og-image.png', width: 1200, height: 630, alt: 'Apex TCG — Sealed TCG Store' }],
+    title: 'Goal26 — FIFA World Cup 2026 Ticket Resale Marketplace',
+    description: 'Verified resale tickets for every FIFA World Cup 2026 match. Interactive seating maps & a 100% Buyer Guarantee.',
   },
-  twitter: {
-    card: 'summary_large_image',
-    title: 'Apex TCG — Sealed TCG Boxes at 40% Off',
-    description: 'Buy sealed Pokémon, One Piece, MTG, and Yu-Gi-Oh! booster boxes at 40% below market price.',
-    images: ['/og-image.png'],
-  },
-  verification: {
-    google: 'SDnAq82m2LRX8Nk3ak0jligOp3NjgoJUhtT1BoI2KV4',
-    other: { 'msvalidate.01': '701FE03C9F457CB0A19696321799187D' },
-  },
-  robots: {
-    index: true,
-    follow: true,
-    googleBot: { index: true, follow: true, 'max-image-preview': 'large', 'max-snippet': -1 },
-  },
+  robots: { index: true, follow: true },
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en" className={inter.variable}>
-      <body>
-        {/* Fixed background image — dark TCG card aesthetic */}
+      <body className="min-h-screen bg-bg">
+        {/* Ambient background — navy field with subtle grid + glow */}
+        <div aria-hidden className="fixed inset-0 -z-10 bg-fifa-gradient" />
+        <div aria-hidden className="fixed inset-0 -z-10 bg-grid opacity-60" />
         <div
-          aria-hidden="true"
+          aria-hidden
           className="fixed inset-0 -z-10 pointer-events-none"
           style={{
-            backgroundImage: "url('https://images.unsplash.com/photo-1551306667-f32e7af055f2?auto=format&fit=crop&w=1920&q=80')",
-            backgroundSize: 'cover',
-            backgroundPosition: 'center',
-            backgroundRepeat: 'no-repeat',
-            opacity: 0.12,
+            background:
+              'radial-gradient(ellipse at 50% -10%, rgba(23,99,255,0.18) 0%, transparent 55%), radial-gradient(ellipse at 90% 10%, rgba(255,198,41,0.08) 0%, transparent 45%)',
           }}
         />
-        {/* Gradient overlay — fades top/bottom for depth */}
-        <div
-          aria-hidden="true"
-          className="fixed inset-0 -z-10 pointer-events-none"
-          style={{
-            background: 'radial-gradient(ellipse at 50% 0%, rgba(200,150,42,0.06) 0%, transparent 70%), linear-gradient(to bottom, rgba(0,0,0,0.6) 0%, rgba(0,0,0,0.2) 40%, rgba(0,0,0,0.2) 60%, rgba(0,0,0,0.7) 100%)',
-          }}
-        />
-        <JsonLd data={{
-          '@context': 'https://schema.org',
-          '@type': 'Store',
-          name: 'Apex TCG',
-          url: 'https://apextcg.shop',
-          logo: 'https://apextcg.shop/logo.png',
-          description: 'Sealed Pokémon, One Piece, MTG, and Yu-Gi-Oh! booster boxes and cases at 40% below market price.',
-          address: {
-            '@type': 'PostalAddress',
-            streetAddress: '447 Broadway',
-            addressLocality: 'New York',
-            addressRegion: 'NY',
-            postalCode: '10013',
-            addressCountry: 'US',
-          },
-          contactPoint: {
-            '@type': 'ContactPoint',
-            telephone: '+1-332-272-8148',
-            contactType: 'customer service',
-            availableLanguage: ['English'],
-          },
-          sameAs: [
-            'https://instagram.com/apextcgshop',
-            'https://tiktok.com/@apextcg_distro',
-          ],
-          priceRange: '$$',
-          currenciesAccepted: 'USD',
-          paymentAccepted: 'Credit Card, PayPal, Cash App, Apple Pay, Wise',
-        }} />
-        <CurrencyProvider>
-          <CartProvider>
-            <div className="flex flex-col min-h-screen">
-              <TopBar />
-              <Navbar />
-              <PageTracker />
-              <main className="flex-1">{children}</main>
-              <Footer />
-              <LiveChat />
-            </div>
-          </CartProvider>
-        </CurrencyProvider>
+        <div className="flex flex-col min-h-screen">
+          <SiteNavbar />
+          <main className="flex-1">{children}</main>
+          <SiteFooter />
+        </div>
       </body>
     </html>
   );

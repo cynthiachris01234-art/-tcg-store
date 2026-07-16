@@ -1,109 +1,230 @@
-import { getBestSellers, getNewReleases } from '@/lib/supabase';
-import { JsonLd } from '@/components/JsonLd';
-import { HeroBanner } from '@/components/home/HeroBanner';
-import { BoxShelf } from '@/components/home/BoxShelf';
-import { SpecialSets } from '@/components/home/SpecialSets';
-import { NewReleasesStrip } from '@/components/home/NewReleasesStrip';
-import { BrandSection } from '@/components/home/BrandSection';
-import { DealsBanner } from '@/components/home/DealsBanner';
-import { PromoSection } from '@/components/home/PromoSection';
-import { ReviewsSection } from '@/components/home/ReviewsSection';
-import { BRANDS } from '@/lib/brands';
-import { ShieldCheck, RefreshCw, Truck, Headphones } from 'lucide-react';
+import Link from 'next/link';
+import { Trophy, Clock, MapPin, ShieldCheck, ArrowRight, Tag, TrendingUp, DollarSign, CheckCircle2 } from 'lucide-react';
+import { SellEstimatorHero } from '@/components/fifa/SellEstimatorHero';
+import { ResellPromo } from '@/components/fifa/ResellPromo';
+import { Countdown } from '@/components/fifa/Countdown';
+import { LiveInventory } from '@/components/fifa/LiveInventory';
+import { MatchCard } from '@/components/fifa/MatchCard';
+import { RecentlySold } from '@/components/fifa/RecentlySold';
+import { CategoryDot } from '@/components/fifa/Badges';
+import {
+  getTrendingMatches, marketplaceStats, SECTIONS,
+} from '@/lib/fifa/listings';
+import { FINAL_MATCH, HOST_CITIES, getStadium, getCityForStadium } from '@/lib/fifa/world-cup';
+import { formatPrice, formatMatchDate } from '@/lib/fifa/format';
 
-export const revalidate = 3600; // revalidate every hour
-
-async function getData() {
-  const [pokemon, onepiece, mtg, yugioh, releases] = await Promise.all([
-    getBestSellers('pokemon',  4),
-    getBestSellers('onepiece', 4),
-    getBestSellers('mtg',      4),
-    getBestSellers('yugioh',   4),
-    getNewReleases(10),
-  ]);
-  return { pokemon, onepiece, mtg, yugioh, releases };
-}
-
-const TRUST_BADGES = [
-  { icon: ShieldCheck, title: '100% Authentic',    desc: 'Factory sealed, never opened'        },
-  { icon: RefreshCw,   title: 'Weekly Price Sync', desc: 'Always 30% below market'             },
-  { icon: Truck,       title: 'Fast Shipping',     desc: 'Tracked worldwide delivery'           },
-  { icon: Headphones,  title: '24/7 Support',      desc: 'Real help for real collectors'        },
-];
-
-export default async function HomePage() {
-  const { pokemon, onepiece, mtg, yugioh, releases } = await getData();
+export default function HomePage() {
+  const hotToSell = getTrendingMatches(6);
+  const stats = marketplaceStats();
+  const finalStadium = getStadium(FINAL_MATCH.stadiumId);
+  const finalCity = getCityForStadium(FINAL_MATCH.stadiumId);
 
   return (
-    <div>
-      <JsonLd data={{
-        '@context': 'https://schema.org',
-        '@type': 'FAQPage',
-        mainEntity: [
-          { '@type': 'Question', name: 'Where can I buy cheap sealed Pokémon booster boxes?', acceptedAnswer: { '@type': 'Answer', text: 'Apex TCG sells 100% sealed Pokémon booster boxes at 40% below market price. We stock English, Japanese, and Korean sets including Scarlet & Violet, Evolving Skies, and Mega Evolution sets.' } },
-          { '@type': 'Question', name: 'Does Apex TCG sell One Piece TCG booster boxes?', acceptedAnswer: { '@type': 'Answer', text: 'Yes. Apex TCG carries a full selection of One Piece TCG booster boxes in English and Japanese, from Romance Dawn (OP01) through the latest sets, all at 40% below retail market price.' } },
-          { '@type': 'Question', name: 'Are the cards and boxes sold by Apex TCG authentic?', acceptedAnswer: { '@type': 'Answer', text: 'All products at Apex TCG are 100% factory sealed and authenticated. We source directly and guarantee authenticity on every order.' } },
-          { '@type': 'Question', name: 'Does Apex TCG ship internationally?', acceptedAnswer: { '@type': 'Answer', text: 'Yes, Apex TCG ships worldwide with tracked delivery. We accept international payment methods including Wise Transfer for low-fee cross-border payments.' } },
-          { '@type': 'Question', name: 'What payment methods does Apex TCG accept?', acceptedAnswer: { '@type': 'Answer', text: 'Apex TCG accepts Credit/Debit Cards (via Stripe), PayPal, Apple Pay, Cash App, and Wise Transfer.' } },
-          { '@type': 'Question', name: 'How much is an MTG Final Fantasy booster box?', acceptedAnswer: { '@type': 'Answer', text: 'Apex TCG sells the MTG Final Fantasy Play booster box at 40% below market price. Check the MTG section of our shop for the current price.' } },
-        ],
-      }} />
-      <JsonLd data={{
-        '@context': 'https://schema.org',
-        '@type': 'WebSite',
-        name: 'Apex TCG',
-        url: 'https://apextcg.shop',
-        potentialAction: {
-          '@type': 'SearchAction',
-          target: { '@type': 'EntryPoint', urlTemplate: 'https://apextcg.shop/shop?q={search_term_string}' },
-          'query-input': 'required name=search_term_string',
-        },
-      }} />
-      <HeroBanner />
+    <>
+      {/* ───────────────── HERO — SELL FIRST ───────────────── */}
+      <section className="relative overflow-hidden">
+        <div className="absolute inset-0 -z-10 bg-pitch-gradient" />
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-14 pb-12 sm:pt-20 sm:pb-16">
+          <div className="grid lg:grid-cols-2 gap-10 lg:gap-12 items-center">
+            {/* Left: pitch */}
+            <div>
+              <span className="pill text-fifa-gold border-fifa-gold/30 bg-fifa-gold/10 mb-5">
+                <Tag className="w-3.5 h-3.5" /> FIFA World Cup 2026™ · Sell Your Tickets
+              </span>
+              <h1 className="text-4xl sm:text-6xl font-extrabold tracking-tight leading-[1.05]">
+                Sell your World Cup tickets for <span className="text-gold-gradient">top dollar.</span>
+              </h1>
+              <p className="mt-5 text-base sm:text-lg text-blue-100/80 max-w-xl">
+                Goal26 is the safest way to sell and resell FIFA World Cup 2026 tickets. List in
+                minutes, reach millions of verified buyers across 16 host cities, and get paid
+                fast — with the lowest fees in the game.
+              </p>
 
-      {/* Featured Promos */}
-      <PromoSection />
-
-      {/* Box display shelf */}
-      <BoxShelf />
-
-      {/* Special Pokémon Sets */}
-      <SpecialSets />
-
-      {/* New Releases */}
-      <NewReleasesStrip releases={releases} />
-
-      {/* Trust badges */}
-      <section className="py-12 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-          {TRUST_BADGES.map(({ icon: Icon, title, desc }) => (
-            <div key={title} className="card p-5 flex flex-col items-center text-center gap-3">
-              <div className="w-10 h-10 bg-accent/10 rounded-xl flex items-center justify-center">
-                <Icon className="w-5 h-5 text-accent" />
+              <div className="mt-7 flex flex-col sm:flex-row items-start sm:items-center gap-3">
+                <Link href="/sell" className="btn-gold inline-flex items-center gap-2">
+                  <Tag className="w-4 h-4" /> Start Selling
+                </Link>
+                <Link href="/tickets" className="text-sm font-semibold text-fifa-blue-light hover:underline inline-flex items-center gap-1">
+                  Looking to buy? Browse tickets <ArrowRight className="w-4 h-4" />
+                </Link>
               </div>
-              <div>
-                <p className="font-semibold text-white text-sm">{title}</p>
-                <p className="text-muted text-xs mt-0.5">{desc}</p>
+
+              {/* Seller trust points */}
+              <div className="mt-7 space-y-2">
+                {[
+                  'Free to list — pay just 10% only when you sell',
+                  'Guaranteed payout once your tickets are delivered',
+                  'Instant mobile transfer to verified buyers',
+                ].map((t) => (
+                  <div key={t} className="flex items-center gap-2 text-sm text-gray-200">
+                    <CheckCircle2 className="w-4 h-4 text-fifa-green shrink-0" /> {t}
+                  </div>
+                ))}
               </div>
             </div>
+
+            {/* Right: instant payout estimator */}
+            <div className="flex justify-center lg:justify-end">
+              <SellEstimatorHero />
+            </div>
+          </div>
+
+          <div className="mt-12">
+            <LiveInventory listings={stats.totalListings} tickets={stats.totalTickets} />
+          </div>
+
+          {/* Seller stats */}
+          <div className="mt-8 grid grid-cols-2 sm:grid-cols-4 gap-4 max-w-3xl mx-auto">
+            {[
+              { icon: DollarSign, label: 'Paid to Sellers', value: '$2.4M+' },
+              { icon: Clock, label: 'Avg. Time to Sell', value: '< 24h' },
+              { icon: Tag, label: 'Seller Fee', value: '10%' },
+              { icon: ShieldCheck, label: 'Seller Guarantee', value: '100%' },
+            ].map((s) => (
+              <div key={s.label} className="glass px-4 py-3 text-center">
+                <s.icon className="w-5 h-5 text-fifa-gold mx-auto" />
+                <div className="mt-1.5 text-xl font-extrabold text-white">{s.value}</div>
+                <div className="text-[11px] uppercase tracking-wide text-muted">{s.label}</div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ───────────────── HOW SELLING WORKS ───────────────── */}
+      <ResellPromo />
+
+      {/* ───────────────── DEMAND IS SURGING (countdown) ───────────────── */}
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+        <div className="relative overflow-hidden rounded-3xl border border-fifa-gold/30 bg-gradient-to-br from-fifa-blue-dark via-fifa-navy to-fifa-navy p-6 sm:p-10">
+          <div className="absolute -right-10 -top-10 opacity-10">
+            <Trophy className="w-56 h-56 text-fifa-gold" />
+          </div>
+          <div className="relative flex flex-col lg:flex-row items-center justify-between gap-8">
+            <div className="text-center lg:text-left">
+              <span className="pill text-fifa-gold border-fifa-gold/30 bg-fifa-gold/10">
+                <TrendingUp className="w-3.5 h-3.5" /> Demand is surging — list before kickoff
+              </span>
+              <h2 className="mt-3 text-2xl sm:text-3xl font-extrabold text-white">Prices peak as the Final nears</h2>
+              <p className="mt-1 text-blue-100/80 text-sm">
+                {FINAL_MATCH.home.flag} {FINAL_MATCH.home.name} vs {FINAL_MATCH.away.name} {FINAL_MATCH.away.flag}
+                <br />
+                {formatMatchDate(FINAL_MATCH.dateISO)} · {finalStadium?.name}, {finalCity?.name}
+              </p>
+              <Link href="/sell" className="btn-gold inline-flex items-center gap-2 mt-5 text-sm !py-2.5">
+                List your tickets now <ArrowRight className="w-4 h-4" />
+              </Link>
+            </div>
+            <Countdown targetIso={FINAL_MATCH.dateISO} />
+          </div>
+        </div>
+      </section>
+
+      {/* ───────────────── PRICE AGAINST THE MARKET ───────────────── */}
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+        <div className="flex items-end justify-between mb-6">
+          <div>
+            <h2 className="text-2xl sm:text-3xl font-extrabold text-white flex items-center gap-2">
+              <TrendingUp className="w-6 h-6 text-fifa-green" /> Hottest Matches to Sell
+            </h2>
+            <p className="text-muted text-sm mt-1">The highest-demand fixtures — check the live market and price your seats to sell.</p>
+          </div>
+          <Link href="/matches" className="hidden sm:inline-flex items-center gap-1 text-sm font-semibold text-fifa-blue-light hover:gap-2 transition-all">
+            All matches <ArrowRight className="w-4 h-4" />
+          </Link>
+        </div>
+        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
+          {hotToSell.map((m) => (
+            <MatchCard key={m.id} match={m} />
           ))}
         </div>
       </section>
 
-      {/* Deals banner */}
-      <DealsBanner />
+      {/* ───────────────── RECENT SELLER PAYOUTS ───────────────── */}
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 grid lg:grid-cols-3 gap-8">
+        <div className="lg:col-span-2">
+          <h2 className="text-2xl font-extrabold text-white flex items-center gap-2 mb-2">
+            <DollarSign className="w-6 h-6 text-fifa-gold" /> Recent Sales
+          </h2>
+          <p className="text-muted text-sm mb-6">Real-time proof of what sellers are earning across the marketplace.</p>
+          <div className="grid sm:grid-cols-2 gap-4">
+            {SECTIONS.slice(0, 6).map((s) => (
+              <Link
+                key={s.category}
+                href={`/tickets?category=${encodeURIComponent(s.category)}`}
+                className="card hover:border-fifa-blue/40 transition-colors p-4 group"
+              >
+                <div className="flex items-center justify-between">
+                  <span className="flex items-center gap-2">
+                    <CategoryDot category={s.category} />
+                    <span className="font-bold text-white text-sm">{s.category}</span>
+                  </span>
+                  <ArrowRight className="w-4 h-4 text-muted group-hover:text-fifa-blue-light group-hover:translate-x-0.5 transition-all" />
+                </div>
+                <div className="mt-2 text-xs text-muted">Typical resale range</div>
+                <div className="text-sm">
+                  <span className="text-fifa-gold font-bold">{formatPrice(s.min)}</span>
+                  <span className="text-muted"> – {formatPrice(s.max)}</span>
+                  <span className="text-muted"> / ticket</span>
+                </div>
+              </Link>
+            ))}
+          </div>
+        </div>
+        <div>
+          <h2 className="text-2xl font-extrabold text-white flex items-center gap-2 mb-6">
+            <CheckCircle2 className="w-6 h-6 text-fifa-green" /> Just Sold
+          </h2>
+          <RecentlySold />
+        </div>
+      </section>
 
-      {/* Brand sections */}
-      <BrandSection brand="pokemon"  products={pokemon}  />
-      <BrandSection brand="onepiece" products={onepiece} />
-      <BrandSection brand="mtg"      products={mtg}      />
-      <BrandSection brand="yugioh"   products={yugioh}   />
+      {/* ───────────────── SELL IN ANY HOST CITY ───────────────── */}
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+        <div className="flex items-end justify-between mb-6">
+          <h2 className="text-2xl sm:text-3xl font-extrabold text-white flex items-center gap-2">
+            <MapPin className="w-6 h-6 text-fifa-blue-light" /> Sell in Any of 16 Host Cities
+          </h2>
+          <Link href="/stadiums" className="hidden sm:inline-flex items-center gap-1 text-sm font-semibold text-fifa-blue-light hover:gap-2 transition-all">
+            All stadiums <ArrowRight className="w-4 h-4" />
+          </Link>
+        </div>
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
+          {HOST_CITIES.map((c) => {
+            const st = getStadium(c.stadiumId);
+            return (
+              <Link
+                key={c.id}
+                href="/sell"
+                className="card hover:border-fifa-blue/40 transition-colors p-4 flex items-center justify-between gap-2"
+              >
+                <div className="min-w-0">
+                  <div className="font-bold text-white text-sm truncate">{c.name}</div>
+                  <div className="text-xs text-muted truncate">{st?.name}</div>
+                </div>
+                <span className="text-2xl">{c.emoji}</span>
+              </Link>
+            );
+          })}
+        </div>
+      </section>
 
-      {/* Special Sets — rare & premium Pokémon */}
-      <SpecialSets />
-
-      {/* Customer Reviews */}
-      <ReviewsSection />
-    </div>
+      {/* ───────────────── FINAL SELLER CTA ───────────────── */}
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        <div className="rounded-3xl border border-fifa-gold/30 bg-gradient-to-br from-fifa-navy via-fifa-blue-dark/40 to-fifa-navy p-8 sm:p-12 text-center">
+          <Tag className="w-12 h-12 text-fifa-gold mx-auto" />
+          <h2 className="mt-4 text-2xl sm:text-3xl font-extrabold text-white">Ready to sell your tickets?</h2>
+          <p className="mt-3 text-blue-100/80 max-w-2xl mx-auto">
+            List in under two minutes, reach millions of verified buyers, and get a guaranteed
+            payout the moment your tickets are delivered. It&apos;s free to list — you only pay
+            when you sell.
+          </p>
+          <div className="mt-6 flex flex-wrap items-center justify-center gap-3">
+            <Link href="/sell" className="btn-gold">List Your Tickets</Link>
+            <Link href="/account" className="btn-outline">Manage My Listings</Link>
+          </div>
+        </div>
+      </section>
+    </>
   );
 }
