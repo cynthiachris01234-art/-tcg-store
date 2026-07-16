@@ -11,7 +11,7 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL('https://worldcup-resale.example'),
+  metadataBase: new URL('https://fifatickets.site'),
   title: {
     default: 'Goal26 — Sell Your FIFA World Cup 2026 Tickets',
     template: '%s | Goal26 Tickets',
