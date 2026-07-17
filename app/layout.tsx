@@ -3,6 +3,7 @@ import { Inter } from 'next/font/google';
 import './globals.css';
 import { SiteNavbar } from '@/components/fifa/SiteNavbar';
 import { SiteFooter } from '@/components/fifa/SiteFooter';
+import { DemoBanner } from '@/components/fifa/DemoBanner';
 
 const inter = Inter({
   subsets: ['latin'],
@@ -13,22 +14,22 @@ const inter = Inter({
 export const metadata: Metadata = {
   metadataBase: new URL('https://fifatickets.site'),
   title: {
-    default: 'Goal26 — Sell Your FIFA World Cup 2026 Tickets',
-    template: '%s | Goal26 Tickets',
+    default: 'Goal26 — Ticket Marketplace Design Concept (Demo)',
+    template: '%s | Goal26 (Demo)',
   },
   description:
-    'The safest way to sell and resell FIFA World Cup 2026 tickets. List in minutes, reach millions of verified buyers across all 16 host cities, low 10% fee, and a guaranteed payout. Buyers welcome too.',
+    'Goal26 is a design-concept demo of a sports ticket resale marketplace, themed around the 2026 World Cup. A portfolio/UI prototype only — not affiliated with FIFA, no real tickets are sold and no payments are processed.',
   keywords: [
     'world cup 2026 tickets', 'fifa 2026 resale', 'world cup final tickets',
     'metlife stadium tickets', 'world cup hospitality', 'buy world cup tickets',
     'sell world cup tickets', 'world cup seating map',
   ],
   openGraph: {
-    siteName: 'Goal26 Tickets',
+    siteName: 'Goal26 (Design Concept)',
     type: 'website',
     locale: 'en_US',
-    title: 'Goal26 — FIFA World Cup 2026 Ticket Resale Marketplace',
-    description: 'Verified resale tickets for every FIFA World Cup 2026 match. Interactive seating maps & a 100% Buyer Guarantee.',
+    title: 'Goal26 — Ticket Marketplace Design Concept (Demo)',
+    description: 'A portfolio/UI design concept for a sports ticket resale marketplace. Not affiliated with FIFA; no real tickets or payments.',
   },
   robots: { index: true, follow: true },
 };
@@ -49,6 +50,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           }}
         />
         <div className="flex flex-col min-h-screen">
+          <DemoBanner />
           <SiteNavbar />
           <main className="flex-1">{children}</main>
           <SiteFooter />
