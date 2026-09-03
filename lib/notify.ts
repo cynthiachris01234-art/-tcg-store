@@ -42,10 +42,11 @@ function usd(n: any): string {
 
 // ── Human-readable payment method labels ──────────────────────────────────────
 const PAY_LABELS: Record<string, string> = {
-  wise:     'Wise Transfer',
-  applepay: 'Apple Pay',
   cashapp:  'Cash App',
-  paypal:   'PayPal',
+  applepay: 'Apple Pay',
+  wise:     'Wise Transfer',
+  chime:    'Chime',
+  venmo:    'Venmo',
 };
 function payLabel(id?: string): string {
   return PAY_LABELS[id ?? ''] ?? id ?? 'Not specified';

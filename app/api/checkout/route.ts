@@ -1,5 +1,4 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { stripe } from '@/lib/stripe';
 import { MOCK_PRODUCTS } from '@/lib/mock-data';
 import { CASE_BUNDLE_RATE } from '@/lib/pricing';
 
@@ -49,26 +48,9 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'Invalid order total' }, { status: 400 });
     }
 
-    if (body.paymentMethod === 'card') {
-      const pi = await stripe.paymentIntents.create({
-        amount: totalCents, // exact cents, server-verified
-        currency: 'usd',
-        automatic_payment_methods: { enabled: true },
-        metadata: {
-          orderId,
-          subtotal_usd: (subtotalCents / 100).toFixed(2),
-          discount_usd: (discountCents / 100).toFixed(2),
-          total_usd:    (totalCents / 100).toFixed(2),
-        },
-      });
-      return NextResponse.json({
-        orderId,
-        clientSecret: pi.client_secret,
-        verifiedTotalUsd: totalCents / 100,
-      });
-    }
-
-    // Manual payment methods — return server-verified totals so the client uses correct figures
+    // Every payment method is handled manually: we reserve the order here and
+    // send the customer their payment details over chat afterwards. Return the
+    // server-verified totals so the client displays the correct figures.
     return NextResponse.json({
       orderId,
       verifiedSubtotalUsd: subtotalCents / 100,

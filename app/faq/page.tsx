@@ -23,11 +23,11 @@ const FAQS = [
   },
   {
     q: 'What payment methods do you accept?',
-    a: 'We accept Credit/Debit Cards (via Stripe, charged instantly), PayPal, Apple Pay, Cash App, and Wise Transfer. For manual payment methods (PayPal, Cash App, Wise), we send you the details via WhatsApp or email after you place your order.',
+    a: 'We accept Cash App, Apple Pay, Wise Transfer, Chime, and Venmo. We do not take card payments on the site — after you place your order we send you the payment details for the method you chose via WhatsApp, SMS or email.',
   },
   {
-    q: 'How does ordering work for non-card payments?',
-    a: 'Place your order on the site and select your preferred payment method. We will contact you via WhatsApp or email within minutes with the payment details. Once payment is received, your order ships within 1–2 business days.',
+    q: 'How does ordering work?',
+    a: 'Place your order on the site and select your preferred payment method. We will contact you via WhatsApp, SMS or email within 2 hours with the payment details. Once payment is received, your order ships within 1–2 business days.',
   },
   {
     q: 'Do you offer a discount on cases?',

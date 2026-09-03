@@ -101,7 +101,7 @@ function OrderRow({ order }: { order: StoredOrder }) {
                   <div className="mt-2 pt-2 border-t border-bg-border flex items-center gap-2">
                     <span className="text-accent text-xs font-bold uppercase tracking-widest">Payment:</span>
                     <span className="text-white text-xs font-semibold">
-                      {({ card: 'Credit / Debit Card', wise: 'Wise Transfer', applepay: 'Apple Pay', cashapp: 'Cash App', paypal: 'PayPal' } as Record<string,string>)[order.paymentMethod] ?? order.paymentMethod}
+                      {({ cashapp: 'Cash App', applepay: 'Apple Pay', wise: 'Wise Transfer', chime: 'Chime', venmo: 'Venmo' } as Record<string,string>)[order.paymentMethod] ?? order.paymentMethod}
                     </span>
                   </div>
                 )}
@@ -298,8 +298,8 @@ export default function AdminOrdersPage() {
       <div className="mt-8 card p-4 border border-blue-500/20 bg-blue-500/5">
         <p className="text-blue-300 text-xs font-semibold mb-1">💡 How orders work</p>
         <p className="text-muted text-xs">
-          New orders arrive here and on your WhatsApp. Card orders (Stripe) are paid instantly — check the{' '}
-          <span className="text-white font-semibold">Payments</span> tab for card transactions. For manual orders,
+          New orders arrive here and on your WhatsApp. Every order is paid manually — send the customer
+          their payment details, then mark the order paid once the money lands. For manual orders,
           send the customer their payment details via{' '}
           <span className="text-white font-semibold">Wise, Apple Pay, or Cash App</span>, then mark them as paid once received.
         </p>
