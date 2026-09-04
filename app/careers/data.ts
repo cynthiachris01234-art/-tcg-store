@@ -47,12 +47,19 @@ export const TIME_ZONES = [
   'Hawaii-Aleutian Time',
 ] as const;
 
+/** Canonical content type per accepted extension. Browsers are unreliable about
+ *  the type they report for Word uploads (often `application/octet-stream`), so
+ *  the extension — not the browser — decides what we store the file as. */
+export const RESUME_CONTENT_TYPES = {
+  '.pdf':  'application/pdf',
+  '.doc':  'application/msword',
+  '.docx': 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+} as const;
+
+export type ResumeExtension = keyof typeof RESUME_CONTENT_TYPES;
+
 export const RESUME_RULES = {
   maxBytes: 5 * 1024 * 1024,
-  extensions: ['.pdf', '.doc', '.docx'] as const,
-  mimeTypes: [
-    'application/pdf',
-    'application/msword',
-    'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
-  ] as const,
+  extensions: Object.keys(RESUME_CONTENT_TYPES) as ResumeExtension[],
+  mimeTypes: Object.values(RESUME_CONTENT_TYPES) as string[],
 };

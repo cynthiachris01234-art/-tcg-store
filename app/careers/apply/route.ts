@@ -1,6 +1,6 @@
 import { createClient } from '@supabase/supabase-js';
 import { NextResponse } from 'next/server';
-import { RESUME_RULES, TIME_ZONES } from '../data';
+import { RESUME_CONTENT_TYPES, RESUME_RULES, TIME_ZONES, type ResumeExtension } from '../data';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -26,6 +26,18 @@ function bad(error: string, status = 400) {
 
 function safeFileName(name: string): string {
   return name.replace(/[^a-zA-Z0-9._-]/g, '_').slice(-120);
+}
+
+/** Cheap magic-byte check so a renamed file can't ride in on its extension.
+ *  PDFs start with "%PDF"; .docx is a zip ("PK\x03\x04") and legacy .doc is an
+ *  OLE2 compound file. */
+function looksLikeResume(bytes: Buffer, extension: ResumeExtension): boolean {
+  if (bytes.length < 8) return false;
+  const header = bytes.subarray(0, 8);
+  if (extension === '.pdf') return header.subarray(0, 4).toString('latin1') === '%PDF';
+  const zip  = header.subarray(0, 4).toString('hex') === '504b0304';
+  const ole2 = header.toString('hex') === 'd0cf11e0a1b11ae1';
+  return zip || ole2;
 }
 
 // POST /careers/apply — receive a job application (multipart/form-data)
@@ -79,10 +91,20 @@ export async function POST(req: Request) {
     );
   }
   const lowerName = resume.name.toLowerCase();
-  const extensionOk = RESUME_RULES.extensions.some(ext => lowerName.endsWith(ext));
-  const mimeOk = !resume.type || (RESUME_RULES.mimeTypes as readonly string[]).includes(resume.type);
-  if (!extensionOk || !mimeOk) {
+  const extension = RESUME_RULES.extensions.find(ext => lowerName.endsWith(ext));
+  // A browser that reports nothing useful (empty or octet-stream, common for
+  // Word files) is fine — the extension and the file's own header decide.
+  const declaredTypeOk =
+    !resume.type ||
+    resume.type === 'application/octet-stream' ||
+    RESUME_RULES.mimeTypes.includes(resume.type);
+  if (!extension || !declaredTypeOk) {
     return bad(`Resumes must be one of: ${RESUME_RULES.extensions.join(', ')}.`);
+  }
+
+  const bytes = Buffer.from(await resume.arrayBuffer());
+  if (!looksLikeResume(bytes, extension)) {
+    return bad('That file does not look like a PDF or Word document.');
   }
 
   const reference = `APP-${Date.now().toString(36).toUpperCase()}-${Math.random()
@@ -96,8 +118,8 @@ export async function POST(req: Request) {
     const path = `${reference}/${safeFileName(resume.name)}`;
     const { error: uploadError } = await supabase.storage
       .from(RESUME_BUCKET)
-      .upload(path, Buffer.from(await resume.arrayBuffer()), {
-        contentType: resume.type || 'application/octet-stream',
+      .upload(path, bytes, {
+        contentType: RESUME_CONTENT_TYPES[extension],
         upsert: false,
       });
 
