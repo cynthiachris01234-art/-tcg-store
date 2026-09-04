@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import {
-  LayoutDashboard, Package, ShoppingBag, BarChart2, Settings, Zap, ChevronRight, LogOut, CreditCard, FileText,
+  LayoutDashboard, Package, ShoppingBag, BarChart2, Settings, Zap, ChevronRight, LogOut, CreditCard,
 } from 'lucide-react';
 
 const NAV = [
@@ -12,7 +12,6 @@ const NAV = [
   { href: '/admin/orders',    label: 'Orders',     icon: ShoppingBag     },
   { href: '/admin/payments',  label: 'Payments',   icon: CreditCard      },
   { href: '/admin/analytics', label: 'Analytics',  icon: BarChart2       },
-  { href: '/admin/applications', label: 'Applications', icon: FileText   },
 ];
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
