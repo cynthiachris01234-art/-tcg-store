@@ -1,6 +1,7 @@
 import type { MetadataRoute } from 'next';
 import { BRANDS, LANGUAGES } from '@/lib/brands';
 import { MOCK_PRODUCTS } from '@/lib/mock-data';
+import { OPEN_POSITIONS } from '@/lib/careers/posting';
 
 const BASE = 'https://apextcg.shop';
 
@@ -19,7 +20,16 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { url: `${BASE}/returns`,           lastModified: now, changeFrequency: 'monthly', priority: 0.6 },
     { url: `${BASE}/contact`,           lastModified: now, changeFrequency: 'monthly', priority: 0.6 },
     { url: `${BASE}/privacy`,           lastModified: now, changeFrequency: 'monthly', priority: 0.4 },
+    { url: `${BASE}/careers`,           lastModified: now, changeFrequency: 'weekly',  priority: 0.7 },
+    { url: `${BASE}/careers/hiring-integrity`, lastModified: now, changeFrequency: 'monthly', priority: 0.4 },
   ];
+
+  const jobPages: MetadataRoute.Sitemap = OPEN_POSITIONS.map(job => ({
+    url: `${BASE}/careers/${job.slug}`,
+    lastModified: now,
+    changeFrequency: 'weekly',
+    priority: 0.8,
+  }));
 
   const brandPages: MetadataRoute.Sitemap = BRANDS.map(brand => ({
     url: `${BASE}/shop/${brand}`,
@@ -42,5 +52,5 @@ export default function sitemap(): MetadataRoute.Sitemap {
     priority: 0.8,
   }));
 
-  return [...staticPages, ...brandPages, ...langPages, ...productPages];
+  return [...staticPages, ...jobPages, ...brandPages, ...langPages, ...productPages];
 }

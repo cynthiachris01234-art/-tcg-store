@@ -143,3 +143,59 @@ session (Stripe PaymentIntent, PayPal order, or Coinbase charge) and returns a
 
 > This is a prototype. Wire real order fulfilment and webhook verification
 > before taking live payments.
+
+---
+
+## Careers site (Levy Real Estate)
+
+`/careers` is a **separate, live surface** from the marketplace demo above. It
+does not inherit the marketplace chrome: `components/SiteChrome.tsx` switches on
+the pathname so careers routes render the Levy Real Estate header/footer on a
+light theme, with **no FIFA navbar and no "design demo" ribbon**.
+
+| Route | Purpose |
+|-------|---------|
+| `/careers` | Index of open positions (`lib/careers/posting.ts`) |
+| `/careers/property-data-entry` | Job posting + application form |
+| `/careers/apply` | `POST` endpoint that receives applications |
+| `/careers/thank-you` | Confirmation screen (noindex) |
+| `/careers/hiring-integrity` | How we contact applicants / recruitment-fraud notice |
+
+### Setup
+
+Applications are stored in Supabase, so **intake requires** `NEXT_PUBLIC_SUPABASE_URL`
+and `SUPABASE_SERVICE_ROLE_KEY`:
+
+1. Run `supabase/careers-schema.sql` — it creates the `job_applications` table
+   (RLS on, no policies, so only the service-role key can read it) and the
+   **private** `career-applications` storage bucket.
+2. Set the two Supabase env vars.
+3. Optionally set `CAREERS_NOTIFY_EMAIL` (plus `RESEND_API_KEY` and `EMAIL_FROM`)
+   to get an email when an application arrives.
+
+> If Supabase is not configured the endpoint returns **503 and tells the applicant
+> their details were not submitted**, rather than showing a success screen for an
+> application that was never stored. Check this before going live.
+
+### Handling applicant data
+
+Applications carry personal data — name, phone, home city/state and a résumé
+that typically contains a home address and full work history. Accordingly:
+
+- Résumés go to a **private** bucket. Do not flip it to public; read them from
+  the dashboard or via a short-lived signed URL.
+- The table is written with the service-role key server-side only. RLS is
+  enabled with no policies, so anon/authenticated clients get nothing.
+- The notification email deliberately carries **no résumé attachment**.
+- Nothing about an application is written to application logs.
+
+### Form behaviour
+
+- Validated on both sides; the server is authoritative (`lib/careers/application.ts`).
+- Résumé must be PDF/DOC/DOCX and ≤ 5 MB.
+- Works without JavaScript — the form has a real `action`, and the endpoint
+  answers a plain form post with a `303` redirect instead of JSON.
+- Honeypot field plus a per-instance rate limit (5 submissions / 10 min / IP).
+  Put a platform-level limiter in front of it too.
+- Note that some hosts cap request body size on serverless functions; confirm
+  your platform allows a 5 MB upload.

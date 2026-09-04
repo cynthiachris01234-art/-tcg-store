@@ -36,6 +36,19 @@ const config: Config = {
         mtg:     { DEFAULT: '#d97706', gold: '#fbbf24', dark: '#100a00' },
         yugioh:  { DEFAULT: '#7c3aed', gold: '#fbbf24', dark: '#060010' },
 
+        /* Levy Real Estate — careers site (light, professional) */
+        levy: {
+          ink:          '#101c18',
+          green:        '#1f3d34',
+          'green-light':'#2e5749',
+          brass:        '#8a6a33',
+          'brass-light':'#b08d57',
+          sand:         '#faf8f5',
+          panel:        '#ffffff',
+          line:         '#e6e0d8',
+          muted:        '#5f6b66',
+        },
+
         /* Accent = FIFA blue */
         accent:  { DEFAULT: '#1763ff', hover: '#3b82f6' },
         success: '#22c55e',

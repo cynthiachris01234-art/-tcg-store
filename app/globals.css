@@ -20,6 +20,13 @@
     background-color: #070d1c;
   }
 
+  /* The careers site is a light, standalone surface — override the dark
+     marketplace body colour so overscroll doesn't flash navy behind it. */
+  body:has(.careers-root) {
+    @apply text-levy-ink;
+    background-color: #faf8f5;
+  }
+
   ::-webkit-scrollbar { width: 8px; height: 8px; }
   ::-webkit-scrollbar-track { background: #0c1426; }
   ::-webkit-scrollbar-thumb { background: #1c2942; border-radius: 9999px; }
@@ -105,6 +112,44 @@
   .pill {
     @apply inline-flex items-center gap-1.5 text-xs font-semibold px-3 py-1 rounded-full
            border border-white/10 bg-white/5;
+  }
+
+  /* ─── Careers site (Levy Real Estate) ─────────────────────────────────── */
+
+  .levy-label {
+    @apply inline-block text-[11px] font-semibold uppercase tracking-[0.18em] text-levy-brass;
+  }
+
+  .levy-field label {
+    @apply block text-sm font-semibold text-levy-ink mb-1.5;
+  }
+
+  .levy-field input[type='text'],
+  .levy-field input[type='email'],
+  .levy-field input[type='tel'],
+  .levy-field textarea {
+    @apply w-full rounded-lg border border-levy-line bg-white px-3.5 py-2.5 text-[15px]
+           text-levy-ink placeholder:text-levy-muted/60
+           transition-colors duration-150
+           focus:outline-none focus:border-levy-green focus:ring-2 focus:ring-levy-green/15;
+  }
+
+  .levy-field textarea {
+    @apply min-h-[120px] resize-y leading-relaxed;
+  }
+
+  .levy-field[data-invalid='true'] input,
+  .levy-field[data-invalid='true'] textarea {
+    @apply border-red-500 focus:border-red-500 focus:ring-red-500/15;
+  }
+
+  .levy-btn {
+    @apply inline-flex items-center justify-center gap-2 rounded-lg bg-levy-green
+           px-6 py-3 text-[15px] font-semibold text-white transition-colors duration-150
+           hover:bg-levy-green-light
+           focus:outline-none focus:ring-2 focus:ring-levy-green/30 focus:ring-offset-2
+           focus:ring-offset-levy-sand
+           disabled:cursor-not-allowed disabled:opacity-60;
   }
 }
 

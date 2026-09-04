@@ -1,9 +1,7 @@
 import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
 import './globals.css';
-import { SiteNavbar } from '@/components/fifa/SiteNavbar';
-import { SiteFooter } from '@/components/fifa/SiteFooter';
-import { DemoBanner } from '@/components/fifa/DemoBanner';
+import { SiteChrome } from '@/components/SiteChrome';
 
 const inter = Inter({
   subsets: ['latin'],
@@ -38,23 +36,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en" className={inter.variable}>
       <body className="min-h-screen bg-bg">
-        {/* Ambient background — navy field with subtle grid + glow */}
-        <div aria-hidden className="fixed inset-0 -z-10 bg-fifa-gradient" />
-        <div aria-hidden className="fixed inset-0 -z-10 bg-grid opacity-60" />
-        <div
-          aria-hidden
-          className="fixed inset-0 -z-10 pointer-events-none"
-          style={{
-            background:
-              'radial-gradient(ellipse at 50% -10%, rgba(23,99,255,0.18) 0%, transparent 55%), radial-gradient(ellipse at 90% 10%, rgba(255,198,41,0.08) 0%, transparent 45%)',
-          }}
-        />
-        <div className="flex flex-col min-h-screen">
-          <DemoBanner />
-          <SiteNavbar />
-          <main className="flex-1">{children}</main>
-          <SiteFooter />
-        </div>
+        <SiteChrome>{children}</SiteChrome>
       </body>
     </html>
   );

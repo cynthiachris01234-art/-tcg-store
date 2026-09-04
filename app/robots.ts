@@ -6,7 +6,7 @@ export default function robots(): MetadataRoute.Robots {
       {
         userAgent: '*',
         allow: '/',
-        disallow: ['/admin/', '/api/', '/checkout/'],
+        disallow: ['/admin/', '/api/', '/checkout/', '/careers/thank-you', '/careers/apply'],
       },
     ],
     sitemap: 'https://apextcg.shop/sitemap.xml',
