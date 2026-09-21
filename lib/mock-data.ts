@@ -15,7 +15,7 @@ export const MOCK_PRODUCTS: Product[] = [
     image_url: 'https://product-images.tcgplayer.com/fit-in/400x558/682045.jpg',
     release_date: '2026-02-27', stock_quantity: 3, condition: 'sealed',
     market_price_usd: 55, our_price_usd: d(55),
-    last_price_sync: now, is_pre_order: false,
+    last_price_sync: now, is_pre_order: false, is_promo: true,
     slug: 'pokemon-day-2026-collection-en',
     created_at: now, updated_at: now,
   },

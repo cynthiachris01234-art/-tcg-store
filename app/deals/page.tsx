@@ -1,5 +1,6 @@
 import { getActiveDeals, getProducts } from '@/lib/supabase';
 import { ProductGrid } from '@/components/product/ProductGrid';
+import { PromoSection } from '@/components/home/PromoSection';
 import { Flame, Clock, Tag } from 'lucide-react';
 import { formatDate } from '@/lib/utils';
 
@@ -12,7 +13,8 @@ export default async function DealsPage() {
   ]);
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+    <>
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 pb-0">
       {/* Header */}
       <div className="flex items-center gap-4 mb-10">
         <div className="w-12 h-12 bg-onepiece/20 rounded-xl flex items-center justify-center">
@@ -23,7 +25,12 @@ export default async function DealsPage() {
           <p className="text-muted mt-1">Limited time bundles on top of our 30% base discount</p>
         </div>
       </div>
+    </div>
 
+    {/* Featured Promos — hand-picked highlights, led by the 30th anniversary set */}
+    <PromoSection />
+
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-10">
       {/* Permanent case bundle section */}
       <div className="mb-12">
         <div className="relative overflow-hidden rounded-2xl bg-gradient-to-r from-surface to-bg-card border border-mtg-gold/30 p-8 mb-6">
@@ -69,5 +76,6 @@ export default async function DealsPage() {
         </div>
       )}
     </div>
+    </>
   );
 }

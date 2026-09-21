@@ -8,6 +8,8 @@ import { useCart } from '@/lib/cart';
 import { MOCK_PRODUCTS } from '@/lib/mock-data';
 
 const PROMO_IDS = [
+  // Pokémon's 30th anniversary set leads the section.
+  'poke-pokemon-day-2026-en',
   'poke-svah-etb-en',
   'poke-me05-en-etb',
   'poke-sv10-en-box',
@@ -18,7 +20,10 @@ const PROMO_IDS = [
 
 export function PromoSection() {
   const { addItem } = useCart();
-  const promos = MOCK_PRODUCTS.filter(p => PROMO_IDS.includes(p.id));
+  // Order by PROMO_IDS, not by catalogue position, so the lead promo stays first.
+  const promos = PROMO_IDS
+    .map(id => MOCK_PRODUCTS.find(p => p.id === id))
+    .filter((p): p is (typeof MOCK_PRODUCTS)[number] => Boolean(p));
 
   return (
     <section className="py-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
