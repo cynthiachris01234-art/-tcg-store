@@ -137,7 +137,7 @@ export function ReviewsSection() {
 
   const avg = reviews.length
     ? (reviews.reduce((s, r) => s + r.rating, 0) / reviews.length).toFixed(1)
-    : '5.0';
+    : null;
 
   return (
     <section className="py-16 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -146,11 +146,15 @@ export function ReviewsSection() {
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-10">
         <div>
           <h2 className="text-3xl font-black text-white">Customer Reviews</h2>
-          <div className="flex items-center gap-3 mt-2">
-            <StarRating rating={5} size="lg" />
-            <span className="text-2xl font-bold text-accent">{avg}</span>
-            <span className="text-muted text-sm">/ 5.0 · {reviews.length} review{reviews.length !== 1 ? 's' : ''}</span>
-          </div>
+          {avg ? (
+            <div className="flex items-center gap-3 mt-2">
+              <StarRating rating={Math.round(Number(avg))} size="lg" />
+              <span className="text-2xl font-bold text-accent">{avg}</span>
+              <span className="text-muted text-sm">/ 5.0 · {reviews.length} review{reviews.length !== 1 ? 's' : ''}</span>
+            </div>
+          ) : (
+            <p className="text-muted text-sm mt-2">No reviews yet. Be the first to share your experience.</p>
+          )}
         </div>
         <button
           onClick={() => setShowForm(true)}
