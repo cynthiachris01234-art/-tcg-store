@@ -1,10 +1,12 @@
 import Link from 'next/link';
 import { Zap, Mail, Phone, Globe, MapPin } from 'lucide-react';
-import { FaInstagram, FaWhatsapp } from 'react-icons/fa6';
+import { FaInstagram, FaWhatsapp, FaFacebook, FaTelegram } from 'react-icons/fa6';
 import { SiTiktok } from 'react-icons/si';
 import { BRAND_META, BRANDS, LANGUAGE_META, LANGUAGES } from '@/lib/brands';
 
-const INSTAGRAM_HANDLE = 'apextcgshop';
+const INSTAGRAM_HANDLE = 'apextcg_distribution';
+const FACEBOOK_URL = 'https://www.facebook.com/people/Apex-TCG-Distribution/61582030211913/';
+const TELEGRAM_HANDLE = 'apextcgshop';
 const TIKTOK_HANDLE    = 'apextcg_distro';
 const WHATSAPP_NUMBER  = '13322728148';
 const DISPLAY_PHONE    = '+1 (332) 272-8148';
@@ -36,6 +38,22 @@ export function Footer() {
                 title="Instagram"
               >
                 <FaInstagram className="w-4 h-4" />
+              </a>
+              <a
+                href={FACEBOOK_URL}
+                target="_blank" rel="noopener noreferrer"
+                className="p-2 rounded-lg bg-bg-border hover:bg-blue-500/20 transition-colors text-muted hover:text-blue-400"
+                title="Facebook"
+              >
+                <FaFacebook className="w-4 h-4" />
+              </a>
+              <a
+                href={`https://t.me/${TELEGRAM_HANDLE}`}
+                target="_blank" rel="noopener noreferrer"
+                className="p-2 rounded-lg bg-bg-border hover:bg-sky-500/20 transition-colors text-muted hover:text-sky-400"
+                title="Telegram"
+              >
+                <FaTelegram className="w-4 h-4" />
               </a>
               <a
                 href={`https://tiktok.com/@${TIKTOK_HANDLE}`}
@@ -137,6 +155,14 @@ export function Footer() {
               <a href={`https://instagram.com/${INSTAGRAM_HANDLE}`} target="_blank" rel="noopener noreferrer"
                 className="flex items-center gap-2 text-xs text-pink-400 hover:text-pink-300 transition-colors">
                 <FaInstagram className="w-3.5 h-3.5" /> @{INSTAGRAM_HANDLE}
+              </a>
+              <a href={FACEBOOK_URL} target="_blank" rel="noopener noreferrer"
+                className="flex items-center gap-2 text-xs text-blue-400 hover:text-blue-300 transition-colors">
+                <FaFacebook className="w-3.5 h-3.5" /> Apex TCG Distribution
+              </a>
+              <a href={`https://t.me/${TELEGRAM_HANDLE}`} target="_blank" rel="noopener noreferrer"
+                className="flex items-center gap-2 text-xs text-sky-400 hover:text-sky-300 transition-colors">
+                <FaTelegram className="w-3.5 h-3.5" /> Chat on Telegram
               </a>
               <a href={`https://tiktok.com/@${TIKTOK_HANDLE}`} target="_blank" rel="noopener noreferrer"
                 className="flex items-center gap-2 text-xs text-white/60 hover:text-white transition-colors">

@@ -19,15 +19,15 @@ const FAQS = [
   },
   {
     q: 'Do you ship internationally?',
-    a: 'Yes — we ship worldwide with full tracking. International buyers often use Wise Transfer to avoid currency fees. Delivery typically takes 3–10 business days depending on your country.',
+    a: 'Yes — we ship worldwide with full tracking. International buyers usually pay with Wise. Delivery typically takes 3–10 business days depending on your country.',
   },
   {
     q: 'What payment methods do you accept?',
-    a: 'We accept Credit/Debit Cards (via Stripe, charged instantly), PayPal, Apple Pay, Cash App, and Wise Transfer. For manual payment methods (PayPal, Cash App, Wise), we send you the details via WhatsApp or email after you place your order.',
+    a: 'At checkout you will see the payment options available: PayPal (charged instantly), or Wise, Venmo and Apple Pay — for those, you confirm your order on WhatsApp and we reply with the payment details.',
   },
   {
-    q: 'How does ordering work for non-card payments?',
-    a: 'Place your order on the site and select your preferred payment method. We will contact you via WhatsApp or email within minutes with the payment details. Once payment is received, your order ships within 1–2 business days.',
+    q: 'How does ordering work?',
+    a: 'Add your items to the cart, enter your shipping details at checkout, then tap "Confirm my order on WhatsApp" and we send you the payment details there. You will see a confirmation page straight away, and your order ships within 1–2 business days with tracking.',
   },
   {
     q: 'Do you offer a discount on cases?',

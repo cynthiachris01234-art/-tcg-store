@@ -1,8 +1,11 @@
 import Stripe from 'stripe';
+import { env } from '@/lib/env';
 import { loadStripe } from '@stripe/stripe-js';
 
 // Server-side Stripe instance
-export const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
+// Placeholder when no key is set, so importing this never crashes a route;
+// callers check stripeCheckoutStatus() before using it.
+export const stripe = new Stripe(env('STRIPE_SECRET_KEY') || 'sk_not_configured', {
   apiVersion: '2024-06-20',
 });
 

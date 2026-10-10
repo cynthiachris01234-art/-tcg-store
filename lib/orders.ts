@@ -1,6 +1,7 @@
 'use client';
 
 import type { Cart } from '@/types';
+import { priceOf } from '@/lib/promos';
 
 export interface StoredOrder {
   id: string;
@@ -78,11 +79,11 @@ export function saveOrder(
       productType: i.product.product_type,
       imageUrl:    i.product.image_url,
       quantity:    i.quantity,
-      unitPrice:   i.product.our_price_usd,
-      total:       +(i.product.our_price_usd * i.quantity).toFixed(2),
+      unitPrice:   priceOf(i.product),
+      total:       +(priceOf(i.product) * i.quantity).toFixed(2),
     })),
     subtotal: cart.subtotal_usd,
-    discount: cart.bundle_discount,
+    discount: +(cart.bundle_discount + (cart.multibuy_discount ?? 0)).toFixed(2),
     total:    cart.total_usd,
   };
 

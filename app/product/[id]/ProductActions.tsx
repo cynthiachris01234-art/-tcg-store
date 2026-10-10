@@ -1,101 +1,92 @@
 'use client';
 
 import { useState } from 'react';
-import { ShoppingCart, Bell, Mail, Plus, Minus } from 'lucide-react';
+import { ShoppingCart, Plus, Minus, Clock, CheckCircle2, Ban } from 'lucide-react';
 import type { Product } from '@/types';
 import { useCart } from '@/lib/cart';
-import { subscribeRestockAlert, subscribePreOrder } from '@/lib/supabase';
-import { cn } from '@/lib/utils';
+import { formatDate, isComingSoon, shortDate } from '@/lib/utils';
 
+// In-stock and pre-order products go through the normal cart → checkout flow
+// (so the order reaches you and your admin panel). Sold-out products are shown
+// as sold out and cannot be added to the cart.
 export function ProductActions({ product }: { product: Product }) {
   const { addItem } = useCart();
   const [qty, setQty] = useState(1);
-  const [email, setEmail] = useState('');
-  const [status, setStatus] = useState<'idle' | 'loading' | 'done' | 'error'>('idle');
+  const [added, setAdded] = useState(false);
 
-  const canBuy   = product.stock_quantity > 0 && !product.is_pre_order;
   const isPreOrder = product.is_pre_order;
+  const inStock    = product.stock_quantity > 0 && !isPreOrder;
+  const soldOut    = !isPreOrder && product.stock_quantity <= 0;
+  const maxQty     = inStock ? product.stock_quantity : 10;
 
-  async function handleNotify() {
-    if (!email) return;
-    setStatus('loading');
-    try {
-      await subscribeRestockAlert(product.id, email);
-      setStatus('done');
-    } catch { setStatus('error'); }
+  function handleAdd() {
+    addItem(product, qty);
+    setAdded(true);
+    setTimeout(() => setAdded(false), 2000);
   }
 
-  async function handlePreOrder() {
-    if (!email) return;
-    setStatus('loading');
-    try {
-      await subscribePreOrder(product.id, email, qty);
-      setStatus('done');
-    } catch { setStatus('error'); }
+  if (isComingSoon(product)) {
+    return (
+      <div className="space-y-3">
+        <button disabled
+          className="w-full flex items-center justify-center gap-2 py-3.5 text-base rounded-xl border border-accent/40 bg-accent/10 text-accent cursor-not-allowed">
+          <Clock className="w-5 h-5" />
+          Coming Soon · {shortDate(product.release_date)}
+        </button>
+        <p className="text-xs text-muted">
+          Not released yet — available to order from <strong className="text-white">{formatDate(product.release_date)}</strong>.
+        </p>
+      </div>
+    );
+  }
+
+  if (soldOut) {
+    return (
+      <div className="space-y-3">
+        <button disabled
+          className="w-full flex items-center justify-center gap-2 py-3.5 text-base rounded-xl border border-bg-border bg-bg text-muted cursor-not-allowed">
+          <Ban className="w-5 h-5" />
+          Sold Out
+        </button>
+        <p className="text-xs text-muted">This item is sold out. Check back soon — we restock regularly.</p>
+      </div>
+    );
   }
 
   return (
     <div className="space-y-4">
       {/* Qty selector */}
-      {(canBuy || isPreOrder) && (
-        <div className="flex items-center gap-3">
-          <span className="text-muted text-sm">Quantity</span>
-          <div className="flex items-center gap-2">
-            <button onClick={() => setQty(Math.max(1, qty - 1))}
-              className="w-8 h-8 rounded-lg border border-bg-border hover:border-accent flex items-center justify-center text-white transition-colors">
-              <Minus className="w-4 h-4" />
-            </button>
-            <span className="w-8 text-center text-white font-semibold">{qty}</span>
-            <button onClick={() => setQty(Math.min(product.stock_quantity || 99, qty + 1))}
-              className="w-8 h-8 rounded-lg border border-bg-border hover:border-accent flex items-center justify-center text-white transition-colors">
-              <Plus className="w-4 h-4" />
-            </button>
-          </div>
+      <div className="flex items-center gap-3">
+        <span className="text-muted text-sm">Quantity</span>
+        <div className="flex items-center gap-2">
+          <button onClick={() => setQty(Math.max(1, qty - 1))}
+            className="w-8 h-8 rounded-lg border border-bg-border hover:border-accent flex items-center justify-center text-white transition-colors">
+            <Minus className="w-4 h-4" />
+          </button>
+          <span className="w-8 text-center text-white font-semibold">{qty}</span>
+          <button onClick={() => setQty(Math.min(maxQty, qty + 1))} disabled={qty >= maxQty}
+            className="w-8 h-8 rounded-lg border border-bg-border hover:border-accent flex items-center justify-center text-white transition-colors disabled:opacity-40">
+            <Plus className="w-4 h-4" />
+          </button>
         </div>
-      )}
+        {inStock && product.stock_quantity <= 5 && (
+          <span className="text-xs text-yellow-400">Only {product.stock_quantity} left</span>
+        )}
+      </div>
 
-      {/* Add to cart */}
-      {canBuy && (
-        <button onClick={() => addItem(product, qty)} className="w-full btn-primary flex items-center justify-center gap-2 py-3.5 text-base">
-          <ShoppingCart className="w-5 h-5" />
-          Add to Cart
-        </button>
-      )}
+      <button onClick={handleAdd} className="w-full btn-primary flex items-center justify-center gap-2 py-3.5 text-base">
+        {added ? <CheckCircle2 className="w-5 h-5" /> : <ShoppingCart className="w-5 h-5" />}
+        {added ? 'Added to cart' : isPreOrder ? 'Pre-Order Now' : 'Add to Cart'}
+      </button>
 
-      {/* Pre-order */}
       {isPreOrder && (
-        <div className="space-y-3">
-          <div className="flex gap-2">
-            <input type="email" value={email} onChange={(e) => setEmail(e.target.value)}
-              placeholder="your@email.com"
-              className="flex-1 bg-bg border border-bg-border rounded-xl px-4 py-3 text-white placeholder-muted text-sm focus:outline-none focus:border-accent" />
-            <button onClick={handlePreOrder} disabled={status === 'loading' || !email}
-              className="btn-primary px-6 py-3">
-              Pre-Order
-            </button>
-          </div>
-          {status === 'done'  && <p className="text-success text-sm">✓ Pre-order confirmed! We'll email you when it ships.</p>}
-          {status === 'error' && <p className="text-danger text-sm">Something went wrong. Try again.</p>}
-        </div>
-      )}
-
-      {/* Out of stock — restock alert */}
-      {!canBuy && !isPreOrder && (
-        <div className="space-y-3">
-          <p className="text-muted text-sm">This product is currently out of stock. Enter your email to be notified when it's back.</p>
-          <div className="flex gap-2">
-            <input type="email" value={email} onChange={(e) => setEmail(e.target.value)}
-              placeholder="your@email.com"
-              className="flex-1 bg-bg border border-bg-border rounded-xl px-4 py-3 text-white placeholder-muted text-sm focus:outline-none focus:border-accent" />
-            <button onClick={handleNotify} disabled={status === 'loading' || !email}
-              className="btn-outline flex items-center gap-2 px-4 py-3">
-              <Bell className="w-4 h-4" />
-              Notify Me
-            </button>
-          </div>
-          {status === 'done'  && <p className="text-success text-sm">✓ You'll be notified when this item is back in stock!</p>}
-          {status === 'error' && <p className="text-danger text-sm">Something went wrong. Try again.</p>}
-        </div>
+        <p className="flex items-start gap-2 text-xs text-muted leading-relaxed">
+          <Clock className="w-3.5 h-3.5 text-accent flex-shrink-0 mt-0.5" />
+          <span>
+            Pre-order — reserve yours now. Ships on release
+            {product.release_date ? <> (<strong className="text-white">{formatDate(product.release_date)}</strong>)</> : null}.
+          </span>
+        </p>
       )}
     </div>
   );

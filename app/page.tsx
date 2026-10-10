@@ -7,21 +7,27 @@ import { NewReleasesStrip } from '@/components/home/NewReleasesStrip';
 import { BrandSection } from '@/components/home/BrandSection';
 import { DealsBanner } from '@/components/home/DealsBanner';
 import { PromoSection } from '@/components/home/PromoSection';
+import { CelebrationSection } from '@/components/home/CelebrationSection';
 import { ReviewsSection } from '@/components/home/ReviewsSection';
-import { BRANDS } from '@/lib/brands';
+import { featuredPicks } from '@/lib/featured';
 import { ShieldCheck, RefreshCw, Truck, Headphones } from 'lucide-react';
 
-export const revalidate = 3600; // revalidate every hour
+export const revalidate = 300;
 
 async function getData() {
-  const [pokemon, onepiece, mtg, yugioh, releases] = await Promise.all([
+  const [pokemon, onepiece, mtg, yugioh, releases, picks] = await Promise.all([
     getBestSellers('pokemon',  4),
     getBestSellers('onepiece', 4),
     getBestSellers('mtg',      4),
     getBestSellers('yugioh',   4),
-    getNewReleases(10),
+    getNewReleases(8),
+    Promise.resolve(featuredPicks()),
   ]);
-  return { pokemon, onepiece, mtg, yugioh, releases };
+  return {
+    pokemon, onepiece, mtg, yugioh,
+    releases: releases.slice(0, 8),
+    picks,
+  };
 }
 
 const TRUST_BADGES = [
@@ -32,7 +38,7 @@ const TRUST_BADGES = [
 ];
 
 export default async function HomePage() {
-  const { pokemon, onepiece, mtg, yugioh, releases } = await getData();
+  const { pokemon, onepiece, mtg, yugioh, releases, picks } = await getData();
 
   return (
     <div>
@@ -44,7 +50,7 @@ export default async function HomePage() {
           { '@type': 'Question', name: 'Does Apex TCG sell One Piece TCG booster boxes?', acceptedAnswer: { '@type': 'Answer', text: 'Yes. Apex TCG carries a full selection of One Piece TCG booster boxes in English and Japanese, from Romance Dawn (OP01) through the latest sets.' } },
           { '@type': 'Question', name: 'Are the cards and boxes sold by Apex TCG authentic?', acceptedAnswer: { '@type': 'Answer', text: 'All products at Apex TCG are 100% factory sealed and authenticated. We source directly and guarantee authenticity on every order.' } },
           { '@type': 'Question', name: 'Does Apex TCG ship internationally?', acceptedAnswer: { '@type': 'Answer', text: 'Yes, Apex TCG ships worldwide with tracked delivery. We accept international payment methods including Wise Transfer for low-fee cross-border payments.' } },
-          { '@type': 'Question', name: 'What payment methods does Apex TCG accept?', acceptedAnswer: { '@type': 'Answer', text: 'Apex TCG accepts Wise Transfer, PayPal, Apple Pay, Cash App, Bank Transfer, Bitcoin (BTC), and USDT.' } },
+          { '@type': 'Question', name: 'What payment methods does Apex TCG accept?', acceptedAnswer: { '@type': 'Answer', text: 'Apex TCG accepts Wise, Venmo and Apple Pay. Orders are placed on the site and confirmed on WhatsApp.' } },
           { '@type': 'Question', name: 'How much is an MTG Final Fantasy booster box?', acceptedAnswer: { '@type': 'Answer', text: 'Check the MTG section of our shop for the current price on the MTG Final Fantasy Play booster box.' } },
         ],
       }} />
@@ -62,13 +68,13 @@ export default async function HomePage() {
       <HeroBanner />
 
       {/* Featured Promos */}
-      <PromoSection />
+      <PromoSection picks={picks} />
+
+      {/* Pokémon 30th Celebration — flagship anniversary set */}
+      <CelebrationSection />
 
       {/* Box display shelf */}
       <BoxShelf />
-
-      {/* Special Pokémon Sets */}
-      <SpecialSets />
 
       {/* New Releases */}
       <NewReleasesStrip releases={releases} />

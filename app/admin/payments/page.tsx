@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
+import { PayPalPayments } from '@/components/admin/PayPalPayments';
 import {
   CreditCard, RefreshCw, ArrowLeft, CheckCircle2,
   XCircle, Clock, ExternalLink, TrendingUp, DollarSign,
@@ -114,8 +115,8 @@ export default function AdminPaymentsPage() {
             <ArrowLeft className="w-5 h-5" />
           </Link>
           <div>
-            <h1 className="text-3xl font-bold text-white">Stripe Payments</h1>
-            <p className="text-muted text-sm mt-0.5">Live card payment transactions</p>
+            <h1 className="text-3xl font-bold text-white">Payments</h1>
+            <p className="text-muted text-sm mt-0.5">PayPal transactions and card payments</p>
           </div>
         </div>
         <div className="flex items-center gap-3">
@@ -132,6 +133,11 @@ export default function AdminPaymentsPage() {
           </button>
         </div>
       </div>
+
+      {/* PayPal */}
+      <PayPalPayments />
+
+      <h2 className="text-white font-bold text-lg mb-4">Card payments (Stripe)</h2>
 
       {/* Error */}
       {error && (

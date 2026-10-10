@@ -6,6 +6,7 @@ import { loadOrders } from '@/lib/orders';
 import { MOCK_PRODUCTS } from '@/lib/mock-data';
 import { BRAND_META } from '@/lib/brands';
 import type { Brand } from '@/types';
+import { PayPalPayments } from '@/components/admin/PayPalPayments';
 import {
   Package, ShoppingBag, DollarSign, TrendingUp,
   AlertTriangle, Star, ArrowRight,
@@ -49,6 +50,8 @@ export default function AdminDashboard() {
         <h1 className="text-3xl font-bold text-white">Dashboard</h1>
         <p className="text-muted text-sm mt-1">Welcome back — here's what's happening in your store.</p>
       </div>
+
+      <PayPalPayments />
 
       {/* Stats */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">

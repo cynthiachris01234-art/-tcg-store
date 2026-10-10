@@ -2,23 +2,26 @@
 
 import Image from 'next/image';
 import Link from 'next/link';
-import { ShoppingCart, Bell } from 'lucide-react';
+import { ShoppingCart } from 'lucide-react';
 import type { Product } from '@/types';
 import { BRAND_META } from '@/lib/brands';
 import { LanguageBadge } from '@/components/ui/LanguageBadge';
 import { PriceTag } from '@/components/ui/PriceTag';
 import { StockBadge } from '@/components/ui/StockBadge';
 import { useCart } from '@/lib/cart';
-import { cn } from '@/lib/utils';
+import { cn, isComingSoon, shortDate } from '@/lib/utils';
 import { useState } from 'react';
+import { useLivePrice } from '@/components/promo/LivePromo';
 
 interface Props {
   product: Product;
   className?: string;
+  priority?: boolean;
 }
 
-export function ProductCard({ product, className }: Props) {
+export function ProductCard({ product, className, priority = false }: Props) {
   const { addItem } = useCart();
+  const { price: livePrice } = useLivePrice(product);
   const meta = BRAND_META[product.brand];
   const [imgSrc, setImgSrc] = useState(product.image_url || '/placeholder-box.png');
 
@@ -35,7 +38,9 @@ export function ProductCard({ product, className }: Props) {
       {/* Pre-order / Sealed badges */}
       <div className="absolute top-3 left-3 flex flex-col gap-1 z-10">
         {product.is_promo && (
-          <span className="badge bg-red-500/20 text-red-400 border border-red-500/40 font-bold">🔥 PROMO</span>
+          <span className="badge bg-red-600 text-white border border-red-400 font-extrabold tracking-wide shadow-lg shadow-red-600/40 animate-pulse-slow">
+            🔥 PROMO
+          </span>
         )}
         {product.is_pre_order && (
           <span className="badge bg-accent/20 text-accent border border-accent/40">PRE-ORDER</span>
@@ -64,6 +69,15 @@ export function ProductCard({ product, className }: Props) {
         {product.product_type === 'poster_collection' && (
           <span className="badge bg-teal-500/20 text-teal-300 border border-teal-500/30">POSTER</span>
         )}
+        {product.product_type === 'booster_pack' && (
+          <span className="badge bg-cyan-500/20 text-cyan-300 border border-cyan-500/30">PACK</span>
+        )}
+        {product.product_type === 'blister' && (
+          <span className="badge bg-lime-500/20 text-lime-300 border border-lime-500/30">BLISTER</span>
+        )}
+        {product.product_type === 'build_battle' && (
+          <span className="badge bg-amber-500/20 text-amber-300 border border-amber-500/30">B&amp;B</span>
+        )}
         {product.product_type === 'single_card' && (
           <span className="badge bg-indigo-500/20 text-indigo-300 border border-indigo-500/30">SINGLE</span>
         )}
@@ -84,7 +98,7 @@ export function ProductCard({ product, className }: Props) {
             src={imgSrc}
             alt={`${product.set_name} ${product.product_type === 'case' ? 'Case' : 'Booster Box'}`}
             fill
-            unoptimized
+            priority={priority}
             className="object-contain p-4 transition-transform duration-500 group-hover:scale-105"
             sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
             onError={() => setImgSrc(
@@ -131,46 +145,44 @@ export function ProductCard({ product, className }: Props) {
                 product.product_type === 'premium_collection' ? 'Premium Collection' :
                 product.product_type === 'display_case'       ? 'Display Case' :
                 product.product_type === 'poster_collection'  ? 'Poster Collection' :
+                product.product_type === 'booster_pack'       ? 'Booster Pack' :
+                product.product_type === 'blister'            ? `Blister Pack${product.pack_count && product.pack_count > 1 ? ` (${product.pack_count} Packs)` : ''}` :
+                product.product_type === 'build_battle'       ? 'Build & Battle Box' :
                 `Booster Box${product.pack_count ? ` (${product.pack_count} Packs)` : ''}`
               }`
           }
         </p>
 
         {/* Stock */}
-        <StockBadge quantity={product.stock_quantity} isPreOrder={product.is_pre_order} />
+        <StockBadge quantity={product.stock_quantity} isPreOrder={product.is_pre_order} releaseDate={product.release_date} />
 
         {/* Price */}
         <PriceTag
           marketPriceUSD={product.market_price_usd}
-          ourPriceUSD={product.our_price_usd}
+          ourPriceUSD={livePrice}
           size="sm"
           showSavings={false}
         />
 
-        {/* Action button */}
-        {product.stock_quantity > 0 && !product.is_pre_order ? (
+        {/* Action button — in-stock and pre-order items are orderable */}
+        {isComingSoon(product) ? (
+          <Link href={`/product/${product.slug}`}
+            className="w-full flex items-center justify-center gap-2 py-2 text-sm rounded-xl border border-accent/40 bg-accent/10 text-accent">
+            Coming Soon · {shortDate(product.release_date)}
+          </Link>
+        ) : !product.is_pre_order && product.stock_quantity <= 0 ? (
+          <button disabled
+            className="w-full flex items-center justify-center gap-2 py-2 text-sm rounded-xl border border-bg-border bg-bg text-muted cursor-not-allowed">
+            Sold Out
+          </button>
+        ) : (
           <button
             onClick={() => addItem(product)}
             className="w-full btn-primary flex items-center justify-center gap-2 py-2 text-sm"
           >
             <ShoppingCart className="w-4 h-4" />
-            Add to Cart
+            {product.is_pre_order ? 'Pre-Order Now' : 'Add to Cart'}
           </button>
-        ) : product.is_pre_order ? (
-          <Link
-            href={`/product/${product.slug}`}
-            className="w-full btn-primary flex items-center justify-center gap-2 py-2 text-sm text-center"
-          >
-            Pre-Order Now
-          </Link>
-        ) : (
-          <Link
-            href={`/product/${product.slug}`}
-            className="w-full btn-outline flex items-center justify-center gap-2 py-2 text-sm"
-          >
-            <Bell className="w-4 h-4" />
-            Notify Me
-          </Link>
         )}
       </div>
     </div>

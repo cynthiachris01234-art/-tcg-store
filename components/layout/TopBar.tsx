@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { FaWhatsapp, FaInstagram, FaPhone } from 'react-icons/fa6';
+import { FaWhatsapp, FaInstagram, FaPhone, FaFacebook, FaTelegram } from 'react-icons/fa6';
 
 export function TopBar() {
   return (
@@ -9,10 +9,10 @@ export function TopBar() {
 
           {/* Left — promo text */}
           <p className="text-muted hidden sm:block">
-            🔥 <span className="text-accent font-semibold">100% sealed & authentic</span> TCG products — Free US shipping over $500
+            🔥 <span className="text-accent font-semibold">100% sealed & authentic</span> TCG products — Free US shipping over $1,000
           </p>
           <p className="text-muted sm:hidden text-[11px]">
-            🔥 100% sealed & authentic · Free US shipping over $500
+            🔥 100% sealed & authentic · Free US shipping over $1,000
           </p>
 
           {/* Right — contact links */}
@@ -40,12 +40,30 @@ export function TopBar() {
             <span className="text-gray-700 hidden sm:inline">|</span>
 
             <a
-              href="https://instagram.com/apextcgshop"
+              href="https://instagram.com/apextcg_distribution"
               target="_blank" rel="noopener noreferrer"
               className="hidden sm:flex items-center gap-2 text-muted hover:text-pink-400 transition-colors"
             >
               <FaInstagram className="w-5 h-5" />
-              <span className="text-sm font-medium">@apextcgshop</span>
+              <span className="text-sm font-medium">@apextcg_distribution</span>
+            </a>
+
+            <a
+              href="https://www.facebook.com/people/Apex-TCG-Distribution/61582030211913/"
+              target="_blank" rel="noopener noreferrer"
+              className="hidden sm:flex items-center gap-2 text-muted hover:text-blue-400 transition-colors"
+              title="Facebook"
+            >
+              <FaFacebook className="w-5 h-5" />
+            </a>
+
+            <a
+              href="https://t.me/apextcgshop"
+              target="_blank" rel="noopener noreferrer"
+              className="hidden sm:flex items-center gap-2 text-muted hover:text-sky-400 transition-colors"
+              title="Telegram"
+            >
+              <FaTelegram className="w-5 h-5" />
             </a>
           </div>
         </div>

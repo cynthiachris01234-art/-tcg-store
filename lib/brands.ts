@@ -61,9 +61,57 @@ export const BRAND_META: Record<Brand, BrandMeta> = {
     textClass: 'text-lorcana',
     bgClass: 'bg-lorcana-gradient',
   },
+  riftbound: {
+    id: 'riftbound',
+    name: 'Riftbound',
+    tagline: 'League of Legends TCG',
+    gradient: 'bg-riftbound-gradient',
+    primaryColor: '#c89b3c',
+    secondaryColor: '#0f0c05',
+    glowClass: 'shadow-glow-riftbound',
+    borderClass: 'border-riftbound',
+    textClass: 'text-riftbound',
+    bgClass: 'bg-riftbound-gradient',
+  },
+  dragonball: {
+    id: 'dragonball',
+    name: 'Dragon Ball Fusion World',
+    tagline: 'Power beyond limits',
+    gradient: 'bg-dragonball-gradient',
+    primaryColor: '#f97316',
+    secondaryColor: '#120700',
+    glowClass: 'shadow-glow-dragonball',
+    borderClass: 'border-dragonball',
+    textClass: 'text-dragonball',
+    bgClass: 'bg-dragonball-gradient',
+  },
+  starwars: {
+    id: 'starwars',
+    name: 'Star Wars Unlimited',
+    tagline: 'A galaxy of cards awaits',
+    gradient: 'bg-starwars-gradient',
+    primaryColor: '#ffe81f',
+    secondaryColor: '#0a0a00',
+    glowClass: 'shadow-glow-starwars',
+    borderClass: 'border-starwars',
+    textClass: 'text-starwars',
+    bgClass: 'bg-starwars-gradient',
+  },
+  digimon: {
+    id: 'digimon',
+    name: 'Digimon Card Game',
+    tagline: 'Digivolve your collection',
+    gradient: 'bg-digimon-gradient',
+    primaryColor: '#2563eb',
+    secondaryColor: '#020617',
+    glowClass: 'shadow-glow-digimon',
+    borderClass: 'border-digimon',
+    textClass: 'text-digimon',
+    bgClass: 'bg-digimon-gradient',
+  },
 };
 
-export const BRANDS: Brand[] = ['pokemon', 'onepiece', 'mtg', 'yugioh', 'lorcana'];
+export const BRANDS: Brand[] = ['pokemon', 'onepiece', 'mtg', 'yugioh', 'lorcana', 'riftbound', 'dragonball', 'starwars', 'digimon'];
 
 export const LANGUAGE_META = {
   en: { code: 'en', label: 'English', flag: '🇺🇸', shortLabel: 'EN' },

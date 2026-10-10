@@ -1,6 +1,6 @@
 // ─── Enums ───────────────────────────────────────────────────────────────────
 
-export type Brand = 'pokemon' | 'onepiece' | 'mtg' | 'yugioh' | 'lorcana';
+export type Brand = 'pokemon' | 'onepiece' | 'mtg' | 'yugioh' | 'lorcana' | 'riftbound' | 'dragonball' | 'starwars' | 'digimon';
 export type Language = 'en' | 'jp' | 'kr';
 export type ProductType =
   | 'booster_box'
@@ -12,6 +12,9 @@ export type ProductType =
   | 'premium_collection'// Premium Collection / PC ETB
   | 'display_case'      // JP Display Case (set of ETBs/products)
   | 'poster_collection' // Poster + promo collection
+  | 'booster_pack'      // Single booster pack (loose or sleeved)
+  | 'blister'           // Checklane / single / 3-pack blister
+  | 'build_battle'      // Build & Battle Box (prerelease kit)
   | 'single_card';      // Individual graded or raw card
 export type ProductCondition = 'sealed' | 'nm' | 'lp' | 'mp' | 'hp' | 'damaged';
 export type Currency = 'USD' | 'CAD' | 'EUR' | 'JPY' | 'KRW';
@@ -72,6 +75,7 @@ export interface Cart {
   items: CartItem[];
   subtotal_usd: number;
   bundle_discount: number;        // extra 5% when buying a case
+  multibuy_discount?: number;     // 10% off every 2nd ETB / booster box
   total_usd: number;
 }
 

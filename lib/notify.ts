@@ -25,8 +25,10 @@ export interface OrderNotifyPayload {
   }>;
   subtotal_usd: number;
   discount_usd: number;
+  shipping_usd?: number;
   total_usd: number;
   status: string;
+  freeGift?: boolean;          // order earned the free booster pack
 }
 
 // ── Reliable USD formatter — no toLocaleString (unreliable in server envs) ─────
@@ -42,10 +44,17 @@ function usd(n: any): string {
 
 // ── Human-readable payment method labels ──────────────────────────────────────
 const PAY_LABELS: Record<string, string> = {
-  wise:     'Wise Transfer',
-  applepay: 'Apple Pay',
+  whop:     'Card / Apple Pay / PayPal (Whop)',
+  stripe:   'Card / Apple Pay / Google Pay (Stripe)',
+  kkiapay:  'Card / Mobile Money (Kkiapay)',
+  melio:    'Melio (card/bank)',
   cashapp:  'Cash App',
+  chime:    'Chime',
   paypal:   'PayPal',
+  telegram: 'Telegram (customer will message you to pay)',
+  wise:     'Wise (customer confirms on WhatsApp)',
+  venmo:    'Venmo (customer confirms on WhatsApp)',
+  applepay: 'Apple Pay (customer confirms on WhatsApp)',
   bank:     'Bank Transfer / Wire',
   btc:      'Bitcoin (BTC)',
   usdt:     'USDT (Tether)',
@@ -84,9 +93,8 @@ export async function sendWhatsApp(order: OrderNotifyPayload): Promise<void> {
     (s, i) => s + Math.round(Number(i.unitPrice) * Number(i.quantity) * 100) / 100, 0
   );
   const discount = Math.round(Number(order.discount_usd ?? 0) * 100) / 100;
-  const total    = discount > 0
-    ? Math.round((itemsSubtotal - discount) * 100) / 100
-    : Math.round(Number(order.total_usd ?? itemsSubtotal) * 100) / 100;
+  const shipping = Math.round(Number(order.shipping_usd ?? 0) * 100) / 100;
+  const total    = Math.round((itemsSubtotal - discount + shipping) * 100) / 100;
 
   const lines = [
     `NEW ORDER #${order.id}`,
@@ -101,10 +109,12 @@ export async function sendWhatsApp(order: OrderNotifyPayload): Promise<void> {
     `---`,
     `Subtotal : USD ${usd(itemsSubtotal)}`,
     discount > 0 ? `Discount : -USD ${usd(discount)}` : null,
+    `Shipping : USD ${usd(shipping)}`,
     `TOTAL    : USD ${usd(total)}`,
+    order.freeGift ? `GIFT     : ADD 1 FREE BOOSTER PACK` : null,
     `---`,
     `Payment  : ${method}`,
-    `ACTION   : Send ${method} details to customer now`,
+    order.status === 'paid' ? `STATUS   : PAID - ready to ship` : `ACTION   : Send ${method} details to customer now`,
   ].filter(v => v !== null).join('\n');
 
   const url = `https://api.callmebot.com/whatsapp.php?phone=${phone}&text=${encodeURIComponent(lines)}&apikey=${apiKey}`;
@@ -138,9 +148,8 @@ export async function sendEmail(order: OrderNotifyPayload): Promise<void> {
     (s, i) => s + Math.round(Number(i.unitPrice) * Number(i.quantity) * 100) / 100, 0
   );
   const discount = Math.round(Number(order.discount_usd ?? 0) * 100) / 100;
-  const total    = discount > 0
-    ? Math.round((itemsSubtotal - discount) * 100) / 100
-    : Math.round(Number(order.total_usd ?? itemsSubtotal) * 100) / 100;
+  const shipping = Math.round(Number(order.shipping_usd ?? 0) * 100) / 100;
+  const total    = Math.round((itemsSubtotal - discount + shipping) * 100) / 100;
 
   const itemRows = order.items.map(i => {
     const up = Math.round(Number(i.unitPrice) * 100) / 100;
@@ -180,7 +189,7 @@ export async function sendEmail(order: OrderNotifyPayload): Promise<void> {
     </div>
 
     <div style="background:#1a2e1a;border:1px solid #22c55e;border-radius:10px;padding:12px 16px;margin-bottom:16px;">
-      <p style="margin:0;color:#22c55e;font-weight:700;font-size:14px;">Send the customer their ${method} payment details to complete this order.</p>
+      <p style="margin:0;color:#22c55e;font-weight:700;font-size:14px;">${order.status === 'paid' ? 'PAID — this order is ready to ship.' : `Send the customer their ${method} payment details to complete this order.`}</p>
     </div>
 
     <div style="background:#111;border:1px solid #222;border-radius:10px;padding:16px;margin-bottom:16px;">
@@ -211,7 +220,9 @@ export async function sendEmail(order: OrderNotifyPayload): Promise<void> {
       <div style="display:flex;justify-content:space-between;padding:4px 0;color:#888;font-size:14px;">
         <span>Subtotal</span><span>$${usd(itemsSubtotal)} USD</span>
       </div>
-      ${discount > 0 ? `<div style="display:flex;justify-content:space-between;padding:4px 0;color:#22c55e;font-size:14px;"><span>Bundle Discount</span><span>-$${usd(discount)} USD</span></div>` : ''}
+      ${discount > 0 ? `<div style="display:flex;justify-content:space-between;padding:4px 0;color:#22c55e;font-size:14px;"><span>Discounts</span><span>-$${usd(discount)} USD</span></div>` : ''}
+      <div style="display:flex;justify-content:space-between;padding:4px 0;color:#888;font-size:14px;"><span>Shipping</span><span>$${usd(shipping)} USD</span></div>
+      ${order.freeGift ? `<div style="padding:6px 0;color:#22c55e;font-size:14px;font-weight:700;">&#127873; FREE GIFT: add 1 booster pack to this order</div>` : ''}
       <div style="display:flex;justify-content:space-between;padding:10px 0 0;border-top:1px solid #333;margin-top:8px;font-size:20px;font-weight:800;">
         <span>TOTAL</span><span style="color:#C8962A;">$${usd(total)} USD</span>
       </div>
@@ -241,8 +252,69 @@ export async function sendEmail(order: OrderNotifyPayload): Promise<void> {
 }
 
 // ── Send both ─────────────────────────────────────────────────────────────────
+// ── Telegram via Bot API ───────────────────────────────────────────────────────
+// Needs TELEGRAM_BOT_TOKEN (from @BotFather) and TELEGRAM_CHAT_ID (your chat
+// with the bot). Does nothing until both are set.
+export async function sendTelegram(order: OrderNotifyPayload): Promise<void> {
+  const token  = process.env.TELEGRAM_BOT_TOKEN;
+  const chatId = process.env.TELEGRAM_CHAT_ID;
+  if (!token || !chatId) return;
+
+  const method = payLabel(order.paymentMethod);
+  const addr = [
+    order.customer.line1, order.customer.line2, order.customer.city,
+    order.customer.state, order.customer.postal_code, order.customer.country,
+  ].filter(Boolean).join(', ');
+
+  const itemsSubtotal = order.items.reduce(
+    (s, i) => s + Math.round(Number(i.unitPrice) * Number(i.quantity) * 100) / 100, 0
+  );
+  const discount = Math.round(Number(order.discount_usd ?? 0) * 100) / 100;
+  const shipping = Math.round(Number(order.shipping_usd ?? 0) * 100) / 100;
+  const total    = Math.round((itemsSubtotal - discount + shipping) * 100) / 100;
+
+  const itemLines = order.items.map(i =>
+    `• ${i.setName} (${(i.language ?? '').toUpperCase()}) ×${i.quantity} — $${usd(Number(i.unitPrice) * Number(i.quantity))}`
+  ).join('\n');
+
+  // Plain text (no parse_mode) so product names with * _ [ ] can't break formatting.
+  const text = [
+    `🛒 NEW ORDER #${order.id}`,
+    ``,
+    `👤 ${order.customer.name}`,
+    `📧 ${order.customer.email}`,
+    order.customer.phone ? `📱 ${order.customer.phone}` : null,
+    `📍 ${addr}`,
+    ``,
+    `Items (${order.items.length}):`,
+    itemLines,
+    ``,
+    `Subtotal: $${usd(itemsSubtotal)}`,
+    discount > 0 ? `Discount: -$${usd(discount)}` : null,
+    `Shipping: $${usd(shipping)}`,
+    `TOTAL: $${usd(total)}`,
+    order.freeGift ? `🎁 FREE GIFT: pack 1 free booster pack` : null,
+    ``,
+    `💳 Payment: ${method}`,
+    order.status === 'paid' ? `✅ PAID — ready to ship` : `➡️ Send ${method} details to the customer now`,
+  ].filter(v => v !== null).join('\n');
+
+  try {
+    const res = await fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ chat_id: chatId, text, disable_web_page_preview: true }),
+    });
+    if (!res.ok) console.error('Telegram error:', res.status, await res.text());
+  } catch (err) {
+    console.error('Telegram notification failed:', err);
+  }
+}
+
+// ── Send all ──────────────────────────────────────────────────────────────────
 export async function notifyNewOrder(order: OrderNotifyPayload): Promise<void> {
   await Promise.allSettled([
+    sendTelegram(order),
     sendWhatsApp(order),
     sendEmail(order),
   ]);

@@ -118,9 +118,20 @@ export async function getCardBySlug(slug: string): Promise<Product | null> {
 }
 
 export async function getNewReleases(limit = 8): Promise<Product[]> {
-  if (!isConfigured) return getMockProducts({ sort_by: 'release_date' })
-    .filter(p => p.release_date >= '2026-01-01')
-    .slice(0, limit);
+  if (!isConfigured) {
+    // One product per set, so a large set (e.g. 40+ Marvel SKUs) can't fill
+    // every slot and bury the other new releases.
+    const seen = new Set<string>();
+    return getMockProducts({ sort_by: 'release_date' })
+      .filter(p => p.release_date >= '2026-01-01')
+      .filter(p => {
+        const key = `${p.brand}:${p.set_code}`;
+        if (seen.has(key)) return false;
+        seen.add(key);
+        return true;
+      })
+      .slice(0, limit);
+  }
   try {
     const today = new Date().toISOString().split('T')[0];
     const { data } = await db()

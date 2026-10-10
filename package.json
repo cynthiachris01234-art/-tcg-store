@@ -12,9 +12,12 @@
     "sync-tcgplayer": "npx tsx scripts/sync-tcgplayer.ts"
   },
   "dependencies": {
+    "@kkiapay-org/nodejs-sdk": "^1.0.7",
     "@stripe/react-stripe-js": "^6.6.0",
     "@stripe/stripe-js": "^4.10.0",
     "@supabase/supabase-js": "^2.45.0",
+    "@whop/checkout": "^0.2.0",
+    "@whop/sdk": "^0.0.40",
     "clsx": "^2.1.1",
     "lucide-react": "^0.427.0",
     "next": "14.2.5",

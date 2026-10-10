@@ -24,6 +24,10 @@ const config: Config = {
         mtg:     { DEFAULT: '#d97706', gold: '#fbbf24', dark: '#100a00' },
         yugioh:  { DEFAULT: '#7c3aed', gold: '#fbbf24', dark: '#060010' },
         lorcana: { DEFAULT: '#38bdf8', gold: '#d4a017', dark: '#00050f' },
+        riftbound:  { DEFAULT: '#c89b3c', dark: '#0f0c05' },
+        dragonball: { DEFAULT: '#f97316', dark: '#120700' },
+        starwars:   { DEFAULT: '#ffe81f', dark: '#0a0a00' },
+        digimon:    { DEFAULT: '#2563eb', dark: '#020617' },
 
         /* Accent = APEX gold */
         accent:  { DEFAULT: '#C8962A', hover: '#B5841E' },
@@ -44,6 +48,10 @@ const config: Config = {
         'mtg-gradient':      'linear-gradient(135deg, #100a00 0%, #2a1800 100%)',
         'yugioh-gradient':   'linear-gradient(135deg, #060010 0%, #180030 100%)',
         'lorcana-gradient':  'linear-gradient(135deg, #00050f 0%, #001a2e 100%)',
+        'riftbound-gradient':  'linear-gradient(135deg, #0f0c05 0%, #241c08 100%)',
+        'dragonball-gradient': 'linear-gradient(135deg, #120700 0%, #2a1200 100%)',
+        'starwars-gradient':   'linear-gradient(135deg, #0a0a00 0%, #1f1c00 100%)',
+        'digimon-gradient':    'linear-gradient(135deg, #020617 0%, #0a1a3a 100%)',
       },
       animation: {
         'shimmer': 'shimmer 2s linear infinite',
@@ -70,6 +78,10 @@ const config: Config = {
         'glow-mtg':      '0 0 20px rgba(217,119,6,0.3)',
         'glow-yugioh':   '0 0 20px rgba(124,58,237,0.3)',
         'glow-lorcana':  '0 0 20px rgba(56,189,248,0.3)',
+        'glow-riftbound':  '0 0 20px rgba(200,155,60,0.3)',
+        'glow-dragonball': '0 0 20px rgba(249,115,22,0.3)',
+        'glow-starwars':   '0 0 20px rgba(255,232,31,0.25)',
+        'glow-digimon':    '0 0 20px rgba(37,99,235,0.3)',
         'glow-accent':   '0 0 20px rgba(200,150,42,0.4)',
       },
     },

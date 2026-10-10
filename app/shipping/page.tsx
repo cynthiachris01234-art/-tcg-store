@@ -194,7 +194,7 @@ export default function ShippingPage() {
         <p>• <strong className="text-white">Standard shipping</strong> uses USPS Priority or economy international carriers.</p>
         <p>• All packages are fully insured. In case of loss or damage, we open a claim and reship or refund.</p>
         <p>• International orders may be subject to import duties and taxes imposed by the destination country. These are the buyer's responsibility.</p>
-        <p>• Free standard shipping on USA orders over <strong className="text-white">$500</strong>.</p>
+        <p>• Free standard shipping on USA orders over <strong className="text-white">$1,000</strong>.</p>
       </div>
 
       <div className="mt-8 text-center">

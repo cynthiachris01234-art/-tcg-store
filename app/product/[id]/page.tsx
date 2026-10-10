@@ -6,6 +6,7 @@ import { JsonLd } from '@/components/JsonLd';
 import { LanguageBadge } from '@/components/ui/LanguageBadge';
 import { StockBadge } from '@/components/ui/StockBadge';
 import { ProductActions } from './ProductActions';
+import { LivePrice, ProductPromos } from '@/components/promo/LivePromo';
 import { formatDate } from '@/lib/utils';
 import { Shield, Package, Calendar, Tag } from 'lucide-react';
 
@@ -15,7 +16,7 @@ export async function generateMetadata({ params }: Props) {
   try {
     const p = await getProductBySlug(params.id);
     if (!p) return {};
-    const labels: Record<string, string> = { case: 'Case', etb: 'Elite Trainer Box', upc: 'Ultra Premium Collection', spc: 'Super Premium Collection', bundle: 'Booster Bundle', premium_collection: 'Premium Collection', display_case: 'Display Case', poster_collection: 'Poster Collection', booster_box: 'Booster Box' };
+    const labels: Record<string, string> = { case: 'Case', etb: 'Elite Trainer Box', upc: 'Ultra Premium Collection', spc: 'Super Premium Collection', bundle: 'Booster Bundle', premium_collection: 'Premium Collection', display_case: 'Display Case', poster_collection: 'Poster Collection', booster_pack: 'Booster Pack', blister: 'Blister Pack', build_battle: 'Build & Battle Box', booster_box: 'Booster Box' };
     const typeLabel = labels[p.product_type] ?? 'Booster Box';
     const title = `${p.set_name} ${typeLabel} — ${p.language.toUpperCase()}`;
     const description = `Buy the ${p.set_name} ${typeLabel} (${p.language.toUpperCase()}) sealed and authentic at $${p.our_price_usd.toFixed(2)}. Fast shipping from Apex TCG, New York.`;
@@ -66,6 +67,9 @@ export default async function ProductPage({ params }: Props) {
             case 'premium_collection': return 'Premium Collection';
             case 'display_case':       return 'Display Case';
             case 'poster_collection':  return 'Poster Collection';
+            case 'booster_pack':       return 'Booster Pack';
+            case 'blister':            return `Blister Pack${product.pack_count && product.pack_count > 1 ? ` (${product.pack_count} Packs)` : ''}`;
+            case 'build_battle':       return 'Build & Battle Box';
             default:                   return `Booster Box${product.pack_count ? ` (${product.pack_count} Packs)` : ' (36 Packs)'}`;
           }
         })() },
@@ -111,6 +115,11 @@ export default async function ProductPage({ params }: Props) {
 
           {/* Badges overlay */}
           <div className="absolute top-4 left-4 flex flex-col gap-2">
+            {product.is_promo && (
+              <span className="badge bg-red-600 text-white border border-red-400 font-extrabold text-sm px-3 py-1 shadow-lg shadow-red-600/40">
+                🔥 PROMO
+              </span>
+            )}
             {product.is_pre_order && (
               <span className="badge bg-accent/20 text-accent border border-accent/40 text-sm px-3 py-1">PRE-ORDER</span>
             )}
@@ -136,28 +145,26 @@ export default async function ProductPage({ params }: Props) {
           </h1>
 
           {/* Stock */}
-          <StockBadge quantity={product.stock_quantity} isPreOrder={product.is_pre_order} />
+          <StockBadge quantity={product.stock_quantity} isPreOrder={product.is_pre_order} releaseDate={product.release_date} />
+
+          {/* Promo banner — highlights the deal right above the price */}
+          {product.is_promo && (
+            <div className="rounded-xl border border-red-500/40 bg-red-500/10 px-4 py-3 flex items-center gap-3">
+              <span className="text-2xl leading-none">🔥</span>
+              <div>
+                <p className="text-red-400 font-extrabold text-sm tracking-wide">LIMITED-TIME PROMO</p>
+              </div>
+            </div>
+          )}
+
+          <ProductPromos product={product} />
 
           {/* Price section */}
           <div className="card p-5 space-y-2">
-            {product.our_price_usd < product.market_price_usd && (
-              <div className="flex items-center justify-between">
-                <span className="text-muted text-sm">Market Price</span>
-                <span className="text-muted line-through">${product.market_price_usd.toFixed(2)}</span>
-              </div>
-            )}
             <div className="flex items-center justify-between">
-              <span className="text-white font-semibold">Our Price</span>
-              <span className="text-white font-bold text-2xl">${product.our_price_usd.toFixed(2)}</span>
+              <span className="text-white font-semibold">Price</span>
+              <LivePrice product={product} />
             </div>
-            {product.our_price_usd < product.market_price_usd && (
-              <div className="flex items-center justify-between border-t border-bg-border pt-2">
-                <span className="text-success text-sm">You Save</span>
-                <span className="badge bg-success/20 text-success border border-success/30">
-                  ${(product.market_price_usd - product.our_price_usd).toFixed(2)} ({Math.round((1 - product.our_price_usd / product.market_price_usd) * 100)}% off)
-                </span>
-              </div>
-            )}
             {isSingleCard && (product.low_price_usd || product.mid_price_usd || product.high_price_usd) && (
               <div className="border-t border-bg-border pt-2 grid grid-cols-3 gap-2 text-center">
                 {product.low_price_usd  != null && <div><p className="text-muted text-xs">Low</p><p className="text-white text-sm font-medium">${product.low_price_usd.toFixed(2)}</p></div>}

@@ -115,7 +115,7 @@ export function BoxShelf() {
         <div className="relative">
           {/* Box row */}
           <div className="flex items-end justify-center gap-4 sm:gap-6 pb-4">
-            {SHELF_BOXES.map((box, i) => (
+            {SHELF_BOXES.slice(0, 5).map((box, i) => (
               <ShelfBox key={i} box={box} />
             ))}
           </div>

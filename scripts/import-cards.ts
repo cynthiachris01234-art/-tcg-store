@@ -131,7 +131,7 @@ function slugify(text: string): string {
     .replace(/^-+|-+$/g, '');
 }
 
-const VALID_BRANDS   = new Set(['pokemon','onepiece','mtg','yugioh','lorcana']);
+const VALID_BRANDS   = new Set(['pokemon','onepiece','mtg','yugioh','lorcana','riftbound','dragonball','starwars','digimon']);
 const VALID_LANGS    = new Set(['en','jp','kr']);
 const VALID_CONDS    = new Set(['nm','lp','mp','hp','damaged']);
 

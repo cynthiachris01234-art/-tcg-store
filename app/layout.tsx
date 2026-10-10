@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
 import './globals.css';
 import { TopBar } from '@/components/layout/TopBar';
+import { FlashSaleBanner } from '@/components/promo/LivePromo';
 import { Navbar } from '@/components/layout/Navbar';
 import { Footer } from '@/components/layout/Footer';
 import { CartProvider } from '@/lib/cart';
@@ -9,6 +10,8 @@ import { CurrencyProvider } from '@/lib/currency';
 import { PageTracker } from '@/components/PageTracker';
 import { LiveChat } from '@/components/LiveChat';
 import { JsonLd } from '@/components/JsonLd';
+import { MetaPixel } from '@/components/MetaPixel';
+import { Clarity } from '@/components/Clarity';
 
 const inter = Inter({
   subsets: ['latin'],
@@ -64,17 +67,11 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en" className={inter.variable}>
       <body>
-        {/* Fixed background image — dark TCG card aesthetic */}
+        <MetaPixel />
+        <Clarity />
         <div
           aria-hidden="true"
-          className="fixed inset-0 -z-10 pointer-events-none"
-          style={{
-            backgroundImage: "url('https://images.unsplash.com/photo-1551306667-f32e7af055f2?auto=format&fit=crop&w=1920&q=80')",
-            backgroundSize: 'cover',
-            backgroundPosition: 'center',
-            backgroundRepeat: 'no-repeat',
-            opacity: 0.12,
-          }}
+          className="fixed inset-0 -z-10 pointer-events-none bg-[#070707]"
         />
         {/* Gradient overlay — fades top/bottom for depth */}
         <div
@@ -106,16 +103,19 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             availableLanguage: ['English'],
           },
           sameAs: [
-            'https://instagram.com/apextcgshop',
+            'https://instagram.com/apextcg_distribution',
+            'https://www.facebook.com/people/Apex-TCG-Distribution/61582030211913/',
             'https://tiktok.com/@apextcg_distro',
+            'https://t.me/apextcgshop',
           ],
           priceRange: '$$',
           currenciesAccepted: 'USD',
-          paymentAccepted: 'Credit Card, PayPal, Cash App, Apple Pay, Wise',
+          paymentAccepted: 'Wise, Venmo, Apple Pay',
         }} />
         <CurrencyProvider>
           <CartProvider>
             <div className="flex flex-col min-h-screen">
+              <FlashSaleBanner />
               <TopBar />
               <Navbar />
               <PageTracker />

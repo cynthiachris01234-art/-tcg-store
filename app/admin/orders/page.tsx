@@ -101,7 +101,7 @@ function OrderRow({ order }: { order: StoredOrder }) {
                   <div className="mt-2 pt-2 border-t border-bg-border flex items-center gap-2">
                     <span className="text-accent text-xs font-bold uppercase tracking-widest">Payment:</span>
                     <span className="text-white text-xs font-semibold">
-                      {({ card: 'Credit / Debit Card', wise: 'Wise Transfer', applepay: 'Apple Pay', cashapp: 'Cash App', paypal: 'PayPal', bank: 'Bank Transfer / Wire', btc: 'Bitcoin (BTC)', usdt: 'USDT (Tether)' } as Record<string,string>)[order.paymentMethod] ?? order.paymentMethod}
+                      {({ whop: 'Card / Apple Pay (Whop)', card: 'Credit / Debit Card', stripe: 'Card (Stripe)', kkiapay: 'Kkiapay', melio: 'Melio (card/bank)', wise: 'Wise Transfer', applepay: 'Apple Pay', cashapp: 'Cash App', venmo: 'Venmo', chime: 'Chime', paypal: 'PayPal', telegram: 'Telegram', bank: 'Bank Transfer / Wire', btc: 'Bitcoin (BTC)', usdt: 'USDT (Tether)' } as Record<string,string>)[order.paymentMethod] ?? order.paymentMethod}
                     </span>
                   </div>
                 )}
@@ -186,15 +186,18 @@ export default function AdminOrdersPage() {
       if (Array.isArray(data.orders)) {
         // API responded successfully — we're connected to the database
         fromDb = true;
-        dbOrders = data.orders.map((o: any) => ({
+        dbOrders = data.orders.filter((o: any) => o.status !== 'checkout_started').map((o: any) => ({
           id:            o.id,
           createdAt:     o.created_at,
           status:        o.status ?? 'awaiting_payment',
-          paymentMethod: o.payment_method ?? o.paymentMethod,
+          // payment_method / shipping_usd fall back to the customer JSON for
+          // orders saved before those columns existed on store_orders.
+          paymentMethod: o.payment_method ?? o.paymentMethod ?? o.customer?.payment_method,
           customer:      o.customer,
           items:         o.items,
           subtotal:      o.subtotal_usd,
           discount:      o.discount_usd,
+          shipping:      o.shipping_usd ?? o.customer?.shipping_usd ?? 0,
           total:         o.total_usd,
         }));
       }

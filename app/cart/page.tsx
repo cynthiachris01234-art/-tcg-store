@@ -8,6 +8,8 @@ import { useCurrency } from '@/lib/currency';
 import { LanguageBadge } from '@/components/ui/LanguageBadge';
 import { BRAND_META } from '@/lib/brands';
 import type { ProductType } from '@/types';
+import { priceOf, meetsMinimum, minOrderMessage } from '@/lib/promos';
+import { CartPromoLines } from '@/components/promo/LivePromo';
 
 function typeLabel(t: ProductType): string {
   switch (t) {
@@ -96,9 +98,9 @@ export default function CartPage() {
                     </div>
                     {/* Price */}
                     <div className="text-right">
-                      <p className="text-white font-bold">{format(product.our_price_usd * quantity)}</p>
+                      <p className="text-white font-bold">{format(priceOf(product) * quantity)}</p>
                       {quantity > 1 && (
-                        <p className="text-muted text-xs">{format(product.our_price_usd)} each</p>
+                        <p className="text-muted text-xs">{format(priceOf(product))} each</p>
                       )}
                     </div>
                   </div>
@@ -126,6 +128,7 @@ export default function CartPage() {
                   <span className="text-success">−{format(cart.bundle_discount)}</span>
                 </div>
               )}
+              <CartPromoLines multibuy={cart.multibuy_discount ?? 0} merchTotal={cart.total_usd} format={format} />
               <div className="border-t border-bg-border pt-2 flex justify-between font-bold">
                 <span className="text-white">Total</span>
                 <span className="text-white text-lg">{format(cart.total_usd)}</span>
@@ -135,15 +138,24 @@ export default function CartPage() {
             <div className="bg-success/10 border border-success/20 rounded-xl p-3">
               <p className="text-success text-xs font-semibold">
                 You're saving {format(
-                  cart.items.reduce((s, i) => s + (i.product.market_price_usd - i.product.our_price_usd) * i.quantity, 0)
-                  + cart.bundle_discount
+                  cart.items.reduce((s, i) => s + (i.product.market_price_usd - priceOf(i.product)) * i.quantity, 0)
+                  + cart.bundle_discount + (cart.multibuy_discount ?? 0)
                 )} vs market price!
               </p>
             </div>
 
-            <Link href="/checkout" className="btn-primary w-full flex items-center justify-center gap-2 py-3.5">
-              Proceed to Checkout <ArrowRight className="w-4 h-4" />
-            </Link>
+            {meetsMinimum(cart.total_usd) ? (
+              <Link href="/checkout" className="btn-primary w-full flex items-center justify-center gap-2 py-3.5">
+                Proceed to Checkout <ArrowRight className="w-4 h-4" />
+              </Link>
+            ) : (
+              <div className="space-y-2">
+                <p className="text-accent text-sm font-semibold text-center">{minOrderMessage(cart.total_usd)}</p>
+                <button disabled className="btn-primary w-full flex items-center justify-center gap-2 py-3.5 opacity-50 cursor-not-allowed">
+                  Proceed to Checkout <ArrowRight className="w-4 h-4" />
+                </button>
+              </div>
+            )}
             <Link href="/shop" className="btn-outline w-full flex items-center justify-center py-3 text-sm">
               Continue Shopping
             </Link>

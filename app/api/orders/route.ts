@@ -1,64 +1,59 @@
 import { createClient } from '@supabase/supabase-js';
 import { NextResponse } from 'next/server';
-import { notifyNewOrder } from '@/lib/notify';
+import { recordOrder, rebuildOrderPricing } from '@/lib/orderRecord';
+import { envOff } from '@/lib/env';
 
 const supabaseUrl     = process.env.NEXT_PUBLIC_SUPABASE_URL ?? '';
 const serviceRoleKey  = process.env.SUPABASE_SERVICE_ROLE_KEY ?? '';
 
-// POST /api/orders — save a new order + fire notifications
+// Payment methods customers can choose. Orders are placed on the site and
+// confirmed on WhatsApp, where the store sends the payment details.
+const MANUAL_METHODS = ['wise', 'venmo', 'applepay'];
+
+function generateOrderId(): string {
+  const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+  let id = 'APX-';
+  for (let i = 0; i < 6; i++) id += chars[Math.floor(Math.random() * chars.length)];
+  return id;
+}
+
+// POST /api/orders — place an order (awaiting payment) + notify the store.
+// The server creates the order number and prices everything from the live
+// catalog; the client's prices and status are never trusted.
 export async function POST(req: Request) {
   let body: any = null;
   try {
-    body = await req.json();
-
-    // Normalise items: StoredOrder uses camelCase (unitPrice), notify expects it too
-    const notifyPayload = {
-      id:            body.id,
-      status:        body.status,
-      paymentMethod: body.paymentMethod,
-      customer:      body.customer,
-      items: (body.items ?? []).map((i: any) => ({
-        setName:   i.setName   ?? i.set_name ?? '',
-        brand:     i.brand     ?? '',
-        language:  i.language  ?? '',
-        quantity:  i.quantity  ?? 1,
-        unitPrice: i.unitPrice ?? i.unit_price_usd ?? 0,
-        total:     i.total     ?? 0,
-      })),
-      subtotal_usd:  body.subtotal_usd ?? 0,
-      discount_usd:  body.discount_usd ?? 0,
-      total_usd:     body.total_usd    ?? 0,
-    };
-
-    // Always send notifications first
-    await notifyNewOrder(notifyPayload);
-
-    // Save to Supabase if configured
-    let dbError: string | null = null;
-    if (supabaseUrl && serviceRoleKey && !serviceRoleKey.includes('placeholder')) {
-      const supabase = createClient(supabaseUrl, serviceRoleKey);
-      const { error } = await supabase.from('store_orders').insert({
-        id:             body.id,
-        status:         body.status,
-        payment_method: body.paymentMethod,
-        customer:       body.customer,
-        items:          body.items,
-        subtotal_usd:   body.subtotal_usd,
-        discount_usd:   body.discount_usd,
-        total_usd:      body.total_usd,
-      });
-      if (error) {
-        console.error('Supabase insert error:', error);
-        dbError = error.message;
-      }
+    // Wise / Venmo / Apple Pay orders are on. Set MANUAL_ORDERS_ENABLED=false
+    // to switch them off.
+    if (envOff('MANUAL_ORDERS_ENABLED')) {
+      return NextResponse.json({ ok: false, error: 'Ordering is paused right now. Please WhatsApp us.' }, { status: 403 });
     }
+    body = await req.json();
+    const method = String(body.paymentMethod ?? '');
+    if (!MANUAL_METHODS.includes(method)) {
+      return NextResponse.json({ ok: false, error: 'Please choose Wise, Venmo or Apple Pay.' }, { status: 400 });
+    }
+    const c = body.customer ?? {};
+    if (!c.name || !(c.email || c.phone) || !c.line1 || !c.city) {
+      return NextResponse.json({ ok: false, error: 'Please fill in your name, contact details and shipping address.' }, { status: 400 });
+    }
+    const items = (body.items ?? []).slice(0, 50);
+    const check = rebuildOrderPricing(items, c.country ?? 'US');
+    if (!check.items.length || check.total <= 0) return NextResponse.json({ ok: false, error: 'Your cart is empty.' }, { status: 400 });
+    if (check.minimumError) return NextResponse.json({ ok: false, error: check.minimumError }, { status: 400 });
 
-    return NextResponse.json({ ok: true, dbError });
+    const id = generateOrderId();
+    const { priced, dbError } = await recordOrder({
+      id, status: 'awaiting_payment', paymentMethod: method,
+      customer: { ...c, confirm_via: 'whatsapp' }, items,
+    });
+    return NextResponse.json({
+      ok: true, orderId: id, totalUsd: priced.total, dbError,
+      items: priced.items.map(i => ({ setName: i.setName, quantity: i.quantity })),
+    });
   } catch (err: any) {
-    // Best-effort fallback notification
-    if (body) try { await notifyNewOrder(body); } catch {}
     console.error('Order save error:', err);
-    return NextResponse.json({ ok: true });
+    return NextResponse.json({ ok: false, error: 'Could not place your order. Please try again or WhatsApp us.' }, { status: 500 });
   }
 }
 
