@@ -3,7 +3,7 @@ import { MOCK_PRODUCTS } from '@/lib/mock-data';
 import { isComingSoon, formatDate } from '@/lib/utils';
 import { rebuildOrderPricing } from '@/lib/orderRecord';
 import { verifyComebackToken } from '@/lib/comeback';
-import { paypalApi, paypalConfigured, cents, money } from '@/lib/paypal';
+import { paypalApi, paypalConfigured, paypalMerchantId, cents, money } from '@/lib/paypal';
 import { envOff } from '@/lib/env';
 import { savePendingCheckout } from '@/lib/pendingCheckout';
 
@@ -62,6 +62,7 @@ export async function POST(req: NextRequest) {
       body: {
         intent: 'CAPTURE',
         purchase_units: [{
+          ...(paypalMerchantId() ? { payee: { merchant_id: paypalMerchantId() } } : {}),
           reference_id: orderId,
           custom_id: orderId,
           invoice_id: orderId,

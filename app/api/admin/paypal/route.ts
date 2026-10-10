@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
-import { paypalApi, paypalConfigured } from '@/lib/paypal';
+import { paypalApi, paypalConfigured, paypalMerchantId } from '@/lib/paypal';
 import { sweepAbandonedCheckouts } from '@/lib/pendingCheckout';
 
 // Paid PayPal orders from our own order list. PayPal's transaction history
@@ -117,7 +117,7 @@ export async function GET(req: NextRequest) {
     // Add store orders PayPal hasn't listed yet (matched on the capture id).
     const listed = new Set(transactions.map((t: any) => t.id));
     const listedOrders = new Set(transactions.map((t: any) => t.orderId).filter(Boolean));
-    const currentMerchant = process.env.PAYPAL_MERCHANT_ID ?? '';
+    const currentMerchant = paypalMerchantId();
     for (const o of await recentPayPalOrders(new Date(now - days * 864e5).toISOString())) {
       const c = o.customer ?? {};
       if ((c.paypal_capture && listed.has(c.paypal_capture)) || listedOrders.has(o.id)) continue;

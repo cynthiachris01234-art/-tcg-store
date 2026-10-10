@@ -7,6 +7,7 @@
 const clean = (v?: string) => (v ?? '').replace(/^[\s"']+|[\s"']+$/g, '');
 const CLIENT_ID = () => clean(process.env.PAYPAL_CLIENT_ID);
 const CLIENT_SECRET = () => clean(process.env.PAYPAL_CLIENT_SECRET);
+export const paypalMerchantId = () => clean(process.env.PAYPAL_MERCHANT_ID);
 
 const ENV  = (clean(process.env.PAYPAL_ENV) || 'live').toLowerCase();
 export const PAYPAL_BASE = ENV === 'sandbox' ? 'https://api-m.sandbox.paypal.com' : 'https://api-m.paypal.com';
