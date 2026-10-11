@@ -171,28 +171,9 @@ export default function CheckoutPage() {
   const { format } = useCurrency();
 
   const [form, setForm]           = useState<AddressForm>(EMPTY_FORM);
-  // Payment options switch on from Vercel keys:
-  //   PayPal  — PAYPAL_CLIENT_ID + PAYPAL_CLIENT_SECRET (PAYPAL_CHECKOUT_ENABLED=false to hide)
-  //   Stripe  — STRIPE_SECRET_KEY (STRIPE_CHECKOUT_ENABLED=false to hide)
-  // Whichever are live are shown; with none, Wise / Venmo / Apple Pay confirmed on WhatsApp.
-  const [payMethod, setPayMethod] = useState('wise');
-  const [paypalOn, setPaypalOn] = useState(false);
-  const [stripeOn, setStripeOn] = useState(false);
-  const PAYMENT_METHODS = paypalOn || stripeOn
-    ? [...(paypalOn ? [PAYPAL_METHOD] : []), ...(stripeOn ? STRIPE_METHODS : [])]
-    : WHATSAPP_METHODS;
-
-  useEffect(() => {
-    Promise.all([
-      fetch('/api/pay/wallet').then(r => r.json()).catch(() => ({})),
-      fetch('/api/pay/card').then(r => r.json()).catch(() => ({})),
-    ]).then(([pp, st]) => {
-      if (pp?.configured) setPaypalOn(true);
-      if (st?.available) setStripeOn(true);
-      if (pp?.configured) setPayMethod('paypal');
-      else if (st?.available) setPayMethod('stripe');
-    });
-  }, []);
+  // Checkout is PayPal only (card / Wise / Venmo / Apple Pay are hidden).
+  const [payMethod, setPayMethod] = useState('paypal');
+  const PAYMENT_METHODS = [PAYPAL_METHOD];
   const [loading, setLoading]     = useState(false);
   const [error, setError]         = useState('');
   const [whopSession, setWhopSession] = useState<{ sessionId: string; orderId: string } | null>(null);
